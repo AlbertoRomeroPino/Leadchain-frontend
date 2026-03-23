@@ -3,20 +3,14 @@ import type { GeoPoint } from './GeoPoint';
 // Definición de zona al crear o actualizar
 export type ZonaInput = {
     nombre_zona: string;
-    esquina_noroeste: GeoPoint;
-    esquina_noreste: GeoPoint;
-    esquina_suroeste: GeoPoint;
-    esquina_sureste: GeoPoint;
+    area: GeoPoint[];
 };
 
 // Definición de zona al obtener datos
 export type Zona = {
     id: number;
     nombre_zona: string;
-    esquina_noroeste: GeoPoint | null;
-    esquina_noreste: GeoPoint | null;
-    esquina_suroeste: GeoPoint | null;
-    esquina_sureste: GeoPoint | null;
+    area: GeoPoint[] | null;
     created_at: string;
     updated_at: string;
     usuarios?: Array<{
