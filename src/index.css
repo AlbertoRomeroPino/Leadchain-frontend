@@ -1,3 +1,22 @@
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0f0a0a;
+  color: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 /* Contenedor del Título (La burbuja pequeña de arriba) */
 .sileo-title {
   display: flex;
@@ -6,14 +25,14 @@
   font-weight: 600;
   font-size: 0.875rem;
   color: #ffffff;
-  padding: 0 6px; 
+  padding: 0px; 
   text-align: center;
   width: 100%;
 
   /* --- AJUSTE DE POSICIÓN --- */
   /* Cambia -2px por -4px, -5px, etc., para subirlo más. 
      Valores positivos (ej. 2px) lo bajan. */
-  transform: translateY(-10px); 
+  transform: translateY(0px); 
   /* --------------------------- */
 }
 
@@ -36,8 +55,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 3px;
+  margin-right: 0px;
   
   /* IMPORTANTE: Si subes el título, el icono debe subir con él */
-  transform: translateY(-9px); 
+  transform: translateY(0px); 
 }

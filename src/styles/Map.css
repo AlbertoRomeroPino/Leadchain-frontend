@@ -1,0 +1,10 @@
+.map-page {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.map-content {
+  margin-left: clamp(70px, 8vw, 84px);
+  width: calc(100vw - clamp(70px, 8vw, 84px));
+  height: 100vh;
+}

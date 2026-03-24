@@ -1,6 +1,7 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { AuthSession, User } from "../types/User";
 import { authStorage } from "./authStorage";
+import { setAuthCallbacks, setAuthToken } from "../services/https";
 
 type AuthContextValue = {
   user: User | null;
@@ -19,33 +20,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(initial?.user ?? null);
   const [token, setToken] = useState<string | null>(initial?.token ?? null);
 
+  // Sincronizar token con axios al iniciar
+  useEffect(() => {
+    setAuthToken(token);
+  }, [token]);
+
+  // Configurar callbacks de autenticación
+  useEffect(() => {
+    setAuthCallbacks({
+      onUnauthorized: () => {
+        logout();
+      },
+    });
+  }, []);
+
   function login(session: AuthSession) {
     authStorage.set(session);
     setUser(session.user);
     setToken(session.token);
+    setAuthToken(session.token);
   }
 
   function logout() {
     authStorage.clear();
     setUser(null);
     setToken(null);
+    setAuthToken(null);
   }
 
   const updateUser = useCallback((userData: Partial<User>) => {
     setUser((currentUser) => {
       if (currentUser) {
         const updatedUser = { ...currentUser, ...userData };
-        setToken((currentToken) => {
-          if (currentToken) {
-            authStorage.set({ token: currentToken, user: updatedUser });
-          }
-          return currentToken;
-        });
+        if (token) {
+          authStorage.set({ token, user: updatedUser });
+        }
         return updatedUser;
       }
       return currentUser;
     });
-  }, []);
+  }, [token]);
 
   const value = useMemo<AuthContextValue>(
     () => ({

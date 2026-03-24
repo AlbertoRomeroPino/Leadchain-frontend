@@ -50,3 +50,11 @@ export type LoginCredentials = {
   email: string;
   password: string;
 };
+
+export type AuthResponse = AuthSession;
+
+export type RegisterData = {
+  email: string;
+  nombre: string;
+  password: string;
+};

@@ -13,7 +13,7 @@ const showStatusAlert = ({ type, title, description }: StatusAlertProps): void =
     title,
     description,
     type,
-    duration: 5000,
+    duration: 2000,
     // Aumentamos ligeramente el tiempo de expansión para que el 
     // navegador calcule bien el centrado del texto
     autopilot: description ? { expand: 200, collapse: 3800 } : false,

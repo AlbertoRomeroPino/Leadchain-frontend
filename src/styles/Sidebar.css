@@ -17,20 +17,20 @@
 
 /* El Logo que redirige a Home */
 .sidebar-logo {
-  margin-bottom: clamp(14px, 4vh, 40px);
-  color: #ffffff;
+  margin-bottom: clamp(18px, 4.5vh, 44px);
   transition: transform 0.2s ease;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: clamp(40px, 6vh, 50px);
-  height: clamp(40px, 6vh, 50px);
-  border-radius: 12px;
-  background: rgba(239, 68, 68, 0.18);
+  width: clamp(90px, 8.5vh, 20px);
+  height: clamp(56px, 8.5vh, 72px);
 }
 
-.sidebar-logo:hover {
-  transform: scale(1.1);
+.sidebar-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 /* Botones de navegación */

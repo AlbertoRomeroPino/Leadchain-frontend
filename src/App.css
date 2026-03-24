@@ -21,5 +21,6 @@
 }
 
 [data-sileo-header][data-edge="top"] {
-	bottom: 2px;
+	top: 2px;
+	bottom: auto;
 }

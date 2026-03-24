@@ -1,35 +1,43 @@
+import { Navigate, Route, Routes } from "react-router-dom";
+import "./index.css";
 import "./App.css";
-import Header from "./layout/header";
-import showStatusAlert from "./components/StatusAlert";
+import Login from "./pages/Login";
+import InicioPage from "./pages/InicioPage";
+import Map from "./pages/Map";
+import Clientes from "./pages/Clientes";
+import Comerciales from "./pages/Comerciales";
+import Visitas from "./pages/Visitas";
+import NotFoundBSOD from "./pages/NotFoundBSOD";
+import { GuestRoute, ProtectedRoute } from "./guards/ProtectedRoute";
+import { IsAdmin } from "./guards/RolRoutes";
 
-function App() {  
-
+function App() {
   return (
-    <>
-      
-      <Header />
+    <Routes>
+      {/* Redirección por defecto */}
+      <Route path="/" element={<Navigate to="/Login" />} />
 
-      {/* Implementar aqui ejemplos de statusAlert con botones*/}
-        <button onClick={() => showStatusAlert({ title: "¡Éxito!", description: "La operación se completó correctamente.", type: "success" })}>
-          Mostrar Alerta de Éxito
-        </button>
-        <button onClick={() => showStatusAlert({ title: "Error", description: "Ocurrió un error al procesar tu solicitud.", type: "error" })}>
-          Mostrar Alerta de Error
-        </button>
-        <button onClick={() => showStatusAlert({ title: "Advertencia", description: "Ten cuidado con esta acción.", type: "warning" })}>
-          Mostrar Alerta de Advertencia
-        </button>
-        <button onClick={() => showStatusAlert({ title: "Información", description: "Aquí tienes algunos detalles adicionales.", type: "info" })}>
-          Mostrar Alerta de Información
-        </button>
-        <button onClick={() => showStatusAlert({ title: "Cargando...", description: "Por favor espera mientras se procesa tu solicitud.", type: "loading" })}>
-          Mostrar Alerta de Carga
-        </button>
-        <button onClick={() => showStatusAlert({ title: "Acción Requerida", description: "¿Deseas continuar con esta acción?", type: "action" })}>
-          Mostrar Alerta de Acción
-        </button>
-      
-    </>
+      {/* Rutas públicas */}
+      <Route element={<GuestRoute />}>
+        <Route path="/Login" element={<Login />} />
+      </Route>
+
+      {/* Rutas privadas */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/Inicio" element={<InicioPage />} />
+        <Route path="/Map" element={<Map />} />
+        <Route path="/Visitas" element={<Visitas />} />
+        <Route path="/Clientes" element={<Clientes />} />
+        
+        {/* Rutas por rol */}
+        <Route element={<IsAdmin />}>
+          <Route path="/Comerciales" element={<Comerciales />} />
+        </Route>
+      </Route>
+
+      {/* 404 */}
+      <Route path="*" element={<NotFoundBSOD />} />
+    </Routes>
   );
 }
 
