@@ -4,7 +4,9 @@ import { authStorage } from "../auth/authStorage";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string | undefined;
 
-export const http = axios.create({ baseURL: API_BASE_URL });
+export const publicHttp = axios.create({ baseURL: API_BASE_URL });
+export const authHttp = axios.create({ baseURL: API_BASE_URL });
+export const http = authHttp;
 
 // Callbacks para sincronización con el Context
 let onUnauthorized: (() => void) | null = null;
@@ -16,14 +18,14 @@ export function setAuthCallbacks(callbacks: { onUnauthorized: () => void }) {
 // Actualizar el token en axios
 export function setAuthToken(token: string | null) {
   if (token) {
-    http.defaults.headers.common.Authorization = `Bearer ${token}`;
+    authHttp.defaults.headers.common.Authorization = `Bearer ${token}`;
   } else {
-    delete http.defaults.headers.common.Authorization;
+    delete authHttp.defaults.headers.common.Authorization;
   }
 }
 
 // Interceptor de request - agregar token
-http.interceptors.request.use((config) => {
+authHttp.interceptors.request.use((config) => {
   const session: AuthSession | null = authStorage.get();
   if (session?.token) {
     config.headers = config.headers ?? {};
@@ -33,7 +35,7 @@ http.interceptors.request.use((config) => {
 });
 
 // Interceptor de response - manejar errores
-http.interceptors.response.use(
+authHttp.interceptors.response.use(
   (response) => response,
   (error) => {
     // Si es 401, limpiar autenticación

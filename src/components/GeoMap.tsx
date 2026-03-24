@@ -45,15 +45,14 @@ const GeoMap = () => {
       <MapContainer
         center={cordobaCenter}
         zoom={13}
+        zoomControl={false}
+        attributionControl={false}
         maxBounds={mapBounds}
         maxBoundsViscosity={1}
         minZoom={11}
         className="geo-map-canvas"
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Polygon
           positions={[outerRing, cordobaHole]}
           pathOptions={{
