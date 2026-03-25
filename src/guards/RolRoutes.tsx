@@ -1,4 +1,4 @@
-import { useAuth } from "../auth/authContext";
+import { useAuth } from "../auth/useAuth";
 import { Navigate, Outlet } from "react-router-dom";
 
 export const IsAdmin = () => {

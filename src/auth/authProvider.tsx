@@ -1,18 +1,8 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import type { AuthSession, User } from "../types/User";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { AuthSession, User } from "../types/users/User";
 import { authStorage } from "./authStorage";
 import { setAuthCallbacks, setAuthToken } from "../services/https";
-
-type AuthContextValue = {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  login: (session: AuthSession) => void;
-  logout: () => void;
-  updateUser: (userData: Partial<User>) => void;
-};
-
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+import { AuthContext, type AuthContextValue } from "./AuthContext";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const initial: AuthSession | null = authStorage.get();
@@ -20,33 +10,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(initial?.user ?? null);
   const [token, setToken] = useState<string | null>(initial?.token ?? null);
 
-  // Sincronizar token con axios al iniciar
-  useEffect(() => {
-    setAuthToken(token);
-  }, [token]);
-
-  // Configurar callbacks de autenticación
-  useEffect(() => {
-    setAuthCallbacks({
-      onUnauthorized: () => {
-        logout();
-      },
-    });
-  }, []);
-
-  function login(session: AuthSession) {
-    authStorage.set(session);
-    setUser(session.user);
-    setToken(session.token);
-    setAuthToken(session.token);
-  }
-
-  function logout() {
+  const logout = useCallback(() => {
     authStorage.clear();
     setUser(null);
     setToken(null);
     setAuthToken(null);
-  }
+  }, []);
+
+  const login = useCallback((session: AuthSession) => {
+    authStorage.set(session);
+    setUser(session.user);
+    setToken(session.token);
+    setAuthToken(session.token);
+  }, []);
 
   const updateUser = useCallback((userData: Partial<User>) => {
     setUser((currentUser) => {
@@ -61,6 +37,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   }, [token]);
 
+  useEffect(() => {
+    setAuthToken(token);
+  }, [token]);
+
+  useEffect(() => {
+    setAuthCallbacks({
+      onUnauthorized: () => {
+        logout();
+      },
+    });
+  }, [logout]);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
@@ -70,16 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       logout,
       updateUser,
     }),
-    [user, token, updateUser]
+    [user, token, login, logout, updateUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth debe usarse dentro de <AuthProvider />");
-  }
-  return context;
 }

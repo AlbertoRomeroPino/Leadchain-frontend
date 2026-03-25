@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import type { LoginCredentials } from "../types/User";
-import { useAuth } from "../auth/authContext";
+import type { LoginCredentials } from "../types/users/User";
+import { useAuth } from "../auth/useAuth";
 import { authService } from "../services/authService";
 import showStatusAlert from "../components/StatusAlert";
 import "../styles/Login.css";

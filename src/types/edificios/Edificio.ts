@@ -1,4 +1,4 @@
-import type { GeoPoint } from "./GeoPoint";
+import type { GeoPoint } from "../shared/GeoPoint";
 
 // Definición de edificio al obtener datos
 export type Edificio = {

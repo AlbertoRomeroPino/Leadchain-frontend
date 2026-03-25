@@ -1,4 +1,4 @@
-import type { GeoPoint } from './GeoPoint';
+import type { GeoPoint } from "../shared/GeoPoint";
 
 // Definición de zona al crear o actualizar
 export type ZonaInput = {

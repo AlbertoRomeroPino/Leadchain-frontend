@@ -1,8 +1,8 @@
-import { House, Map, User, MapPin, BookUser, LogOut} from "lucide-react";
+import { House, Map, User, MapPin, BookUser, LogOut, Building, Scan} from "lucide-react";
 import "../styles/Sidebar.css";
 import showStatusAlert from "../components/StatusAlert";
 import { MenuButtons } from "../components/MenuButtons";
-import { useAuth } from "../auth/authContext";
+import { useAuth } from "../auth/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 
 // Definir qué botones ve cada rol
@@ -14,8 +14,16 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
     "Comerciales",
     "Visitas",
     "Clientes",
+    "Edificios",
+    "Zona",
   ],
-  comercial: ["Volver al inicio", "Inicio", "Mapa", "Visitas", "Clientes"],
+  comercial: [
+    "Volver al inicio",
+    "Inicio",
+    "Mapa",
+    "Visitas",
+    "Clientes",
+  ],
 };
 
 const menuItems: Array<{
@@ -28,6 +36,8 @@ const menuItems: Array<{
   { icon: <User size={24} />, label: "Comerciales", path: "/Comerciales" },
   { icon: <MapPin size={24} />, label: "Visitas", path: "/Visitas" },
   { icon: <BookUser size={24} />, label: "Clientes", path: "/Clientes" },
+  { icon: <Building size={24} />, label: "Edificios", path: "/Edificios" },
+  { icon: <Scan size={24} />, label: "Zona", path: "/Zona" },
 ];
 
 function Sidebar() {

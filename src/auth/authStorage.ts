@@ -1,4 +1,4 @@
-import type { AuthSession } from "../types/User";
+import type { AuthSession } from "../types/users/User";
 
 const STORAGE_KEY = "leadchain_auth";
 

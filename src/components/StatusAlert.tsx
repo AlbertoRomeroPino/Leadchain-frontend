@@ -6,14 +6,15 @@ interface StatusAlertProps {
   type: SileoType;
   title: string;
   description?: string;
+  duration?: number;
 }
 
-const showStatusAlert = ({ type, title, description }: StatusAlertProps): void => {
+const showStatusAlert = ({ type, title, description, duration }: StatusAlertProps): void => {
   sileo.show({
     title,
     description,
     type,
-    duration: 2000,
+    duration: duration ?? 2000,
     // Aumentamos ligeramente el tiempo de expansión para que el 
     // navegador calcule bien el centrado del texto
     autopilot: description ? { expand: 200, collapse: 3800 } : false,
@@ -25,5 +26,9 @@ const showStatusAlert = ({ type, title, description }: StatusAlertProps): void =
     },
   });
 };
+
+export const destroyStatusAlert = (): void => {
+  sileo.clear();
+}
 
 export default showStatusAlert;
