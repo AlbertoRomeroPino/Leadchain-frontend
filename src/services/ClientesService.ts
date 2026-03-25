@@ -44,7 +44,7 @@ export const clientesService = {
 
   async getClienteDetalle(id: number): Promise<ClienteDetalleResponse> {
     try {
-      const { data } = await authHttp.get<ClienteDetalleResponse>(`/api/clientes/${id}/detalle`);
+      const { data } = await authHttp.get<ClienteDetalleResponse>(`/api/cliente/detalles/${id}`);
       return data;
     } catch (error) {
       throw new Error(
