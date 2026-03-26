@@ -1,5 +1,5 @@
 import type { Cliente } from "../../types/clientes/Cliente";
-import TablaCliente from "./TablaCliente";
+import ClienteTabla from "./ClienteTabla";
 
 interface ClientesSinEdificioTableProps {
   isAdmin: boolean;
@@ -39,7 +39,7 @@ const ClientesSinEdificioTable = ({
               </tr>
             ) : (
               clientesSinEdificio.map((cliente) => (
-                <TablaCliente
+                <ClienteTabla
                   key={`sin-edificio-${cliente.id}`}
                   cliente={cliente}
                   onSelect={onSelectCliente}

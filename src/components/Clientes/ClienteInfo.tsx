@@ -140,7 +140,9 @@ const InfoCliente = ({
         ...(clienteActualizado.telefono
           ? { telefono: clienteActualizado.telefono }
           : {}),
-        ...(clienteActualizado.email ? { email: clienteActualizado.email } : {}),
+        ...(clienteActualizado.email
+          ? { email: clienteActualizado.email }
+          : {}),
         id_usuario_asignado: null,
       });
 
@@ -193,7 +195,9 @@ const InfoCliente = ({
       const message =
         err instanceof Error ? err.message : "Error al eliminar cliente";
 
-      if (message.includes("No query results for model [App\\Models\\Cliente]")) {
+      if (
+        message.includes("No query results for model [App\\Models\\Cliente]")
+      ) {
         onClienteDeleted?.(clienteInfo.id);
         setShowEditForm(false);
         showStatusAlert({

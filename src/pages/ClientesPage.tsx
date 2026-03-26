@@ -1,20 +1,24 @@
-import { useEffect, useState } from "react";
-import Sidebar from "../layout/Sidebar";
 import type { Cliente } from "../types/clientes/Cliente";
+
+import { useEffect, useState } from "react";
 import { clientesService } from "../services/ClientesService";
 import { useAuth } from "../auth/useAuth";
+
+import Sidebar from "../layout/Sidebar";
 import showStatusAlert from "../components/StatusAlert";
-import "../styles/Clientes.css";
-import InfoCliente from "../components/Clientes/InfoCliente";
+import InfoCliente from "../components/Clientes/ClienteInfo";
 import ClientesHeader from "../components/Clientes/ClientesHeader";
 import ClientesConEdificioTable from "../components/Clientes/ClientesConEdificioTable";
 import ClientesSinEdificioTable from "../components/Clientes/ClientesSinEdificioTable";
 import ClientesCreateModal from "../components/Clientes/ClientesCreateModal";
 
+import "../styles/Clientes.css";
+
 const Clientes = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [clientesSinEdificio, setClientesSinEdificio] = useState<Cliente[]>([]);
-  const [clienteSeleccionado, setClienteSeleccionado] = useState<Cliente | null>(null);
+  const [clienteSeleccionado, setClienteSeleccionado] =
+    useState<Cliente | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [creatingCliente, setCreatingCliente] = useState(false);
   const { user } = useAuth();
@@ -27,6 +31,7 @@ const Clientes = () => {
       showStatusAlert({
         type: "loading",
         title: "Cargando clientes...",
+        duration: 8000,
       });
 
       try {
@@ -45,7 +50,8 @@ const Clientes = () => {
           description: `Con edificio: ${clientesConEdificio.length} · Sin edificio: ${sinEdificio.length}`,
         });
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Error al cargar clientes";
+        const message =
+          err instanceof Error ? err.message : "Error al cargar clientes";
         showStatusAlert({
           type: "error",
           title: "Error al cargar clientes",
@@ -97,7 +103,8 @@ const Clientes = () => {
         description: "El cliente se creó correctamente",
       });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Error al crear cliente";
+      const message =
+        err instanceof Error ? err.message : "Error al crear cliente";
       showStatusAlert({
         type: "error",
         title: "Error al crear cliente",
@@ -126,7 +133,9 @@ const Clientes = () => {
 
   const handleClienteDeleted = (clienteId: number) => {
     setClientes((prev) => prev.filter((item) => item.id !== clienteId));
-    setClientesSinEdificio((prev) => prev.filter((item) => item.id !== clienteId));
+    setClientesSinEdificio((prev) =>
+      prev.filter((item) => item.id !== clienteId),
+    );
     setClienteSeleccionado(null);
   };
 

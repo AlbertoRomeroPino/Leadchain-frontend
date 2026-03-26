@@ -1,5 +1,5 @@
 import type { Cliente } from "../../types/clientes/Cliente";
-import TablaCliente from "./TablaCliente";
+import ClienteTabla from "./ClienteTabla";
 
 interface ClientesConEdificioTableProps {
   clientes: Cliente[];
@@ -24,7 +24,7 @@ const ClientesConEdificioTable = ({
         </thead>
         <tbody>
           {clientes.map((cliente) => (
-            <TablaCliente
+            <ClienteTabla
               key={cliente.id}
               cliente={cliente}
               onSelect={onSelectCliente}

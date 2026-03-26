@@ -10,9 +10,8 @@ export type Cliente = {
 };
 
 export type ClienteInput = {
-    nombre?: string;
-    apellidos?: string;
+    nombre: string;
+    apellidos: string;
     telefono?: string;
     email?: string;
-    id_usuario_asignado?: number | null;
 }

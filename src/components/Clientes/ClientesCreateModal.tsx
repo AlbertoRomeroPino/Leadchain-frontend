@@ -1,4 +1,4 @@
-import FormCliente from "./FormCliente";
+import ClienteForm from "./ClienteForm";
 
 interface ClientesCreateModalProps {
   show: boolean;
@@ -25,7 +25,7 @@ const ClientesCreateModal = ({
   return (
     <div className="clientes-modal-overlay" onClick={onClose}>
       <div className="clientes-modal" onClick={(event) => event.stopPropagation()}>
-        <FormCliente onSubmit={onSubmit} onCancel={onClose} loading={loading} />
+        <ClienteForm onSubmit={onSubmit} onCancel={onClose} loading={loading} />
       </div>
     </div>
   );

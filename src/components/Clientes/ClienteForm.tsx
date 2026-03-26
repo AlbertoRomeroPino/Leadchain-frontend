@@ -1,18 +1,12 @@
 import { useState } from "react";
-
-type FormClientePayload = {
-  nombre: string;
-  apellidos: string;
-  telefono?: string;
-  email?: string;
-};
+import type { ClienteInput } from "../../types/clientes/Cliente";
 
 interface FormClienteProps {
-  onSubmit: (cliente: FormClientePayload) => Promise<void>;
+  onSubmit: (cliente: ClienteInput) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
   mode?: "create" | "edit";
-  initialValues?: Partial<FormClientePayload>;
+  initialValues?: Partial<ClienteInput>;
 }
 
 const FormCliente = ({

@@ -1,6 +1,6 @@
 import { authHttp } from "./https";
 import { ExceptionService } from "./ExceptionService";
-import type { Edificio } from "../types/edificios/Edificio";
+import type {EdificioInput } from "../types/edificios/Edificio";
 
 
 export const EdificioService = {
@@ -23,7 +23,7 @@ export const EdificioService = {
         }
     },
 
-    async createEdificio(edificio: Omit<Edificio, "id">) {
+    async createEdificio(edificio: EdificioInput) {
         try {
             const response = await authHttp.post("/api/edificios", edificio);
             return response.data;
@@ -32,7 +32,7 @@ export const EdificioService = {
         }
     },
 
-    async updateEdificio(id: number, edificio: Omit<Edificio, "id">) {
+    async updateEdificio(id: number, edificio: EdificioInput) {
         try {
             const response = await authHttp.put(`/api/edificios/${id}`, edificio);
             return response.data;
