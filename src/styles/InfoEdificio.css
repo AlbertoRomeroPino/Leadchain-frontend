@@ -137,7 +137,12 @@
   height: 500px;
 }
 
-.edificio-map-leaflet,
+.edificio-map-leaflet {
+  height: 420px;
+  width: 100%;
+  position: relative;
+}
+
 .edificio-create-map.banner-full {
   height: 85vh;
   width: 100vw;

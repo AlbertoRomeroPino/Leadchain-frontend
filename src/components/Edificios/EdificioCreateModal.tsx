@@ -3,6 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup, Polygon, useMap, useMapEvents }
 import L, { type LatLngLiteral } from "leaflet";
 import type { EdificioInput, Edificio } from "../../types/edificios/Edificio";
 import type { Zona } from "../../types/zonas/Zona";
+import type { Cliente } from "../../types/clientes/Cliente";
+import { clientesService } from "../../services/ClientesService";
 
 interface EdificioCreateModalProps {
   show: boolean;
@@ -27,8 +29,12 @@ const EdificioCreateModal = ({
   const [direccionCompleta, setDireccionCompleta] = useState("");
   const [tipo, setTipo] = useState("");
   const [idZona, setIdZona] = useState<number>(zonas?.[0]?.id ?? 0);
+  const [planta, setPlanta] = useState<string>("");
+  const [puerta, setPuerta] = useState<string>("");
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
+  const [idCliente, setIdCliente] = useState<number | null>(null);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
   const [existingEdificioId, setExistingEdificioId] = useState<number>(edificios?.[0]?.id ?? 0);
   const [clienteNombre, setClienteNombre] = useState("");
   const [clienteApellidos, setClienteApellidos] = useState("");
@@ -107,12 +113,24 @@ const EdificioCreateModal = ({
     setMode("new");
     setDireccionCompleta("");
     setTipo("");
+    setPlanta("");
+    setPuerta("");
     setIdZona(zonas?.[0]?.id ?? 0);
     setLat(null);
     setLng(null);
+    setIdCliente(null);
     setExistingEdificioId(edificios?.[0]?.id ?? 0);
     setClienteNombre("");
     setClienteApellidos("");
+
+    (async () => {
+      try {
+        const data = await clientesService.getClientesSinEdificio();
+        setClientes(data);
+      } catch {
+        setClientes([]);
+      }
+    })();
   }, [show, zonas, edificios]);
 
 
@@ -123,30 +141,77 @@ const EdificioCreateModal = ({
     event.preventDefault();
 
     if (mode === "new") {
-      if (!direccionCompleta || !tipo || !idZona || lat == null || lng == null) {
-        alert("Completa todos los datos y elige ubicación en el mapa");
+      if (!direccionCompleta.trim()) {
+        alert("Dirección completa es obligatorio.");
         return;
       }
-      await onCreateEdificio({
-        direccion_completa: direccionCompleta,
-        tipo,
-        id_zona: idZona,
-        ubicacion: { lat, lng },
-        planta: null,
-        puerta: null,
-        id_cliente: null,
-      });
+
+      if (!tipo.trim()) {
+        alert("Tipo de edificio es obligatorio.");
+        return;
+      }
+
+      if (!idZona || idZona <= 0) {
+        alert("Selecciona una zona válida.");
+        return;
+      }
+
+      if (idCliente === null || idCliente <= 0) {
+        alert("Selecciona un cliente.");
+        return;
+      }
+
+      if (lat == null || lng == null) {
+        alert("Selecciona una ubicación en el mapa dentro de la zona.");
+        return;
+      }
+
+      if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+        alert("Ubicación no válida.");
+        return;
+      }
+
+      try {
+        await onCreateEdificio({
+          direccion_completa: direccionCompleta.trim(),
+          tipo: tipo.trim(),
+          id_zona: idZona,
+          ubicacion: { lat, lng },
+          planta: planta.trim() || null,
+          puerta: puerta.trim() || null,
+          id_cliente: idCliente,
+        });
+
+        alert("Edificio creado correctamente");
+      } catch (createError) {
+        const message = createError instanceof Error ? createError.message : "Error al crear el edificio";
+        console.error("createEdificio error:", createError);
+        alert(message);
+        return;
+      }
+
       onClose();
       return;
     }
 
     if (mode === "existing") {
-      if (!existingEdificioId || !clienteNombre || !clienteApellidos) {
+      if (!existingEdificioId || !clienteNombre.trim() || !clienteApellidos.trim()) {
         alert("Selecciona edificio y completa datos del cliente");
         return;
       }
-      await onAppendToExisting(existingEdificioId, clienteNombre, clienteApellidos);
+
+      try {
+        await onAppendToExisting(existingEdificioId, clienteNombre.trim(), clienteApellidos.trim());
+        alert("Cliente añadido al edificio");
+      } catch (appendError) {
+        const message = appendError instanceof Error ? appendError.message : "Error al añadir cliente al edificio";
+        console.error("appendToExisting error:", appendError);
+        alert(message);
+        return;
+      }
+
       onClose();
+      return;
     }
   };
 
@@ -197,6 +262,32 @@ const EdificioCreateModal = ({
               >
                 {zonas.map((z) => (
                   <option key={z.id} value={z.id}>{z.nombre_zona}</option>
+                ))}
+              </select>
+              <input
+                className="form-cliente-input"
+                type="text"
+                placeholder="Planta"
+                value={planta}
+                onChange={(e) => setPlanta(e.target.value)}
+              />
+              <input
+                className="form-cliente-input"
+                type="text"
+                placeholder="Puerta"
+                value={puerta}
+                onChange={(e) => setPuerta(e.target.value)}
+              />
+
+              <select
+                className="form-cliente-input"
+                value={idCliente ?? ""}
+                onChange={(e) => setIdCliente(Number(e.target.value))}
+                required
+              >
+                <option value="">Seleccionar cliente</option>
+                {clientes.map((c) => (
+                  <option key={c.id} value={c.id}>{c.nombre} {c.apellidos}</option>
                 ))}
               </select>
 
