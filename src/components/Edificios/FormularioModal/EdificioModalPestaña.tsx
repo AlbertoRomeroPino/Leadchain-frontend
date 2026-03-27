@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface EdificioModalPestañaProps {
   mode: "new" | "existing";
   setMode: (mode: "new" | "existing") => void;

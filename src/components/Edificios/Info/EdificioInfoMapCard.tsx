@@ -67,8 +67,8 @@ const EdificioInfoMapCard = ({ ubicacion, direccion, zonaArea }: EdificioInfoMap
 
 
   return (
-    <div className="edificio-card edificio-map" style={{ position: 'relative' }}>
-      <h2>Mapa del edificio</h2>
+    <div className="edificio-card edificio-map-card" style={{ position: 'relative' }}>
+      <h2 className="edificio-map-title">Mapa del edificio</h2>
       <MapContainer
         center={center}
         zoom={hasZonaArea ? 13 : 16}

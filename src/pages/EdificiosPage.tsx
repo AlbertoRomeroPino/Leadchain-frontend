@@ -11,6 +11,7 @@ import { ZonaService } from "../services/ZonaService";
 import { clientesService } from "../services/ClientesService";
 import EdificioHeader from "../components/Edificios/EdificioHeader";
 import EdificioCreateModal from "../components/Edificios/EdificioCreateModal";
+import "../styles/Edificios.css";
 
 const Edificios = () => {
   const [edificios, setEdificios] = useState<Edificio[]>([]);
@@ -35,11 +36,15 @@ const Edificios = () => {
       // TODO: los comerciales unicamente pueden ver los edificios de sus zonas
       // y los administradores los de sus comerciales, pero eso lo dejamos para más adelante
       try {
-        const edificiosData = (await EdificioService.getEdificios()) as Edificio[];
+        const edificiosData =
+          (await EdificioService.getEdificios()) as Edificio[];
 
         const edificiosUnicos = Array.from(
           new Map(
-            edificiosData.map((edificio: Edificio) => [edificio.direccion_completa, edificio]),
+            edificiosData.map((edificio: Edificio) => [
+              edificio.direccion_completa,
+              edificio,
+            ]),
           ).values(),
         ) as Edificio[];
 
@@ -51,7 +56,7 @@ const Edificios = () => {
         showStatusAlert({
           type: "success",
           title: "Edificios y zonas cargados correctamente",
-          description: `Edificios: ${edificiosUnicos.length}, Zonas: ${zonasData.length}`,
+          description: `Edificios: ${edificiosUnicos.length}`,
         });
       } catch (err) {
         const message =
@@ -92,7 +97,7 @@ const Edificios = () => {
       });
     } catch (err) {
       const message =
-      err instanceof Error ? err.message : "Error al crear edificio";
+        err instanceof Error ? err.message : "Error al crear edificio";
       showStatusAlert({
         type: "error",
         title: "Error al crear edificio",
@@ -104,7 +109,7 @@ const Edificios = () => {
   };
 
   const handleEdificioUpdated = (edificioActualizado: Edificio) => {
-    setEdificioSeleccionado((prev) => 
+    setEdificioSeleccionado((prev) =>
       prev?.id === edificioActualizado.id ? edificioActualizado : prev,
     );
     setEdificios((prev) =>
@@ -119,7 +124,11 @@ const Edificios = () => {
     setEdificioSeleccionado(null);
   };
 
-  const handleAppendToExisting = async (edificioId: number, nombre: string, apellidos: string) => {
+  const handleAppendToExisting = async (
+    edificioId: number,
+    nombre: string,
+    apellidos: string,
+  ) => {
     const targetEdificio = edificios.find((e) => e.id === edificioId);
     try {
       setCreatingEdificio(true);
@@ -134,7 +143,8 @@ const Edificios = () => {
         description: `Cliente añadido al edificio ${targetEdificio ? targetEdificio.direccion_completa : edificioId}`,
       });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Error al añadir cliente";
+      const message =
+        err instanceof Error ? err.message : "Error al añadir cliente";
       showStatusAlert({
         type: "error",
         title: "Error",
@@ -147,30 +157,39 @@ const Edificios = () => {
   };
 
   return (
-    <div className="edificios-wrapper">
+    <div className="edificios-page">
       <Sidebar />
-      <main className="edificios-main" style={{ paddingLeft: "100px" }}>
+
+      <main className="edificios-main">
         {edificioSeleccionado ? (
-          <>
+          <div className="info-edificio-container">
             <EdificioInfo
               edificio={edificioSeleccionado}
               onEdificioUpdated={handleEdificioUpdated}
               onEdificioDeleted={handleEdificioDeleted}
               onBack={() => setEdificioSeleccionado(null)}
+              /* Asegúrate de que dentro de EdificioInfo uses clases como .info-edificio-card */
             />
-          </>
+          </div>
         ) : (
           <>
-            <EdificioHeader
-              canCreateEdificio={canCreateEdificio}
-              onCreateClick={() => setShowCreateForm(true)}
-            />
-            <EdificioTabla
-              edificios={edificios}
-              onEdificioSelect={setEdificioSeleccionado}
-            />
+            <div className="edificios-header-section">
+              <EdificioHeader
+                canCreateEdificio={canCreateEdificio}
+                onCreateClick={() => setShowCreateForm(true)}
+                /* Dentro de EdificioHeader usa .edificios-title y .edificios-create-button */
+              />
+            </div>
 
-            {canCreateEdificio && (
+            <div className="edificios-container">
+              <EdificioTabla
+                edificios={edificios}
+                onEdificioSelect={setEdificioSeleccionado}
+                /* Dentro de EdificioTabla usa .edificios-table */
+              />
+            </div>
+
+            {canCreateEdificio && showCreateForm && (
               <EdificioCreateModal
                 show={showCreateForm}
                 loading={creatingEdificio}
@@ -179,6 +198,7 @@ const Edificios = () => {
                 onClose={() => setShowCreateForm(false)}
                 onCreateEdificio={handleCreateEdificio}
                 onAppendToExisting={handleAppendToExisting}
+                /* Dentro del Modal usa .form-edificio y .form-edificio-input */
               />
             )}
           </>

@@ -10,25 +10,23 @@ const EdificioInfoDetailsCard = ({
   zona
 }: EdificioInfoDetailsCardProps) => {
   return (
-    <div className="edificio-card">
-      <h2>Datos del edificio</h2>
-      <p>
-        <strong>Dirección:</strong> {edificio.direccion_completa}
+    <div className="edificio-card edificio-details-card">
+      <h2 className="edificio-details-title">Datos del edificio</h2>
+      <p className="edificio-details-row">
+        <strong className="edificio-details-label">Dirección:</strong> {edificio.direccion_completa}
       </p>
-      <p>
-        <strong>Tipo:</strong> {edificio.tipo}
+      <p className="edificio-details-row">
+        <strong className="edificio-details-label">Tipo:</strong> {edificio.tipo}
       </p>
-      <p>
-        <strong>Zona:</strong> {zona?.nombre_zona ?? edificio.id_zona}
+      <p className="edificio-details-row">
+        <strong className="edificio-details-label">Zona:</strong> {zona?.nombre_zona ?? edificio.id_zona}
       </p>
-      <p>
-        <strong>Lat:</strong> {edificio.ubicacion?.lat ?? '-'}
+      <p className="edificio-details-row">
+        <strong className="edificio-details-label">Lat:</strong> {edificio.ubicacion?.lat ?? '-'}
       </p>
-      <p>
-        <strong>Lng:</strong> {edificio.ubicacion?.lng ?? '-'}
+      <p className="edificio-details-row">
+        <strong className="edificio-details-label">Lng:</strong> {edificio.ubicacion?.lng ?? '-'}
       </p>
-
-      <h3>Clientes en el bloque</h3>
     </div>
   )
 }

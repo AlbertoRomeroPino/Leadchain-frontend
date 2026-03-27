@@ -15,6 +15,13 @@ export type Visita = {
     etiqueta: string;
     color_hex: string;
   };
+  cliente?: {
+    id: number;
+    nombre: string;
+    apellidos: string;
+    telefono?: string | null;
+    email?: string | null;
+  } | null;
   created_at: string;
   updated_at: string;
 };
@@ -25,4 +32,20 @@ export type VisitaInput = {
   fecha_hora: string;
   id_estado: number;
   observaciones?: string | null;
+};
+
+export type VisitaUser = {
+  id: number;
+  id_usuario: number;
+  id_cliente: number;
+  fecha_hora: string;
+  id_estado: number;
+  observaciones: string | null;
+  estado?: {
+    id: number;
+    etiqueta: string;
+    color_hex: string;
+  };
+  created_at: string;
+  updated_at: string;
 };

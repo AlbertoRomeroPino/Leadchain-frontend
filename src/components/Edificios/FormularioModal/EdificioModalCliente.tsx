@@ -1,5 +1,3 @@
-import React from "react";
-
 interface EdificioModalClienteProps {
   existingEdificioId: number;
   setExistingEdificioId: (id: number) => void;

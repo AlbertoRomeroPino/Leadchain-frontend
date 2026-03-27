@@ -6,7 +6,6 @@ import showStatusAlert from "../StatusAlert";
 import { EdificioService } from "../../services/EdificiosService";
 import { ZonaService } from "../../services/ZonaService";
 import { clientesService } from "../../services/ClientesService";
-import "../../styles/InfoEdificio.css";
 import EdificioInfoToolbar from "./Info/EdificioInfoToolbar";
 import EdificioInfoDetailsCard from "./Info/EdificioInfoDetailsCard";
 import EdificioInfoClienteCard from "./Info/EdificioInfoClienteCard";
@@ -31,7 +30,7 @@ const EdificioInfo = ({
   const [edificioInfo, setEdificioInfo] = useState<Edificio>(edificio);
   const [zona, setZona] = useState<Zona | null>(null);
   const [clientesBloque, setClientesBloque] = useState<
-    Array<{ nombre: string; planta: string | null; puerta: string | null }>
+    Array<{ cliente: import("../../types/clientes/Cliente").Cliente; planta: string | null; puerta: string | null }>
   >([]);
   const [showEditForm, setShowEditForm] = useState(false);
   const [deletingEdificio, setDeletingEdificio] = useState(false);
@@ -76,7 +75,7 @@ const EdificioInfo = ({
             const c = await clientesService.getClienteById(edif.id_cliente);
             if (!c) return null;
             return {
-              nombre: `${c.nombre} ${c.apellidos}`,
+              cliente: c,
               planta: edif.planta ?? null,
               puerta: edif.puerta ?? null,
             };
@@ -90,13 +89,13 @@ const EdificioInfo = ({
                 (
                   c,
                 ): c is {
-                  nombre: string;
+                  cliente: import("../../types/clientes/Cliente").Cliente;
                   planta: string | null;
                   puerta: string | null;
                 } => Boolean(c),
               )
               .map((c) => [
-                `${c.nombre}|${c.planta ?? ""}|${c.puerta ?? ""}`,
+                `${c.cliente.id}|${c.planta ?? ""}|${c.puerta ?? ""}`,
                 c,
               ]),
           ).values(),
@@ -162,15 +161,8 @@ const EdificioInfo = ({
     setShowEditForm(false);
   };
 
-  const clientesLista = clientesBloque
-    .map(
-      (c) =>
-        `${c.nombre} (planta ${c.planta ?? "-"}, puerta ${c.puerta ?? "-"})`,
-    )
-    .filter((x, i, arr) => arr.indexOf(x) === i);
-
   return (
-    <>
+    <div className="info-edificio info-edificio-main">
       <EdificioInfoToolbar
         canManageEdificio={canManageEdificio}
         canGoBack={!!onBack}
@@ -190,7 +182,7 @@ const EdificioInfo = ({
               zona={zona}
             />
 
-            <EdificioInfoClienteCard clientes={clientesLista} />
+            <EdificioInfoClienteCard clientes={clientesBloque} />
 
             <EdificioInfoMapCard
               ubicacion={edificioInfo.ubicacion}
@@ -208,7 +200,7 @@ const EdificioInfo = ({
         )}
       </section>
 
-    </>
+    </div>
   );
 };
 

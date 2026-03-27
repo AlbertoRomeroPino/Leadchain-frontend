@@ -47,7 +47,7 @@ const Clientes = () => {
         showStatusAlert({
           type: "success",
           title: "Clientes cargados correctamente",
-          description: `Con edificio: ${clientesConEdificio.length} · Sin edificio: ${sinEdificio.length}`,
+          description: `Clientes encontrados: ${clientesConEdificio.length + sinEdificio.length}`,
         });
       } catch (err) {
         const message =

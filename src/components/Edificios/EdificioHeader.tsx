@@ -11,12 +11,12 @@ const EdificioHeader = ({
 }: EdificioHeaderProps) => {
   return (
     <div className="edificio-header">
-      <h2>Edificios</h2>
+      <h2 className="edificio-header-title">Edificios</h2>
       {canCreateEdificio && (
-        <button onClick={onCreateClick}>
+        <button className="edificio-header-button" onClick={onCreateClick}>
           <HousePlus size={16} />
           Crear Edificio
-          </button>
+        </button>
       )}
     </div>
   );

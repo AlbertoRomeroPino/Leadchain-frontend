@@ -1,5 +1,7 @@
 import type { Edificio } from "../../types/edificios/Edificio";
 
+
+
 interface EdificioTablaProps {
   edificios: Edificio[];
   onEdificioSelect?: (edificio: Edificio) => void;
@@ -7,31 +9,41 @@ interface EdificioTablaProps {
 
 const EdificioTabla = ({ edificios, onEdificioSelect }: EdificioTablaProps) => {
   return (
-    <div>
-      <table>
+    <div className="edificios-container">
+      <table className="edificios-table">
         <thead>
           <tr>
             <th>ID</th>
             <th>Dirección</th>
             <th>Planta</th>
             <th>Puerta</th>
-            {/* Se pone la zona Nombre porque no se puede poner ubicación */}
             <th>Zona</th>
             <th>Tipo</th>
           </tr>
         </thead>
         <tbody>
-          {edificios.map((edificio) => (
-            <tr key={edificio.id} onClick={() => onEdificioSelect?.(edificio)}>
-              <td>{edificio.id}</td>
-              <td>{edificio.direccion_completa}</td>
-              <td>{edificio.planta}</td>
-              <td>{edificio.puerta}</td>
-              {/* TODO: Reemplazar por el nombre de la zona */}
-              <td>{edificio.id_zona}</td>
-              <td>{edificio.tipo}</td>
+          {edificios.length > 0 ? (
+            edificios.map((edificio) => (
+              <tr
+                key={edificio.id}
+                className="edificio-table-row"
+                onClick={() => onEdificioSelect?.(edificio)}
+              >
+                <td className="edificio-cell edificio-cell-id">{edificio.id}</td>
+                <td className="edificio-cell edificio-cell-direccion">{edificio.direccion_completa}</td>
+                <td className="edificio-cell edificio-cell-planta">{edificio.planta}</td>
+                <td className="edificio-cell edificio-cell-puerta">{edificio.puerta || "-"}</td>
+                <td className="edificio-cell edificio-cell-zona">{edificio.id_zona}</td>
+                <td className="edificio-cell edificio-cell-tipo">{edificio.tipo}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={6} className="clientes-empty-row">
+                No hay edificios registrados
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

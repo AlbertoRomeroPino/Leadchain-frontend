@@ -1,3 +1,6 @@
+import type { VisitaUser } from "../visitas/Visita";
+import type { Cliente } from "../clientes/Cliente";
+
 // Definición de usuario devuelto por API (sin password)
 export type User = {
   id: number;
@@ -57,4 +60,17 @@ export type RegisterData = {
   email: string;
   nombre: string;
   password: string;
+};
+
+export type UserVisitas = {
+  id: number;
+  nombre: string;
+  apellidos: string;
+  email: string;
+  rol: string;
+  id_responsable: number | null;
+  id_zona: number | null;
+  created_at: string;
+  updated_at: string;
+  visitas: (VisitaUser & { cliente: Cliente | null })[];
 };

@@ -1,0 +1,266 @@
+.comerciales-page {
+  min-height: 100vh;
+  background-color: #0f0a0a;
+  color: #ffffff;
+}
+
+.comerciales-main {
+  margin-left: 80px;
+  padding: 32px;
+}
+
+.comerciales-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.comerciales-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+
+.comerciales-empty,
+.comerciales-loading,
+.comerciales-error {
+  margin-top: 1rem;
+  color: #fca5a5;
+}
+
+.comerciales-table-container {
+  background-color: #161010;
+  border: 1px solid #3f1b1b;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.comerciales-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.comerciales-table thead {
+  background-color: #1f1414;
+  border-bottom: 2px solid #3f1b1b;
+}
+
+.comerciales-table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fca5a5;
+  letter-spacing: 0.5px;
+}
+
+.comerciales-table tbody tr {
+  border-bottom: 1px solid #2c1818;
+  transition: background-color 0.2s ease;
+}
+
+.comerciales-table tbody tr:hover {
+  background-color: #251818;
+}
+
+.comerciales-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.comerciales-table td {
+  padding: 14px 20px;
+  font-size: 0.95rem;
+  color: #ffe4e6;
+}
+
+.comerciales-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.comerciales-row:hover {
+  background-color: #251818;
+}
+
+.comerciales-subrow td {
+  background-color: #1f1414;
+  padding: 12px 16px;
+}
+
+.comerciales-list-visitas {
+  margin-top: 10px;
+  color: #f8fafc;
+}
+
+.visitas-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+  grid-template-columns: repeat(4, minmax(200px, 1fr));
+  justify-content: start;
+}
+
+/* Ajuste responsive: 4 columnas grandes, 3 medianas, 2 tables, 1 móvil */
+@media (max-width: 1439px) {
+  .visitas-grid {
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 1199px) {
+  .visitas-grid {
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 991px) {
+  .visitas-grid {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .visitas-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .visitas-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.visita-card {
+  border: 1px solid #3f1b1b;
+  border-radius: 10px;
+  padding: 12px;
+  background-color: #1a1313;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.visita-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.visita-card-row {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  align-items: start;
+}
+
+.visita-card-row:last-child {
+  margin-bottom: 0;
+}
+
+.visita-card-label {
+  color: #fca5a5;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.visita-card-label {
+  color: #fca5a5;
+  font-weight: 600;
+}
+
+.sin-visitas {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.comerciales-details {
+  display: none;
+}
+
+.comerciales-details ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.comerciales-details li {
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+
+.comerciales-details li:last-child {
+  margin-bottom: 0;
+}
+
+.comerciales-not-found {
+  text-align: center;
+  padding: 40px;
+  color: #fca5a5;
+}
+
+
+/* Contenedor principal de las cartas */
+.visitas-grid {
+  display: grid;
+  gap: 16px; /* Un poco más de espacio entre cartas */
+  margin-top: 12px;
+  /* Por defecto en pantallas muy grandes: 4 columnas */
+  grid-template-columns: repeat(4, 1fr); 
+  justify-content: start;
+}
+
+/* --- AJUSTES RESPONSIVE --- */
+
+/* Pantallas grandes/medianas (Laptops): 3 columnas */
+@media (max-width: 1400px) {
+  .visitas-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Tablets en horizontal: 2 columnas */
+@media (max-width: 992px) {
+  .visitas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Móviles: 1 sola columna */
+@media (max-width: 600px) {
+  .visitas-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Ajuste de la carta para que el contenido no se amontone */
+.visita-card {
+  border: 1px solid #3f1b1b;
+  border-radius: 10px;
+  padding: 16px; /* Más "aire" (padding) según tu rúbrica */
+  background-color: #1a1313;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+  height: 100%; /* Para que todas midan lo mismo en la fila */
+}
+
+.visita-card-row {
+  display: flex; /* Cambiado a flex para mejor manejo de espacio */
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+}
+
+.visita-card-label {
+  color: #fca5a5;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
