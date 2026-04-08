@@ -19,6 +19,8 @@ interface EdificioCreateModalProps {
     clienteNombre: string,
     clienteApellidos: string,
   ) => Promise<void>;
+  edificioAEditar?: Edificio;
+  onUpdateEdificio?: (id: number, payload: EdificioInput) => Promise<void>;
 }
 
 const EdificioCreateModal = ({
@@ -29,6 +31,8 @@ const EdificioCreateModal = ({
   onClose,
   onCreateEdificio,
   onAppendToExisting,
+  edificioAEditar,
+  onUpdateEdificio,
 }: EdificioCreateModalProps) => {
   const [mode, setMode] = useState<"new" | "existing">("new");
   const [direccionCompleta, setDireccionCompleta] = useState("");
@@ -57,26 +61,100 @@ const EdificioCreateModal = ({
     if (!show) return;
 
     queueMicrotask(() => {
-      setMode("new");
-      setDireccionCompleta("");
-      setTipo("");
-      setPlanta("");
-      setPuerta("");
-      setIdZona(zonas?.[0]?.id ?? 0);
-      setLat(null);
-      setLng(null);
-      setIdCliente(null);
-      setExistingEdificioId(edificios?.[0]?.id ?? 0);
-      setClienteNombre("");
-      setClienteApellidos("");
+      if (edificioAEditar) {
+        // Modo edición
+        setMode("new");
+        setDireccionCompleta(edificioAEditar.direccion_completa);
+        setTipo(edificioAEditar.tipo);
+        setPlanta(edificioAEditar.planta || "");
+        setPuerta(edificioAEditar.puerta || "");
+        setIdZona(edificioAEditar.id_zona);
+        if (edificioAEditar.ubicacion) {
+          setLat(edificioAEditar.ubicacion.lat);
+          setLng(edificioAEditar.ubicacion.lng);
+        }
+        setIdCliente(edificioAEditar.id_cliente);
+        setExistingEdificioId(edificios?.[0]?.id ?? 0);
+        setClienteNombre("");
+        setClienteApellidos("");
+      } else {
+        // Modo crear
+        setMode("new");
+        setDireccionCompleta("");
+        setTipo("");
+        setPlanta("");
+        setPuerta("");
+        setIdZona(zonas?.[0]?.id ?? 0);
+        setLat(null);
+        setLng(null);
+        setIdCliente(null);
+        setExistingEdificioId(edificios?.[0]?.id ?? 0);
+        setClienteNombre("");
+        setClienteApellidos("");
+      }
     });
-  }, [show, zonas, edificios]);
+  }, [show, zonas, edificios, edificioAEditar]);
 
   // ya no es necesario este efecto, la lógica se maneja con el callback de selección de zona
   if (!show) return null;
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    // Si estamos en modo edición
+    if (edificioAEditar && mode === "new") {
+      if (!direccionCompleta.trim()) {
+        alert("Dirección completa es obligatorio.");
+        return;
+      }
+
+      if (!tipo.trim()) {
+        alert("Tipo de edificio es obligatorio.");
+        return;
+      }
+
+      if (!idZona || idZona <= 0) {
+        alert("Selecciona una zona válida.");
+        return;
+      }
+
+      if (lat == null || lng == null) {
+        alert("Selecciona una ubicación en el mapa dentro de la zona.");
+        return;
+      }
+
+      if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+        alert("Ubicación no válida.");
+        return;
+      }
+
+      try {
+        if (onUpdateEdificio) {
+          await onUpdateEdificio(edificioAEditar.id, {
+            direccion_completa: direccionCompleta.trim(),
+            tipo: tipo.trim(),
+            id_zona: idZona,
+            ubicacion: { lat, lng },
+            planta: planta.trim() || null,
+            puerta: puerta.trim() || null,
+            id_cliente: idCliente || edificioAEditar.id_cliente,
+          });
+
+          alert("Edificio actualizado correctamente");
+        }
+      } catch (updateError) {
+        const message =
+          updateError instanceof Error
+            ? updateError.message
+            : "Error al actualizar el edificio";
+        console.error("updateEdificio error:", updateError);
+        alert(message);
+        return;
+      }
+
+      onClose();
+      return;
+    }
 
     if (mode === "new") {
       if (!direccionCompleta.trim()) {
@@ -173,14 +251,16 @@ const EdificioCreateModal = ({
         className="edificios-modal"
         onClick={(event) => event.stopPropagation()}
       >
-        {/* Botones de pestañas */}
-        <EdificioModalPestaña mode={mode} setMode={setMode} />
+        {/* Botones de pestañas - solo mostrar si no es edición */}
+        {!edificioAEditar && <EdificioModalPestaña mode={mode} setMode={setMode} />}
 
         {/* Formulario  */}
         <form className="form-edificios" onSubmit={handleSubmit}>
           {mode === "new" ? (
             <>
-              <h2 className="form-edificio-title">Crear edificio</h2>
+              <h2 className="form-edificio-title">
+                {edificioAEditar ? "Actualizar edificio" : "Crear edificio"}
+              </h2>
               <EdificioModalEdificio
                 direccionCompleta={direccionCompleta}
                 setDireccionCompleta={setDireccionCompleta}
@@ -237,12 +317,16 @@ const EdificioCreateModal = ({
               disabled={loading}
             >
               {loading
-                ? mode === "new"
-                  ? "Creando..."
-                  : "Añadiendo..."
-                : mode === "new"
-                  ? "Crear edificio"
-                  : "Añadir cliente"}
+                ? edificioAEditar
+                  ? "Actualizando..."
+                  : mode === "new"
+                    ? "Creando..."
+                    : "Añadiendo..."
+                : edificioAEditar
+                  ? "Actualizar edificio"
+                  : mode === "new"
+                    ? "Crear edificio"
+                    : "Añadir cliente"}
             </button>
           </div>
         </form>

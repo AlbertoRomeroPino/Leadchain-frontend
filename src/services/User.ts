@@ -1,6 +1,6 @@
 import { authHttp } from "./https";
 import { ExceptionService } from "./ExceptionService";
-import type { User } from "../types/users/User";
+import type { User, UserInput, UserUpdateInput } from "../types/users/User";
 
 export const UserService = {
   async getCurrentUser() {
@@ -31,7 +31,7 @@ export const UserService = {
     }
   },
 
-  async createUser(user: Omit<User, "id">) {
+  async createUser(user: UserInput) {
     try {
       const response = await authHttp.post("/api/users", user);
       return response.data;
@@ -42,7 +42,7 @@ export const UserService = {
     }
   },
 
-  async updateUser(id: number, user: Omit<User, "id">) {
+  async updateUser(id: number, user: UserUpdateInput) {
     try {
       const response = await authHttp.put(`/api/users/${id}`, user);
       return response.data;
@@ -80,7 +80,7 @@ export const UserService = {
     }
   },
 
-  async patchUser(id: number, user: Partial<User>) {
+  async patchUser(id: number, user: UserUpdateInput) {
     try {
       const response = await authHttp.patch(`/api/users/${id}`, user);
       return response.data;

@@ -208,10 +208,23 @@ const InfoCliente = ({
         return;
       }
 
+      if (
+        message.toLowerCase().includes("visita") ||
+        message.toLowerCase().includes("foreign key") ||
+        message.toLowerCase().includes("constraint")
+      ) {
+        showStatusAlert({
+          type: "error",
+          title: "No se puede eliminar",
+          description: "Este cliente tiene visitas asociadas. Debes eliminar las visitas primero antes de eliminar el cliente.",
+        });
+        return;
+      }
+
       showStatusAlert({
         type: "error",
         title: "Error al eliminar cliente",
-        description: message,
+        description: "No se pudo eliminar el cliente. Por favor intenta más tarde.",
       });
     } finally {
       setDeletingCliente(false);

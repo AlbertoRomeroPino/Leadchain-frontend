@@ -1,23 +1,26 @@
-
 import React, { useState } from "react";
 import type { Zona } from "../../types/zonas/Zona";
-import type { UserInput } from "../../types/users/User";
+import type { UserInput, User, UserUpdateInput } from "../../types/users/User";
 import { UserService } from "../../services/User";
 import { authStorage } from "../../auth/authStorage";
 import showStatusAlert from "../StatusAlert";
 
 interface ComercialesFormProps {
   zonas: Zona[];
-  onSuccess?: () => void;
+  comercialAEditar?: User | null;
+  onSuccess?: (comercial: User) => void;
 }
 
-const ComercialesForm = ({ zonas, onSuccess }: ComercialesFormProps) => {
-  const [nombre, setNombre] = useState("");
-  const [apellidos, setApellidos] = useState("");
-  const [email, setEmail] = useState("");
+const ComercialesForm = ({ zonas, comercialAEditar = null, onSuccess }: ComercialesFormProps) => {
+  const [nombre, setNombre] = useState(comercialAEditar?.nombre || "");
+  const [apellidos, setApellidos] = useState(comercialAEditar?.apellidos || "");
+  const [email, setEmail] = useState(comercialAEditar?.email || "");
   const [password, setPassword] = useState("");
-  const [zonaSeleccionada, setZonaSeleccionada] = useState("");
+  const [zonaSeleccionada, setZonaSeleccionada] = useState(
+    comercialAEditar?.id_zona?.toString() || ""
+  );
   const [isLoading, setIsLoading] = useState(false);
+  const esEdicion = !!comercialAEditar;
 
   const session = authStorage.get();
   const currentUserId = session?.user?.id ?? null;
@@ -25,7 +28,12 @@ const ComercialesForm = ({ zonas, onSuccess }: ComercialesFormProps) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!nombre || !apellidos || !email || !password || !zonaSeleccionada) {
+    // En edición, la contraseña es opcional
+    const camposRequired = esEdicion
+      ? [nombre, apellidos, email, zonaSeleccionada]
+      : [nombre, apellidos, email, password, zonaSeleccionada];
+
+    if (camposRequired.some((campo) => !campo)) {
       showStatusAlert({
         type: "error",
         title: "Campos requeridos",
@@ -42,31 +50,52 @@ const ComercialesForm = ({ zonas, onSuccess }: ComercialesFormProps) => {
       });
       return;
     }
-// TODO: quitar comentarios
+
     try {
       setIsLoading(true);
+      let comercialResultado: User;
 
-      const nuevoUsuario: UserInput = {
-        nombre,
-        apellidos,
-        email,
-        password,
-        rol: "comercial",
-        id_responsable: currentUserId,
-        id_zona: parseInt(zonaSeleccionada) || null,
-      };
+      if (esEdicion) {
+        // Modo edición
+        const usuarioActualizado: UserUpdateInput = {
+          nombre,
+          apellidos,
+          email,
+          id_zona: parseInt(zonaSeleccionada) || null,
+        };
 
-      console.log("📤 Enviando al backend:", nuevoUsuario);
+        // Solo incluir contraseña si fue ingresada
+        if (password) {
+          usuarioActualizado.password = password;
+        }
 
-      const respuesta = await UserService.createUser(nuevoUsuario);
+        comercialResultado = await UserService.updateUser(comercialAEditar!.id, usuarioActualizado);
 
-      console.log("✅ Respuesta del backend:", respuesta);
+        showStatusAlert({
+          type: "success",
+          title: "Comercial actualizado",
+          description: `${nombre} ${apellidos} ha sido actualizado correctamente`,
+        });
+      } else {
+        // Modo creación
+        const nuevoUsuario: UserInput = {
+          nombre,
+          apellidos,
+          email,
+          password,
+          rol: "comercial",
+          id_responsable: currentUserId,
+          id_zona: parseInt(zonaSeleccionada) || null,
+        };
 
-      showStatusAlert({
-        type: "success",
-        title: "Comercial creado",
-        description: `${nombre} ${apellidos} ha sido creado correctamente`,
-      });
+        comercialResultado = await UserService.createUser(nuevoUsuario);
+
+        showStatusAlert({
+          type: "success",
+          title: "Comercial creado",
+          description: `${nombre} ${apellidos} ha sido creado correctamente`,
+        });
+      }
 
       // Limpiar formulario
       setNombre("");
@@ -75,18 +104,16 @@ const ComercialesForm = ({ zonas, onSuccess }: ComercialesFormProps) => {
       setPassword("");
       setZonaSeleccionada("");
 
-      // Callback para cerrar modal o refrescar lista
+      // Callback para cerrar modal y actualizar lista
       if (onSuccess) {
-        onSuccess();
+        onSuccess(comercialResultado);
       }
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Error desconocido";
-      console.error("❌ Error al crear comercial:", message);
+      const message = err instanceof Error ? err.message : "Error desconocido";
 
       showStatusAlert({
         type: "error",
-        title: "Error al crear comercial",
+        title: esEdicion ? "Error al actualizar comercial" : "Error al crear comercial",
         description: message,
       });
     } finally {
@@ -96,7 +123,9 @@ const ComercialesForm = ({ zonas, onSuccess }: ComercialesFormProps) => {
 
   return (
     <div className="comerciales-form-wrapper">
-      <h2 className="comerciales-form-title">Nuevo comercial</h2>
+      <h2 className="comerciales-form-title">
+        {esEdicion ? "Editar comercial" : "Nuevo comercial"}
+      </h2>
       <form className="comerciales-form" onSubmit={handleSubmit}>
         <label className="comerciales-form-field">
           <span>Nombre</span>
@@ -129,13 +158,14 @@ const ComercialesForm = ({ zonas, onSuccess }: ComercialesFormProps) => {
           />
         </label>
         <label className="comerciales-form-field">
-          <span>Contraseña</span>
+          <span>Contraseña {esEdicion && "(opcional)"}</span>
           <input
             type="password"
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
+            placeholder={esEdicion ? "Dejar en blanco para no cambiar" : ""}
           />
         </label>
         <label className="comerciales-form-field">
@@ -159,11 +189,18 @@ const ComercialesForm = ({ zonas, onSuccess }: ComercialesFormProps) => {
           className="comerciales-form-submit"
           disabled={isLoading}
         >
-          {isLoading ? "Creando..." : "Crear Comercial"}
+          {isLoading
+            ? esEdicion
+              ? "Actualizando..."
+              : "Creando..."
+            : esEdicion
+              ? "Actualizar Comercial"
+              : "Crear Comercial"}
         </button>
       </form>
     </div>
   );
+      
 };
 
 export default ComercialesForm;

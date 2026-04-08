@@ -11,43 +11,14 @@
 /* Contenedor de las Cards (el fragmento <> que envuelve las cards) */
 .info-edificio-main section {
   display: grid;
-  /* Definimos un grid de 2 columnas */
   grid-template-columns: 1fr 1fr; 
   gap: 20px;
   align-items: start;
-}
-
-/* ==========================================================
-   DETALLES (Izquierda) Y CLIENTES (Derecha)
-   ========================================================== */
-.edificio-details-card {
-  grid-column: 1 / 2; /* Columna 1 */
-}
-
-.edificio-clientes-card {
-  grid-column: 2 / 3; /* Columna 2 */
-  height: 100%; /* Para que iguale altura si hay muchos clientes */
-}
-
-/* ==========================================================
-   MAPA (Abajo, ancho completo)
-   ========================================================== */
-.edificio-map-card {
-  grid-column: 1 / -1; /* Ocupa todas las columnas (de la 1 a la última) */
   width: 100%;
-  margin-top: 10px;
-}
-
-.edificio-map-leaflet {
-  width: 100%;
-  height: 450px; /* Altura del mapa */
-  border-radius: 12px;
-  border: 1px solid #3f1b1b;
-  z-index: 1;
 }
 
 /* ==========================================================
-   ESTILOS INTERNOS DE LAS CARDS (Basado en tus componentes)
+   TARJETAS GENERALES
    ========================================================== */
 .edificio-card {
   background-color: #161010;
@@ -57,6 +28,48 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
+/* ==========================================================
+   DETALLES (Izquierda) Y CLIENTES (Derecha)
+   ========================================================== */
+.edificio-details-card {
+  grid-column: 1 / 2;
+}
+
+.edificio-clientes-card {
+  grid-column: 2 / 3;
+  height: 100%;
+}
+
+/* ==========================================================
+   MAPA (Abajo, ancho completo)
+   ========================================================== */
+.edificio-map-card {
+  grid-column: 1 / -1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 650px;
+  flex-shrink: 0;
+}
+
+.edificio-map-leaflet {
+  width: 100%;
+  height: 600px;
+  border-radius: 12px;
+  border: 1px solid #3f1b1b;
+  z-index: 1;
+  flex: 1;
+}
+
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ==========================================================
+   TÍTULOS
+   ========================================================== */
 .edificio-details-title, 
 .edificio-clientes-title, 
 .edificio-map-title {
@@ -65,14 +78,23 @@
   margin-bottom: 20px;
   border-bottom: 1px solid #2c1818;
   padding-bottom: 10px;
+  font-weight: 700;
 }
 
+/* ==========================================================
+   DETALLES DEL EDIFICIO
+   ========================================================== */
 .edificio-details-row {
   display: flex;
   justify-content: space-between;
-  margin: 12px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid #2c1818;
   font-size: 0.95rem;
   color: #ffe4e6;
+}
+
+.edificio-details-row:last-child {
+  border-bottom: none;
 }
 
 .edificio-details-label {
@@ -80,7 +102,9 @@
   font-weight: 600;
 }
 
-/* Lista de Clientes */
+/* ==========================================================
+   LISTA DE CLIENTES
+   ========================================================== */
 .edificio-clientes-list {
   list-style: none;
   padding: 0;
@@ -117,11 +141,11 @@
 }
 
 /* ==========================================================
-   RESPONSIVE (Para que en móvil se vea uno debajo de otro)
+   RESPONSIVE
    ========================================================== */
 @media (max-width: 1024px) {
   .info-edificio-main section {
-    grid-template-columns: 1fr; /* Una sola columna en tablets/móvil */
+    grid-template-columns: 1fr;
   }
 
   .edificio-details-card,
@@ -130,64 +154,13 @@
     grid-column: 1 / -1;
   }
   
-  .edificio-map-leaflet {
+  .edificio-map-card {
+    height: 450px;
+  }
+}
+
+@media (max-width: 768px) {
+  .edificio-map-card {
     height: 350px;
   }
-}
-
-/* Este es el selector para la etiqueta <section> que envuelve tus cards */
-.info-edificio-main section {
-  display: grid;
-  /* Creamos dos columnas de igual tamaño */
-  grid-template-columns: 1fr 1fr; 
-  gap: 20px;
-  align-items: start;
-}
-
-/* Tarjeta de Datos (Forzamos columna 1) */
-.edificio-details-card {
-  grid-column: 1 / 2;
-}
-
-/* Tarjeta de Clientes (Forzamos columna 2) */
-.edificio-clientes-card {
-  grid-column: 2 / 3;
-}
-
-/* Tarjeta del Mapa (Forzamos que ocupe todo el ancho) */
-.edificio-map-card {
-  grid-column: 1 / -1; /* Esto hace que se estire de principio a fin */
-  width: 100%;
-}
-
-/* Ajuste para que el mapa no se salga */
-.edificio-map-leaflet {
-  height: 400px;
-  width: 100%;
-  border-radius: 12px;
-  border: 1px solid #3f1b1b;
-}
-
-/* Responsive: Para que en móviles se vea una sola columna */
-@media (max-width: 900px) {
-  .info-edificio-main section {
-    grid-template-columns: 1fr;
-  }
-  
-  .edificio-details-card, 
-  .edificio-clientes-card, 
-  .edificio-map-card {
-    grid-column: 1 / -1;
-  }
-}
-
-.edificio-details-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #2c1818;
-}
-
-.edificio-details-row:last-child {
-  border-bottom: none;
 }

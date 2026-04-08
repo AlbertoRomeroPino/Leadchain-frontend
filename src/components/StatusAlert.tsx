@@ -7,18 +7,38 @@ interface StatusAlertProps {
   title: string;
   description?: string;
   duration?: number;
+  onAction?: () => void | Promise<void>;
+  actionLabel?: string;
 }
 
-const showStatusAlert = ({ type, title, description, duration }: StatusAlertProps): void => {
+const showStatusAlert = ({ 
+  type, 
+  title, 
+  description, 
+  duration,
+  onAction,
+  actionLabel,
+}: StatusAlertProps): void => {
+  // Para tipo "action", usar sileo.action con estructura específica
+  if (type === "action" && onAction) {
+    sileo.action({
+      title,
+      description,
+      button: {
+        title: actionLabel || "Confirmar",
+        onClick: onAction,
+      },
+    });
+    return;
+  }
+
+  // Para otros tipos, usar sileo.show
   sileo.show({
     title,
     description,
     type,
     duration: duration ?? 2000,
-    // Aumentamos ligeramente el tiempo de expansión para que el 
-    // navegador calcule bien el centrado del texto
     autopilot: description ? { expand: 200, collapse: 3800 } : false,
-    // Forzamos las clases también aquí por si el Toaster no las inyecta a tiempo
     styles: {
       title: "sileo-title",
       description: "sileo-description",

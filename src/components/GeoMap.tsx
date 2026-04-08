@@ -1,60 +1,31 @@
 import { MapContainer, Polygon, Rectangle, TileLayer } from "react-leaflet";
-import type { LatLngBoundsExpression, LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../styles/GeoMap.css";
-
-// Coordenadas del rectángulo que representa Córdoba
-const cordobaBounds: LatLngBoundsExpression = [
-  [37.785, -4.965],
-  [37.965, -4.665],
-];
-
-// Límites máximos del mapa
-const mapBounds: LatLngBoundsExpression = [
-  [37.75, -5.02],
-  [37.99, -4.62],
-];
-
-// Extraemos las coordenadas del rectángulo de Córdoba para definir el "agujero" en el polígono
-const [cordobaSouthWest, cordobaNorthEast] = cordobaBounds as [
-  [number, number],
-  [number, number],
-];
-
-// Definimos un polígono que cubre toda la región, con un "agujero" en forma de rectángulo para Córdoba
-const outerRing: LatLngExpression[] = [
-  [-90, -180],
-  [-90, 180],
-  [90, 180],
-  [90, -180],
-];
-// El "agujero" para Córdoba se define con las mismas coordenadas que el rectángulo de Córdoba
-const cordobaHole: LatLngExpression[] = [
-  [cordobaSouthWest[0], cordobaSouthWest[1]],
-  [cordobaSouthWest[0], cordobaNorthEast[1]],
-  [cordobaNorthEast[0], cordobaNorthEast[1]],
-  [cordobaNorthEast[0], cordobaSouthWest[1]],
-];
-
-// Calculamos el centro de Córdoba para centrar el mapa
-const cordobaCenter: LatLngExpression = [37.8847, -4.7792];
+import {
+  CORDOBA_BOUNDS,
+  CORDOBA_CENTER,
+  MAP_MAX_BOUNDS,
+  CORDOBA_OUTER_RING,
+  CORDOBA_HOLE,
+  CORDOBA_MAP_CONFIG,
+} from "./utils/cordobaMapConfig";
 
 const GeoMap = () => {
   return (
     <div className="geo-map-wrapper">
       <MapContainer
-        center={cordobaCenter}
-        zoom={13}
-        zoomControl={false}
-        attributionControl={false}
-        maxBounds={mapBounds}
-        maxBoundsViscosity={1}
-        minZoom={11}
+        center={CORDOBA_CENTER}
+        zoom={CORDOBA_MAP_CONFIG.zoom}
+        zoomControl={CORDOBA_MAP_CONFIG.zoomControl}
+        attributionControl={CORDOBA_MAP_CONFIG.attributionControl}
+        maxBounds={CORDOBA_MAP_CONFIG.maxBounds}
+        maxBoundsViscosity={CORDOBA_MAP_CONFIG.maxBoundsViscosity}
+        minZoom={CORDOBA_MAP_CONFIG.minZoom}
         className="geo-map-canvas"
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Polygon
-          positions={[outerRing, cordobaHole]}
+          positions={[CORDOBA_OUTER_RING, CORDOBA_HOLE]}
           pathOptions={{
             color: "transparent",
             fillColor: "#0f0a0a",
@@ -63,7 +34,7 @@ const GeoMap = () => {
           interactive={false}
         />
         <Rectangle
-          bounds={cordobaBounds}
+          bounds={CORDOBA_BOUNDS}
           pathOptions={{
             color: "#dc2626",
             weight: 3,

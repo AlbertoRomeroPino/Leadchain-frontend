@@ -9,6 +9,7 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import L, { type LatLngLiteral } from "leaflet";
+import { CORDOBA_CENTER } from "../../utils/cordobaMapConfig";
 
 interface EdificioModalMapaProps {
   idZona: number;
@@ -135,7 +136,7 @@ const EdificioModalMapa = ({
             ? [lat, lng]
             : zonaArea.length
               ? [zonaArea[0].lat, zonaArea[0].lng]
-              : [37.75, -4.95]
+              : (CORDOBA_CENTER as [number, number])
         }
         zoom={zonaArea.length ? 13 : 11}
         bounds={zonaBounds}

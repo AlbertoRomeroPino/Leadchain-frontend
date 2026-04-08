@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Popup, Polygon, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import type { GeoPoint } from '../../../types/shared/GeoPoint'
+import { CORDOBA_CENTER } from '../../utils/cordobaMapConfig'
 
 interface EdificioInfoMapCardProps {
   ubicacion: { lat: number; lng: number } | null
@@ -15,7 +16,7 @@ const EdificioInfoMapCard = ({ ubicacion, direccion, zonaArea }: EdificioInfoMap
     ? [ubicacion.lat, ubicacion.lng]
     : hasZonaArea
       ? [zonaArea![0].lat, zonaArea![0].lng]
-      : [37.75, -4.95]
+      : (CORDOBA_CENTER as [number, number])
 
   const polygonPoints = (zonaArea ?? []).map((p) => [p.lat, p.lng] as [number, number])
 

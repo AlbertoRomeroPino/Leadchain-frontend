@@ -1,12 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
-import { MapContainer, Marker, Popup, Polygon, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, Polygon, Rectangle, TileLayer } from "react-leaflet";
+import { MapPlus, Pencil, MapMinus } from "lucide-react";
 import L from "leaflet";
 import Sidebar from "../layout/Sidebar";
 import type { Zona } from "../types/zonas/Zona";
 import type { Edificio } from "../types/edificios/Edificio";
+import type { GeoPoint } from "../types/shared/GeoPoint";
 import { ZonaService } from "../services/ZonaService";
 import { EdificioService } from "../services/EdificiosService";
 import { clientesService } from "../services/ClientesService";
+import ZonaFormularioModal from "../components/Zona/FormularioModal/ZonaFormularioModal";
+import {
+  CORDOBA_BOUNDS,
+  CORDOBA_CENTER,
+  CORDOBA_OUTER_RING,
+  CORDOBA_HOLE,
+  CORDOBA_MAP_CONFIG,
+} from "../components/utils/cordobaMapConfig";
 import "leaflet/dist/leaflet.css";
 import "../styles/ZonaPage.css";
 
@@ -20,6 +30,9 @@ const Zona = () => {
     >
   >({});
   const [selectedZona, setSelectedZona] = useState<Zona | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [creatingZona, setCreatingZona] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +62,83 @@ const Zona = () => {
 
     fetchData();
   }, []);
+
+  const handleCreateZona = async (zona: { nombre_zona: string; area: GeoPoint[] }) => {
+    try {
+      setCreatingZona(true);
+      await ZonaService.createZona(zona);
+      const zonasResponse = await ZonaService.getZonas();
+      setZonas(zonasResponse);
+      setShowCreateForm(false);
+      setEditMode(false);
+    } catch (error) {
+      console.error("Error al crear zona:", error);
+    } finally {
+      setCreatingZona(false);
+    }
+  };
+
+  const handleUpdateZona = async (zona: { nombre_zona: string; area: GeoPoint[] }) => {
+    if (!selectedZona) return;
+    try {
+      setCreatingZona(true);
+      await ZonaService.updateZona(selectedZona.id, zona);
+      const zonasResponse = await ZonaService.getZonas();
+      setZonas(zonasResponse);
+      const updatedZona = zonasResponse.find((z: Zona) => z.id === selectedZona.id);
+      if (updatedZona) setSelectedZona(updatedZona);
+      setShowCreateForm(false);
+      setEditMode(false);
+    } catch (error) {
+      console.error("Error al actualizar zona:", error);
+    } finally {
+      setCreatingZona(false);
+    }
+  };
+
+  const handleFormSubmit = async (zona: { nombre_zona: string; area: GeoPoint[] }) => {
+    if (editMode && selectedZona) {
+      await handleUpdateZona(zona);
+    } else {
+      await handleCreateZona(zona);
+    }
+  };
+
+  const handleOpenCreate = () => {
+    setEditMode(false);
+    setShowCreateForm(true);
+  };
+
+  const handleOpenEdit = () => {
+    setEditMode(true);
+    setShowCreateForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowCreateForm(false);
+    setEditMode(false);
+  };
+
+  const handleDeleteZona = async () => {
+    if (!selectedZona) return;
+    if (
+      window.confirm(
+        `¿Estás seguro de que deseas eliminar la zona "${selectedZona.nombre_zona}"? Esta acción eliminará todos los edificios y datos asociados.`
+      )
+    ) {
+      try {
+        setCreatingZona(true);
+        await ZonaService.deleteZona(selectedZona.id);
+        const zonasResponse = await ZonaService.getZonas();
+        setZonas(zonasResponse);
+        setSelectedZona(null);
+      } catch (error) {
+        console.error("Error al eliminar zona:", error);
+      } finally {
+        setCreatingZona(false);
+      }
+    }
+  };
 
   const edificiosPorZona = useMemo(() => {
     const counts: Record<number, number> = {};
@@ -125,10 +215,22 @@ const Zona = () => {
       <Sidebar />
 
       <main className="clientes-main">
-        <h1 className="clientes-title">Zonas</h1>
-        <p className="clientes-subtitle">
-          Gestión y visualización de áreas de trabajo en el mapa
-        </p>
+        <div className="zona-header">
+          <div>
+            <h1 className="clientes-title">Zonas</h1>
+            <p className="clientes-subtitle">
+              Gestión y visualización de áreas de trabajo en el mapa
+            </p>
+          </div>
+          <button
+            className="zona-create-button"
+            onClick={handleOpenCreate}
+            disabled={creatingZona}
+          >
+            <MapPlus size={16} />
+            Crear
+          </button>
+        </div>
 
         <div className="zona-container">
           <table className="zona-table">
@@ -157,9 +259,29 @@ const Zona = () => {
 
         {selectedZona && (
           <section className="zona-details-section">
-            <h2 className="zona-section-title">
-              {`Zona seleccionada: ${selectedZona.nombre_zona} (ID ${selectedZona.id})`}
-            </h2>
+            <div className="zona-details-header">
+              <h2 className="zona-section-title">
+                {`Zona seleccionada: ${selectedZona.nombre_zona} (ID ${selectedZona.id})`}
+              </h2>
+              <div className="zona-action-buttons">
+                <button
+                  className="zona-action-button zona-action-button--edit"
+                  onClick={handleOpenEdit}
+                  disabled={creatingZona}
+                >
+                  <Pencil size={16} />
+                  Editar
+                </button>
+                <button
+                  className="zona-action-button zona-action-button--delete"
+                  onClick={handleDeleteZona}
+                  disabled={creatingZona}
+                >
+                  <MapMinus size={16} />
+                  Borrar
+                </button>
+              </div>
+            </div>
 
             <div className="zona-stats">
               <div className="zona-stat-item">
@@ -176,12 +298,34 @@ const Zona = () => {
                 className="map-container-inner"
                 center={
                   polygonCoordinates.length
-                    ? polygonCoordinates[0]
-                    : [37.8847, -4.7792]
+                    ? (polygonCoordinates[0] as [number, number])
+                    : (CORDOBA_CENTER as [number, number])
                 }
-                zoom={14}
+                {...CORDOBA_MAP_CONFIG}
               >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+                {/* Polígono que oscurece todo excepto Córdoba */}
+                <Polygon
+                  positions={[CORDOBA_OUTER_RING, CORDOBA_HOLE]}
+                  pathOptions={{
+                    color: "transparent",
+                    fillColor: "#0f0a0a",
+                    fillOpacity: 0.45,
+                  }}
+                  interactive={false}
+                />
+
+                {/* Rectángulo que delimita Córdoba */}
+                <Rectangle
+                  bounds={CORDOBA_BOUNDS}
+                  pathOptions={{
+                    color: "#dc2626",
+                    weight: 3,
+                    fillOpacity: 0,
+                  }}
+                  interactive={false}
+                />
 
                 {polygonCoordinates.length > 0 && (
                   <Polygon
@@ -248,6 +392,22 @@ const Zona = () => {
             </div>
           </section>
         )}
+
+        <ZonaFormularioModal
+          show={showCreateForm}
+          loading={creatingZona}
+          mode={editMode ? "edit" : "create"}
+          initialValues={
+            editMode && selectedZona
+              ? {
+                  nombre_zona: selectedZona.nombre_zona,
+                  area: selectedZona.area ?? [],
+                }
+              : undefined
+          }
+          onClose={handleCloseForm}
+          onSubmit={handleFormSubmit}
+        />
       </main>
     </div>
   );

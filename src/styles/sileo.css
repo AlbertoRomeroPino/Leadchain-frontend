@@ -1,0 +1,46 @@
+/* ==========================================================
+   ESTILOS PERSONALIZADOS PARA SILEO
+   ========================================================== */
+
+/* Contenedor principal del toast de sileo */
+[role="alert"] {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Botón de acción en sileo */
+[role="alert"] button {
+  margin-top: auto !important;
+  width: 100% !important;
+  padding: 12px 20px !important;
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s !important;
+  font-size: 0.95rem !important;
+}
+
+[role="alert"] button:hover {
+  background-color: #b91c1c !important;
+}
+
+[role="alert"] button:active {
+  background-color: #991b1b !important;
+}
+
+/* Contenedor de contenido del toast */
+[role="alert"] > div {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+}
+
+/* Descripción en sileo */
+[role="alert"] p,
+[role="alert"] [class*="description"] {
+  margin-bottom: 16px !important;
+  line-height: 1.5 !important;
+}
