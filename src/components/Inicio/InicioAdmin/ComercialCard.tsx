@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import type { User } from "../../../types/users/User";
+import type { Edificio } from "../../../types/edificios/Edificio";
+import type { Visita } from "../../../types/visitas/Visita";
+import type { Cliente } from "../../../types/clientes/Cliente";
 import { VisitasService } from "../../../services/VisitasService";
 import { EstadoVisitaService } from "../../../services/EstadoVisitaService";
 import { clientesService } from "../../../services/ClientesService";
@@ -179,14 +182,14 @@ const ComercialCard = ({ comerciales }: ComercialCardProps) => {
         comerciales.forEach((comercial) => {
           // Obtener edificios de la zona del comercial
           const edificiosDelComercial = edificiosData.filter(
-            (e) => e.id_zona === comercial.id_zona
+            (e: Edificio) => e.id_zona === comercial.id_zona
           );
 
           // Obtener IDs únicos de clientes de esos edificios
           const idsClientesUnicos = new Set<number>();
-          edificiosDelComercial.forEach((edificio) => {
+          edificiosDelComercial.forEach((edificio: Edificio) => {
             if (edificio.clientes && edificio.clientes.length > 0) {
-              edificio.clientes.forEach((cliente) => {
+              edificio.clientes.forEach((cliente: Cliente) => {
                 idsClientesUnicos.add(cliente.id);
               });
             }
@@ -200,7 +203,7 @@ const ComercialCard = ({ comerciales }: ComercialCardProps) => {
 
           // Filtrar visitas del comercial que pertenecen a clientes de su zona
           const visitasDelComercial = visitasData.filter(
-            (v) => v.id_usuario === comercial.id && idsClientesUnicos.has(v.id_cliente)
+            (v: Visita) => v.id_usuario === comercial.id && idsClientesUnicos.has(v.id_cliente)
           );
           const totalVisitas = visitasDelComercial.length;
 
@@ -209,7 +212,7 @@ const ComercialCard = ({ comerciales }: ComercialCardProps) => {
           let rechazados = 0;
           let enProceso = 0;
 
-          visitasDelComercial.forEach((visita) => {
+          visitasDelComercial.forEach((visita: Visita) => {
             if (visita.estado) {
               const etiqueta = visita.estado.etiqueta;
 
