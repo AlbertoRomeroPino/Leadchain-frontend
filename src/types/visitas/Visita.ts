@@ -21,6 +21,14 @@ export type Visita = {
     apellidos: string;
     telefono?: string | null;
     email?: string | null;
+    edificios?: Array<{
+      id: number;
+      direccion_completa: string;
+      planta?: string | null;
+      puerta?: string | null;
+      created_at: string;
+      updated_at: string;
+    }>;
   } | null;
   created_at: string;
   updated_at: string;

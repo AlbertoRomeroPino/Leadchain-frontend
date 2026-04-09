@@ -3,7 +3,7 @@ import type { Edificio, EdificioInput } from "../../types/edificios/Edificio";
 import type { Zona } from "../../types/zonas/Zona";
 import { useAuth } from "../../auth/useAuth";
 import showStatusAlert from "../StatusAlert";
-import { EdificioService } from "../../services/EdificiosService";
+import { EdificiosService } from "../../services/EdificiosService";
 import { ZonaService } from "../../services/ZonaService";
 import { clientesService } from "../../services/ClientesService";
 import EdificioInfoToolbar from "./Info/EdificioInfoToolbar";
@@ -58,7 +58,7 @@ const EdificioInfo = ({
           duration: 3000,
         });
 
-        const detalle: Edificio = await EdificioService.getEdificioById(
+        const detalle: Edificio = await EdificiosService.getEdificioById(
           edificio.id,
         );
         const zonaDetalle = await ZonaService.getZonaById(detalle.id_zona);
@@ -66,38 +66,27 @@ const EdificioInfo = ({
 
         // Detectar si hay otros usuarios en el mismo bloque de pisos (misma dirección, distinto id)
         const allEdificios =
-          (await EdificioService.getEdificios()) as Edificio[];
+          (await EdificiosService.getEdificios()) as Edificio[];
         const sameBlock = allEdificios.filter(
           (edif: Edificio) =>
             edif.direccion_completa === detalle.direccion_completa &&
             edif.id !== detalle.id,
         );
 
-        const clientesDelBloqueBuffer = await Promise.all(
-          [detalle, ...sameBlock].map(async (edif: Edificio) => {
-            if (!edif.id_cliente) return null;
-            const c = await clientesService.getClienteById(edif.id_cliente);
-            if (!c) return null;
-            return {
-              cliente: c,
-              planta: edif.planta ?? null,
-              puerta: edif.puerta ?? null,
-            };
-          }),
-        );
+        // Usar los clientes desde la relación many-to-many con datos pivot
+        const clientesDelBloqueBuffer = [detalle, ...sameBlock]
+          .flatMap((edif: Edificio) => {
+            if (!edif.clientes || edif.clientes.length === 0) return [];
+            return edif.clientes.map((cliente) => ({
+              cliente,
+              planta: cliente.planta ?? null,
+              puerta: cliente.puerta ?? null,
+            }));
+          });
 
         const clientesBloqueUnicos = Array.from(
           new Map(
             clientesDelBloqueBuffer
-              .filter(
-                (
-                  c,
-                ): c is {
-                  cliente: import("../../types/clientes/Cliente").Cliente;
-                  planta: string | null;
-                  puerta: string | null;
-                } => Boolean(c),
-              )
               .map((c) => [
                 `${c.cliente.id}|${c.planta ?? ""}|${c.puerta ?? ""}`,
                 c,
@@ -158,7 +147,7 @@ const EdificioInfo = ({
       onAction: async () => {
         setDeletingEdificio(true);
         try {
-          await EdificioService.deleteEdificio(edificioInfo.id);
+          await EdificiosService.deleteEdificio(edificioInfo.id);
           
           // Mostrar éxito y cerrar
           showStatusAlert({
@@ -193,7 +182,7 @@ const EdificioInfo = ({
   const handleUpdateEdificio = async (id: number, payload: EdificioInput) => {
     setUpdatingEdificio(true);
     try {
-      const edificioActualizado = await EdificioService.updateEdificio(id, payload);
+      const edificioActualizado = await EdificiosService.updateEdificio(id, payload);
       setEdificioInfo(edificioActualizado);
       onEdificioUpdated?.(edificioActualizado);
       showStatusAlert({

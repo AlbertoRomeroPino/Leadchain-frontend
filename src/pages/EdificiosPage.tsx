@@ -6,7 +6,7 @@ import EdificioInfo from "../components/Edificios/EdificioInfo";
 import EdificioTabla from "../components/Edificios/EdificioTabla";
 import { useAuth } from "../auth/useAuth";
 import showStatusAlert from "../components/StatusAlert";
-import { EdificioService } from "../services/EdificiosService";
+import { EdificiosService } from "../services/EdificiosService";
 import { ZonaService } from "../services/ZonaService";
 import { clientesService } from "../services/ClientesService";
 import EdificioHeader from "../components/Edificios/EdificioHeader";
@@ -37,7 +37,7 @@ const Edificios = () => {
       // y los administradores los de sus comerciales, pero eso lo dejamos para más adelante
       try {
         const edificiosData =
-          (await EdificioService.getEdificios()) as Edificio[];
+          (await EdificiosService.getEdificios()) as Edificio[];
 
         const edificiosUnicos = Array.from(
           new Map(
@@ -85,7 +85,7 @@ const Edificios = () => {
     try {
       setCreatingEdificio(true);
 
-      const nuevoEdificio = await EdificioService.createEdificio(edificio);
+      const nuevoEdificio = await EdificiosService.createEdificio(edificio);
 
       setEdificios((prev) => [...prev, nuevoEdificio]);
       setShowCreateForm(false);
@@ -126,25 +126,63 @@ const Edificios = () => {
 
   const handleAppendToExisting = async (
     edificioId: number,
-    nombre: string,
-    apellidos: string,
+    nombre?: string,
+    apellidos?: string,
+    email?: string,
+    telefono?: string,
+    clienteExistenteId?: number,
+    planta?: string,
+    puerta?: string,
   ) => {
     const targetEdificio = edificios.find((e) => e.id === edificioId);
     try {
       setCreatingEdificio(true);
-      await clientesService.createCliente({
-        nombre,
-        apellidos,
-        id_usuario_asignado: null,
-      });
+      let idCliente: number;
+
+      if (clienteExistenteId) {
+        // Usar cliente existente
+        idCliente = clienteExistenteId;
+      } else if (nombre && apellidos) {
+        // Crear nuevo cliente
+        const nuevoCliente = await clientesService.createCliente({
+          nombre,
+          apellidos,
+          ...(email ? { email } : {}),
+          ...(telefono ? { telefono } : {}),
+          id_usuario_asignado: null,
+        });
+        idCliente = nuevoCliente.id;
+      } else {
+        throw new Error("Debe proporcionar cliente nuevo o existente");
+      }
+
+      // Adjuntar cliente al edificio usando la relación many-to-many
+      if (targetEdificio) {
+        await EdificiosService.attachCliente(edificioId, idCliente, planta, puerta);
+        
+        // Actualizar el estado local para reflejar el cambio
+        setEdificios((prev) =>
+          prev.map((item) =>
+            item.id === edificioId
+              ? {
+                  ...item,
+                  clientes: item.clientes
+                    ? [...item.clientes, { id: idCliente, nombre: nombre || "", apellidos: apellidos || "", telefono: telefono || null, email: email || null }]
+                    : [{ id: idCliente, nombre: nombre || "", apellidos: apellidos || "", telefono: telefono || null, email: email || null }],
+                }
+              : item,
+          ),
+        );
+      }
+
       showStatusAlert({
         type: "success",
-        title: "Cliente añadido",
-        description: `Cliente añadido al edificio ${targetEdificio ? targetEdificio.direccion_completa : edificioId}`,
+        title: "Cliente adjuntado",
+        description: `Cliente adjuntado al edificio ${targetEdificio ? targetEdificio.direccion_completa : edificioId}`,
       });
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Error al añadir cliente";
+        err instanceof Error ? err.message : "Error al adjuntar cliente";
       showStatusAlert({
         type: "error",
         title: "Error",

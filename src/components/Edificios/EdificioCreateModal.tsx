@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import type { EdificioInput, Edificio } from "../../types/edificios/Edificio";
 import type { Zona } from "../../types/zonas/Zona";
+import type { Cliente } from "../../types/clientes/Cliente";
 import "../../styles/EdificioCreateModal.css";
 import EdificioModalPestaña from "./FormularioModal/EdificioModalPestaña";
 import EdificioModalEdificio from "./FormularioModal/EdificioModalEdificio";
 import EdificioModalMapa from "./FormularioModal/EdificioModalMapa";
 import EdificioModalCliente from "./FormularioModal/EdificioModalCliente";
+import { clientesService } from "../../services/ClientesService";
 
 interface EdificioCreateModalProps {
   show: boolean;
@@ -16,8 +18,13 @@ interface EdificioCreateModalProps {
   onCreateEdificio: (payload: EdificioInput) => Promise<void>;
   onAppendToExisting: (
     edificioId: number,
-    clienteNombre: string,
-    clienteApellidos: string,
+    clienteNombre?: string,
+    clienteApellidos?: string,
+    clienteEmail?: string,
+    clienteTelefono?: string,
+    clienteExistenteId?: number,
+    clientePlanta?: string,
+    clientePuerta?: string,
   ) => Promise<void>;
   edificioAEditar?: Edificio;
   onUpdateEdificio?: (id: number, payload: EdificioInput) => Promise<void>;
@@ -38,8 +45,6 @@ const EdificioCreateModal = ({
   const [direccionCompleta, setDireccionCompleta] = useState("");
   const [tipo, setTipo] = useState("");
   const [idZona, setIdZona] = useState<number>(zonas?.[0]?.id ?? 0);
-  const [planta, setPlanta] = useState<string>("");
-  const [puerta, setPuerta] = useState<string>("");
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
   const [idCliente, setIdCliente] = useState<number | null>(null);
@@ -56,6 +61,14 @@ const EdificioCreateModal = ({
   );
   const [clienteNombre, setClienteNombre] = useState("");
   const [clienteApellidos, setClienteApellidos] = useState("");
+  const [clienteTelefono, setClienteTelefono] = useState("");
+  const [clienteEmail, setClienteEmail] = useState("");
+  const [clienteMode, setClienteMode] = useState<"crear" | "seleccionar">("crear");
+  const [clienteSinEdificioId, setClienteSinEdificioId] = useState<number | null>(null);
+  const [clientesSinEdificio, setClientesSinEdificio] = useState<Cliente[]>([]);
+  const [clientePlanta, setClientePlanta] = useState<string>("");
+  const [clientePuerta, setClientePuerta] = useState<string>("");
+  const [loadingClientes, setLoadingClientes] = useState(false);
 
   useEffect(() => {
     if (!show) return;
@@ -66,8 +79,6 @@ const EdificioCreateModal = ({
         setMode("new");
         setDireccionCompleta(edificioAEditar.direccion_completa);
         setTipo(edificioAEditar.tipo);
-        setPlanta(edificioAEditar.planta || "");
-        setPuerta(edificioAEditar.puerta || "");
         setIdZona(edificioAEditar.id_zona);
         if (edificioAEditar.ubicacion) {
           setLat(edificioAEditar.ubicacion.lat);
@@ -77,13 +88,17 @@ const EdificioCreateModal = ({
         setExistingEdificioId(edificios?.[0]?.id ?? 0);
         setClienteNombre("");
         setClienteApellidos("");
+        setClienteEmail("");
+        setClienteTelefono("");
+        setClienteMode("crear");
+        setClienteSinEdificioId(null);
+        setClientePlanta("");
+        setClientePuerta("");
       } else {
         // Modo crear
         setMode("new");
         setDireccionCompleta("");
         setTipo("");
-        setPlanta("");
-        setPuerta("");
         setIdZona(zonas?.[0]?.id ?? 0);
         setLat(null);
         setLng(null);
@@ -91,9 +106,35 @@ const EdificioCreateModal = ({
         setExistingEdificioId(edificios?.[0]?.id ?? 0);
         setClienteNombre("");
         setClienteApellidos("");
+        setClienteEmail("");
+        setClienteTelefono("");
+        setClienteMode("crear");
+        setClienteSinEdificioId(null);
+        setClientePlanta("");
+        setClientePuerta("");
       }
     });
   }, [show, zonas, edificios, edificioAEditar]);
+
+  // Cargar clientes sin edificio cuando el modo es "existing"
+  useEffect(() => {
+    if (!show || mode !== "existing") return;
+
+    const cargarClientesSinEdificio = async () => {
+      setLoadingClientes(true);
+      try {
+        const clientes = await clientesService.getClientesSinEdificio();
+        setClientesSinEdificio(clientes);
+      } catch (err) {
+        console.error("Error al cargar clientes sin edificio:", err);
+        setClientesSinEdificio([]);
+      } finally {
+        setLoadingClientes(false);
+      }
+    };
+
+    cargarClientesSinEdificio();
+  }, [show, mode]);
 
   // ya no es necesario este efecto, la lógica se maneja con el callback de selección de zona
   if (!show) return null;
@@ -135,8 +176,6 @@ const EdificioCreateModal = ({
             tipo: tipo.trim(),
             id_zona: idZona,
             ubicacion: { lat, lng },
-            planta: planta.trim() || null,
-            puerta: puerta.trim() || null,
             id_cliente: idCliente || edificioAEditar.id_cliente,
           });
 
@@ -193,8 +232,6 @@ const EdificioCreateModal = ({
           tipo: tipo.trim(),
           id_zona: idZona,
           ubicacion: { lat, lng },
-          planta: planta.trim() || null,
-          puerta: puerta.trim() || null,
           id_cliente: idCliente,
         });
 
@@ -214,30 +251,72 @@ const EdificioCreateModal = ({
     }
 
     if (mode === "existing") {
-      if (
-        !existingEdificioId ||
-        !clienteNombre.trim() ||
-        !clienteApellidos.trim()
-      ) {
-        alert("Selecciona edificio y completa datos del cliente");
+      if (!existingEdificioId) {
+        alert("Selecciona un edificio válido");
         return;
       }
 
-      try {
-        await onAppendToExisting(
-          existingEdificioId,
-          clienteNombre.trim(),
-          clienteApellidos.trim(),
-        );
-        alert("Cliente añadido al edificio");
-      } catch (appendError) {
-        const message =
-          appendError instanceof Error
-            ? appendError.message
-            : "Error al añadir cliente al edificio";
-        console.error("appendToExisting error:", appendError);
-        alert(message);
+      if (!clientePlanta.trim() || !clientePuerta.trim()) {
+        alert("Completa piso y puerta del cliente");
         return;
+      }
+
+      if (clienteMode === "crear") {
+        // Crear nuevo cliente
+        if (!clienteNombre.trim() || !clienteApellidos.trim()) {
+          alert("Completa nombre y apellidos del cliente");
+          return;
+        }
+
+        try {
+          await onAppendToExisting(
+            existingEdificioId,
+            clienteNombre.trim(),
+            clienteApellidos.trim(),
+            clienteEmail.trim() || undefined,
+            clienteTelefono.trim() || undefined,
+            undefined,
+            clientePlanta.trim(),
+            clientePuerta.trim()
+          );
+          alert("Cliente creado y adjuntado al edificio");
+        } catch (appendError) {
+          const message =
+            appendError instanceof Error
+              ? appendError.message
+              : "Error al crear cliente";
+          console.error("appendToExisting error:", appendError);
+          alert(message);
+          return;
+        }
+      } else {
+        // Seleccionar cliente existente
+        if (!clienteSinEdificioId) {
+          alert("Selecciona un cliente");
+          return;
+        }
+
+        try {
+          await onAppendToExisting(
+            existingEdificioId,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            clienteSinEdificioId,
+            clientePlanta.trim(),
+            clientePuerta.trim()
+          );
+          alert("Cliente adjuntado al edificio");
+        } catch (appendError) {
+          const message =
+            appendError instanceof Error
+              ? appendError.message
+              : "Error al adjuntar cliente";
+          console.error("appendToExisting error:", appendError);
+          alert(message);
+          return;
+        }
       }
 
       onClose();
@@ -268,10 +347,6 @@ const EdificioCreateModal = ({
                 setTipo={setTipo}
                 idZona={idZona}
                 setIdZona={handleZonaChange}
-                planta={planta}
-                setPlanta={setPlanta}
-                puerta={puerta}
-                setPuerta={setPuerta}
                 idCliente={idCliente}
                 setIdCliente={setIdCliente}
                 zonas={zonas}
@@ -287,16 +362,29 @@ const EdificioCreateModal = ({
               />
             </>
           ) : (
-            // Fromulario 2
+            // Formulario 2
             <>
               <EdificioModalCliente
                 existingEdificioId={existingEdificioId}
                 setExistingEdificioId={setExistingEdificioId}
+                clienteMode={clienteMode}
+                setClienteMode={setClienteMode}
                 clienteNombre={clienteNombre}
                 setClienteNombre={setClienteNombre}
                 clienteApellidos={clienteApellidos}
                 setClienteApellidos={setClienteApellidos}
+                clienteTelefono={clienteTelefono}
+                setClienteTelefono={setClienteTelefono}
+                clienteEmail={clienteEmail}
+                setClienteEmail={setClienteEmail}
+                clienteSinEdificioId={clienteSinEdificioId}
+                setClienteSinEdificioId={setClienteSinEdificioId}
+                clientesSinEdificio={clientesSinEdificio}
                 edificios={edificios}
+                clientePlanta={clientePlanta}
+                setClientePlanta={setClientePlanta}
+                clientePuerta={clientePuerta}
+                setClientePuerta={setClientePuerta}
               />
             </>
           )}

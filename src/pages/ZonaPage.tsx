@@ -7,7 +7,7 @@ import type { Zona } from "../types/zonas/Zona";
 import type { Edificio } from "../types/edificios/Edificio";
 import type { GeoPoint } from "../types/shared/GeoPoint";
 import { ZonaService } from "../services/ZonaService";
-import { EdificioService } from "../services/EdificiosService";
+import { EdificiosService } from "../services/EdificiosService";
 import { clientesService } from "../services/ClientesService";
 import ZonaFormularioModal from "../components/Zona/FormularioModal/ZonaFormularioModal";
 import {
@@ -38,7 +38,7 @@ const Zona = () => {
     const fetchData = async () => {
       try {
         const zonasResponse = await ZonaService.getZonas();
-        const edificiosResponse = await EdificioService.getEdificios();
+        const edificiosResponse = await EdificiosService.getEdificios();
         const clientesResponse = await clientesService.getClientes();
 
         setZonas(zonasResponse);
@@ -156,7 +156,7 @@ const Zona = () => {
   }, [selectedZona, edificios]);
 
   const selectedAssignedEdificios = useMemo(() => {
-    return selectedEdificios.filter((edificio) => edificio.id_cliente != null);
+    return selectedEdificios.filter((edificio) => edificio.clientes && edificio.clientes.length > 0);
   }, [selectedEdificios]);
 
   const clusteredMarkers = useMemo(() => {
@@ -184,7 +184,7 @@ const Zona = () => {
         };
       }
       clusters[key].count += 1;
-      if (edificio.id_cliente != null) {
+      if (edificio.clientes && edificio.clientes.length > 0) {
         clusters[key].assignedClients += 1;
       }
       clusters[key].edificios.push(edificio);
@@ -338,60 +338,72 @@ const Zona = () => {
                   />
                 )}
 
-                {clusteredMarkers.map((cluster, index) => (
-                  <Marker
-                    key={`${cluster.lat}_${cluster.lng}_${index}`}
-                    position={[cluster.lat, cluster.lng]}
-                    icon={createClusterIcon(cluster.count)}
-                  >
-                    <Popup className="custom-popup">
-                      <div className="popup-content">
-                        <p className="popup-address">
-                          {cluster.edificios[0]?.direccion_completa ??
-                            "Dirección no disponible"}
-                        </p>
-                        <p className="popup-info">
-                          {cluster.count > 1
-                            ? `${cluster.count} clientes en esta ubicación`
-                            : "1 cliente en esta ubicación"}
-                        </p>
-                        <div className="popup-list">
-                          {cluster.edificios.slice(0, 10).map((ed) => {
-                            const cliente =
-                              ed.id_cliente != null
-                                ? clientes[Number(ed.id_cliente)]
-                                : null;
-                            return (
-                              <div key={ed.id} className="popup-item">
-                                <p className="popup-client-name">
-                                  {cliente
-                                    ? `${cliente.nombre} ${cliente.apellidos}`
-                                    : "Cliente Sin asignar"}
-                                </p>
-                                <p className="popup-client-details">
-                                  Piso: {ed.planta ?? "N/A"} • Puerta:{" "}
-                                  {ed.puerta ?? "N/A"}
-                                  <br />
-                                  Tel: {cliente?.telefono ?? "N/A"}
-                                </p>
+                {clusteredMarkers.map((cluster, index) => {
+                  // Crear un array de clientes con sus edificios asociados
+                  const clientesConEdificio = cluster.edificios.flatMap((ed) =>
+                    ed.clientes && ed.clientes.length > 0
+                      ? ed.clientes.map((cliente) => ({
+                          cliente,
+                          edificio: ed,
+                        }))
+                      : []
+                  );
+
+                  const totalClientes = clientesConEdificio.length;
+
+                  return (
+                    <Marker
+                      key={`${cluster.lat}_${cluster.lng}_${index}`}
+                      position={[cluster.lat, cluster.lng]}
+                      icon={createClusterIcon(cluster.count)}
+                    >
+                      <Popup className="custom-popup">
+                        <div className="popup-content">
+                          <p className="popup-address">
+                            {cluster.edificios[0]?.direccion_completa ??
+                              "Dirección no disponible"}
+                          </p>
+                          <p className="popup-info">
+                            {totalClientes > 0
+                              ? `${totalClientes} cliente${totalClientes !== 1 ? "s" : ""} en esta ubicación`
+                              : "Sin clientes asignados"}
+                          </p>
+                          <div className="popup-list">
+                            {clientesConEdificio.slice(0, 15).map((item, idx) => (
+                              <div
+                                key={`${item.cliente.id}-${item.edificio.id}-${idx}`}
+                                className="popup-item"
+                              >
+                                <div>
+                                  <p className="popup-client-name">
+                                    {item.cliente.nombre} {item.cliente.apellidos}
+                                  </p>
+                                  <p className="popup-client-details">
+                                    Piso: {item.cliente.planta ?? "N/A"} • Puerta:{" "}
+                                    {item.cliente.puerta ?? "N/A"}
+                                    <br />
+                                    Tel: {item.cliente.telefono ?? "N/A"}
+                                  </p>
+                                </div>
                               </div>
-                            );
-                          })}
-                          {cluster.edificios.length > 10 && (
-                            <p className="popup-footer">
-                              Mostrando 10 de {cluster.edificios.length}{" "}
-                              clientes
-                            </p>
-                          )}
+                            ))}
+                            {clientesConEdificio.length > 15 && (
+                              <p className="popup-footer">
+                                Mostrando 15 de {clientesConEdificio.length}{" "}
+                                clientes
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </Popup>
-                  </Marker>
-                ))}
+                      </Popup>
+                    </Marker>
+                  );
+                })}
               </MapContainer>
             </div>
           </section>
         )}
+
 
         <ZonaFormularioModal
           show={showCreateForm}

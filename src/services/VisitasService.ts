@@ -1,4 +1,4 @@
-import type { Visita } from "../types/visitas/Visita";
+import type { Visita, VisitaInput } from "../types/visitas/Visita";
 import { ExceptionService } from "./ExceptionService";
 import { authHttp } from "./https";
 
@@ -22,7 +22,7 @@ export const VisitasService = {
         }
     },
 
-    async createVisita(visita: Omit<Visita, "id">) {
+    async createVisita(visita: VisitaInput) {
         try {
             const response = await authHttp.post("/api/visitas", visita);
             return response.data;
@@ -31,7 +31,7 @@ export const VisitasService = {
         }
     },
 
-    async updateVisita(id: number, visita: Omit<Visita, "id">) {
+    async updateVisita(id: number, visita: VisitaInput) {
         try {
             const response = await authHttp.put(`/api/visitas/${id}`, visita);
             return response.data;

@@ -3,7 +3,7 @@ import { ExceptionService } from "./ExceptionService";
 import type {EdificioInput } from "../types/edificios/Edificio";
 
 
-export const EdificioService = {
+export const EdificiosService = {
 
     async getEdificios() {
         try {
@@ -46,6 +46,31 @@ export const EdificioService = {
             await authHttp.delete(`/api/edificios/${id}`);
         } catch (error) {
             throw new Error(ExceptionService.getErrorMessage(error, `Error al eliminar edificio con ID ${id}`));
+        }
+    },
+
+    async attachCliente(edificioId: number, clienteId: number, planta?: string, puerta?: string) {
+        try {
+            const payload: { planta?: string; puerta?: string } = {};
+            if (planta) payload.planta = planta;
+            if (puerta) payload.puerta = puerta;
+            
+            const response = await authHttp.post(
+                `/api/edificios/${edificioId}/clientes/${clienteId}`,
+                Object.keys(payload).length > 0 ? payload : undefined
+            );
+            return response.data;
+        } catch (error) {
+            throw new Error(ExceptionService.getErrorMessage(error, "Error al adjuntar cliente"));
+        }
+    },
+
+    async detachCliente(edificioId: number, clienteId: number) {
+        try {
+            const response = await authHttp.delete(`/api/edificios/${edificioId}/clientes/${clienteId}`);
+            return response.data;
+        } catch (error) {
+            throw new Error(ExceptionService.getErrorMessage(error, "Error al desadjuntar cliente"));
         }
     },
 

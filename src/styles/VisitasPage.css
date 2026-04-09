@@ -1,0 +1,407 @@
+.visitas-page {
+  margin-left: 80px;
+  padding: 20px;
+}
+
+.visitas-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.visitas-page-description {
+  margin: 8px 0 0;
+  color: #cbd5e1;
+  max-width: 720px;
+}
+
+.visitas-search-row {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 18px;
+  margin-top: 16px;
+  align-items: flex-end;
+}
+
+@media (max-width: 880px) {
+  .visitas-search-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.visitas-search-wrapper,
+.visitas-status-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
+
+.visitas-search-label {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.visitas-search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #3f1b1b;
+  background: #111111;
+  color: #f8fafc;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.visitas-search-input:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.16);
+}
+
+.visitas-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.visita-card-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f8fafc;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.visita-card-action-button:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.visita-card-action-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.visita-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.visita-modal {
+  width: min(560px, 100%);
+  background: #111111;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.visita-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.visita-modal-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.visita-modal-close {
+  background: transparent;
+  border: none;
+  color: #f8fafc;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.visita-form {
+  display: grid;
+  gap: 14px;
+}
+
+.visita-form label {
+  color: #cbd5e1;
+  font-size: 0.92rem;
+}
+
+.visita-form input,
+.visita-form select,
+.visita-form textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #333333;
+  background: #0f1116;
+  color: #f8fafc;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+}
+
+.visita-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.visita-fecha-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.visita-fecha-row input {
+  flex: 1;
+}
+
+.visita-current-time-button {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #171717;
+  color: #f8fafc;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.visita-current-time-button:hover {
+  background: rgba(220, 38, 38, 0.16);
+  transform: translateY(-1px);
+}
+
+.visita-client-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 210px;
+  overflow-y: auto;
+  border: 1px solid #333333;
+  border-radius: 12px;
+  background: #0f1116;
+}
+
+.visita-client-option {
+  padding: 10px 14px;
+  cursor: pointer;
+  color: #f8fafc;
+  transition: background 0.15s ease;
+}
+
+.visita-client-empty {
+  color: #94a3b8;
+  padding: 10px 14px;
+  border: 1px solid #333333;
+  border-radius: 12px;
+  background: #0f1116;
+}
+
+.visita-client-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.visita-modal-submit {
+  margin-top: 6px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: none;
+  background: #dc2626;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.visita-modal-submit:disabled {
+  background: #7f1d1d;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.visita-client-warning {
+  color: #f8bdc0;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.visitas-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid #3f1b1b;
+  background: #111111;
+  color: #f8fafc;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.visitas-action-button:hover {
+  transform: translateY(-1px);
+  border-color: #dc2626;
+  background: #161212;
+}
+
+.visitas-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(4, minmax(240px, 1fr));
+}
+
+@media (max-width: 1400px) {
+  .visitas-grid {
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .visitas-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .visitas-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.visita-postit,
+.admin-visita-card {
+  border-radius: 18px;
+  border: 1px solid rgba(222, 137, 137, 0.18);
+  background: linear-gradient(180deg, rgba(12, 12, 22, 0.98) 0%, rgba(19, 19, 29, 0.96) 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+  padding: 20px;
+  color: #f8fafc;
+  min-height: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.visita-postit-header,
+.admin-visita-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.visita-postit-title,
+.admin-visita-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.visita-postit-subtitle,
+.admin-visita-subtitle,
+.admin-visita-value {
+  color: #cbd5e1;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.visita-state-text,
+.admin-visita-status-text {
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+.visita-state-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ffffff;
+  min-width: 110px;
+  text-align: center;
+}
+
+.visita-observaciones {
+  color: #d1d5db;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.visita-postit-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  font-size: 0.87rem;
+  color: #94a3b8;
+}
+
+.visita-state-label {
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.visita-date {
+  white-space: nowrap;
+}
+
+.admin-visita-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.admin-visita-label {
+  color: #94a3b8;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.admin-visita-info {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-visita-card {
+  min-height: 240px;
+}
+
+.admin-visita-title {
+  font-size: 1rem;
+}
+
+.admin-visita-subtitle {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.admin-visita-value {
+  color: #e2e8f0;
+  word-break: break-word;
+}

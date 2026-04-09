@@ -20,8 +20,6 @@ const EdificioForm = ({
   const [direccionCompleta, setDireccionCompleta] = useState(
     initialValues?.direccion_completa ?? "",
   );
-  const [planta, setPlanta] = useState(initialValues?.planta ?? "");
-  const [puerta, setPuerta] = useState(initialValues?.puerta ?? "");
   const [idZona, setIdZona] = useState(initialValues?.id_zona ?? "");
   const [lat, setLat] = useState(initialValues?.ubicacion?.lat ?? 0);
   const [lng, setLng] = useState(initialValues?.ubicacion?.lng ?? 0);
@@ -35,8 +33,6 @@ const EdificioForm = ({
 
     const payload: EdificioInput = {
       direccion_completa: direccionCompleta.trim(),
-      planta: planta.trim() || undefined,
-      puerta: puerta.trim() || undefined,
       id_zona: Number(idZona),
       ubicacion: { lat: Number(lat), lng: Number(lng) } as GeoPoint,
       tipo: tipo.trim(),
@@ -65,16 +61,6 @@ const EdificioForm = ({
           onChange={(e) => setDireccionCompleta(e.target.value)}
           required
         />
-      </div>
-
-      <div>
-        <label>Planta</label>
-        <input value={planta} onChange={(e) => setPlanta(e.target.value)} />
-      </div>
-
-      <div>
-        <label>Puerta</label>
-        <input value={puerta} onChange={(e) => setPuerta(e.target.value)} />
       </div>
 
       <div>

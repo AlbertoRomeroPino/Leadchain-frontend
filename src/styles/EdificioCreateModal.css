@@ -1,0 +1,167 @@
+/* Modal Overlay */
+.edificios-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.edificios-modal {
+  background-color: #1f1414;
+  border: 1px solid #3f1b1b;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Formulario */
+.form-edificios {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-edificio-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fca5a5;
+  margin: 0 0 12px 0;
+}
+
+.form-edificio-input,
+.form-edificio-select {
+  background-color: #261414;
+  border: 1px solid #3f1b1b;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  color: #ffffff;
+  transition: border-color 0.3s;
+}
+
+.form-edificio-input:focus,
+.form-edificio-select:focus {
+  outline: none;
+  border-color: #dc2626;
+  background-color: #2c1818;
+}
+
+.form-edificio-input::placeholder {
+  color: #888;
+}
+
+/* Selector de Modo para Cliente */
+.form-edificio-mode-selector {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 10px 14px;
+  background-color: #261414;
+  border: 1px solid #3f1b1b;
+  border-radius: 6px;
+  color: #ffe4e6;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.mode-btn:hover {
+  border-color: #dc2626;
+  background-color: #2c1818;
+}
+
+.mode-btn.active {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+
+/* Acciones */
+.form-edificio-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.form-edificio-cancel,
+.form-edificio-submit {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.form-edificio-cancel {
+  background-color: #261414;
+  color: #ffe4e6;
+  border: 1px solid #3f1b1b;
+}
+
+.form-edificio-cancel:hover:not(:disabled) {
+  background-color: #2c1818;
+  border-color: #dc2626;
+}
+
+.form-edificio-submit {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.form-edificio-submit:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+.form-edificio-cancel:disabled,
+.form-edificio-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Pestañas */
+.form-edificio-pestaña {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.pestaña-btn {
+  flex: 1;
+  padding: 10px;
+  background-color: #261414;
+  border: 2px solid #3f1b1b;
+  border-radius: 6px;
+  color: #ffe4e6;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.pestaña-btn:hover {
+  border-color: #dc2626;
+  background-color: #2c1818;
+}
+
+.pestaña-btn.active {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}

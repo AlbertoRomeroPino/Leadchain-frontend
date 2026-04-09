@@ -9,10 +9,6 @@ interface EdificioModalEdificioProps {
   setTipo: (tipo: string) => void;
   idZona: number;
   setIdZona: (idZona: number) => void;
-  planta: string;
-  setPlanta: (planta: string) => void;
-  puerta: string;
-  setPuerta: (puerta: string) => void;
   idCliente: number | null;
   setIdCliente: (idCliente: number | null) => void;
   zonas: { id: number; nombre_zona: string }[];
@@ -25,10 +21,6 @@ const EdificioModalEdificio = ({
   setTipo,
   idZona,
   setIdZona,
-  planta,
-  setPlanta,
-  puerta,
-  setPuerta,
   idCliente,
   setIdCliente,
   zonas,
@@ -77,20 +69,6 @@ const EdificioModalEdificio = ({
           </option>
         ))}
       </select>
-      <input
-        className="form-edificio-input"
-        type="text"
-        placeholder="Planta"
-        value={planta}
-        onChange={(event) => setPlanta(event.target.value)}
-      />
-      <input
-        className="form-edificio-input"
-        type="text"
-        placeholder="Puerta"
-        value={puerta}
-        onChange={(event) => setPuerta(event.target.value)}
-      />
       <select
         className="form-edificio-input"
         value={idCliente ?? ""}

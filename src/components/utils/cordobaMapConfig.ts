@@ -28,7 +28,7 @@ export const MAP_MAX_BOUNDS: LatLngBoundsExpression = [
 /** 
  * Centro de Córdoba para centrar el mapa por defecto
  */
-export const CORDOBA_CENTER: LatLngExpression = [37.8847, -4.7792];
+export const CORDOBA_CENTER: [number, number] = [37.8847, -4.7792];
 
 // ==================== COORDENADAS EXTRAIDAS ====================
 
