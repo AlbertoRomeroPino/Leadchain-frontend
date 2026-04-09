@@ -4,7 +4,7 @@
   flex-direction: column;
   gap: 24px;
   padding: 20px;
-  background-color: #1a1a1a;
+  background-color: #0f0a0a;
 }
 
 .admin-header {
@@ -21,7 +21,7 @@
 .admin-subtitle {
   margin: 0;
   font-size: 14px;
-  color: #888;
+  color: #b98989;
 }
 
 /* ==================== Comerciales Container ==================== */
@@ -34,10 +34,10 @@
 .comerciales-empty {
   padding: 32px;
   text-align: center;
-  background-color: #222;
+  background-color: #1f1414;
   border-radius: 8px;
-  border: 1px solid #333;
-  color: #888;
+  border: 1px solid #3f1b1b;
+  color: #d6b1b1;
   font-size: 14px;
   margin: 0;
 }
@@ -55,15 +55,15 @@
   flex-direction: column;
   gap: 16px;
   padding: 20px;
-  background: linear-gradient(135deg, #222 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, #161010 0%, #1f1414 100%);
   border-radius: 8px;
-  border: 1px solid #333;
+  border: 1px solid #3f1b1b;
   transition: all 0.3s ease;
 }
 
 .comercial-card-individual:hover {
-  border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  border-color: #dc2626;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
 }
 
 .comercial-card-header {
@@ -71,7 +71,7 @@
   flex-direction: column;
   gap: 6px;
   padding-bottom: 12px;
-  border-bottom: 2px solid #333;
+  border-bottom: 2px solid #3f1b1b;
 }
 
 .comercial-card-name {
@@ -84,7 +84,7 @@
 .comercial-card-email {
   margin: 0;
   font-size: 12px;
-  color: #888;
+  color: #b98989;
 }
 
 /* ==================== Card Body ==================== */
@@ -106,15 +106,15 @@
   flex-direction: column;
   gap: 4px;
   padding: 8px;
-  background-color: rgba(59, 130, 246, 0.05);
-  border-left: 2px solid #3b82f6;
+  background-color: rgba(220, 38, 38, 0.08);
+  border-left: 2px solid #dc2626;
   border-radius: 4px;
 }
 
 .info-label {
   font-size: 11px;
   font-weight: 600;
-  color: #888;
+  color: #b98989;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -122,7 +122,7 @@
 .info-value {
   font-size: 18px;
   font-weight: 700;
-  color: #3b82f6;
+  color: #fca5a5;
 }
 
 /* ==================== Stats Bars ==================== */
@@ -155,17 +155,17 @@
 .stats-bar-count {
   font-size: 12px;
   font-weight: 500;
-  color: #888;
+  color: #b98989;
   text-align: right;
 }
 
 .stats-bar-container {
   width: 100%;
   height: 12px;
-  background-color: #1a1a1a;
+  background-color: #1f1414;
   border-radius: 6px;
   overflow: hidden;
-  border: 1px solid #333;
+  border: 1px solid #3f1b1b;
 }
 
 .stats-bar-fill {
@@ -191,12 +191,12 @@
 .error {
   padding: 32px;
   text-align: center;
-  background-color: #222;
+  background-color: #1f1414;
   border-radius: 8px;
 }
 
 .loading {
-  color: #888;
+  color: #b98989;
 }
 
 .error {

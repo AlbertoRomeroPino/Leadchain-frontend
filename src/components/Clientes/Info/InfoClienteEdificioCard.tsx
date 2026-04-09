@@ -23,16 +23,12 @@ const InfoClienteEdificioCard = ({
         <p className="info-cliente-line">
           <strong>Zona:</strong> {zona?.nombre_zona ?? "-"}
         </p>
-        {edificio?.planta && (
-          <p className="info-cliente-line">
-            <strong>Planta:</strong> {edificio.planta}
-          </p>
-        )}
-        {edificio?.puerta && (
-          <p className="info-cliente-line">
-            <strong>Puerta:</strong> {edificio.puerta}
-          </p>
-        )}
+        <p className="info-cliente-line">
+          <strong>Planta:</strong> {edificio?.planta ?? "-"}
+        </p>
+        <p className="info-cliente-line">
+          <strong>Puerta:</strong> {edificio?.puerta ?? "-"}
+        </p>
       </div>
     </article>
   );

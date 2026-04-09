@@ -83,7 +83,7 @@
   position: relative;
   height: 500px;
   width: 100%;
-  background-color: #1a1a1a; /* Fondo oscuro mientras carga */
+  background-color: #0f0a0a;
   border: 1px solid #3f1b1b;
   border-radius: 12px;
   overflow: hidden;
@@ -309,14 +309,14 @@
 
 /* Botón Editar */
 .zona-action-button--edit {
-  background-color: #3b82f6;
+  background-color: #dc2626;
   color: #ffffff;
 }
 
 .zona-action-button--edit:hover:not(:disabled) {
-  background-color: #2563eb;
+  background-color: #b91c1c;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
 }
 
 /* Botón Borrar */

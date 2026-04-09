@@ -23,7 +23,7 @@ const EdificioInfoClienteCard = ({ clientes }: EdificioInfoClienteCardProps) => 
               <div className="cliente-nombre">
                 {cliente.nombre} {cliente.apellidos}
               </div>
-              <div className="cliente-meta">Zona: {cliente.id_usuario_asignado ?? 'N/A'} • Piso: {planta ?? '-'} • Puerta: {puerta ?? '-'}</div>
+              <div className="cliente-meta">Piso: {planta ?? '-'} • Puerta: {puerta ?? '-'}</div>
               <div className="cliente-contacto">Tel: {cliente.telefono ?? 'N/A'} • Email: {cliente.email ?? 'N/A'}</div>
             </li>
           ))

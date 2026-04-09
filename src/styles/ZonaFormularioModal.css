@@ -160,7 +160,7 @@
   border: 1px solid #3f1b1b;
   border-radius: 12px;
   overflow: hidden;
-  background-color: #1a1a1a;
+  background-color: #0f0a0a;
   position: relative;
 }
 
@@ -415,10 +415,10 @@
   gap: 6px;
   margin-right: auto;
   padding: 8px 14px;
-  background-color: rgba(59, 130, 246, 0.15);
-  border: 1px solid #3b82f6;
+  background-color: rgba(220, 38, 38, 0.15);
+  border: 1px solid #dc2626;
   border-radius: 6px;
-  color: #60a5fa;
+  color: #fca5a5;
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -441,14 +441,14 @@
 }
 
 .zona-btn-test:hover:not(:disabled) {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
+  background-color: #dc2626;
+  border-color: #dc2626;
   color: #ffffff;
 }
 
 .zona-btn-test.active {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
+  background-color: #dc2626;
+  border-color: #dc2626;
   color: #ffffff;
 }
 

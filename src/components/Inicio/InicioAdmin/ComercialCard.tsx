@@ -198,9 +198,9 @@ const ComercialCard = ({ comerciales }: ComercialCardProps) => {
           );
           const totalClientes = clientesDelComercial.length;
 
-          // Filtrar visitas del comercial
+          // Filtrar visitas del comercial que pertenecen a clientes de su zona
           const visitasDelComercial = visitasData.filter(
-            (v) => v.id_usuario === comercial.id
+            (v) => v.id_usuario === comercial.id && idsClientesUnicos.has(v.id_cliente)
           );
           const totalVisitas = visitasDelComercial.length;
 

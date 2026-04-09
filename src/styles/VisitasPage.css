@@ -146,8 +146,8 @@
 .visita-form textarea {
   width: 100%;
   border-radius: 12px;
-  border: 1px solid #333333;
-  background: #0f1116;
+  border: 1px solid #3f1b1b;
+  background: #0f0a0a;
   color: #f8fafc;
   padding: 12px 14px;
   font-size: 0.95rem;
@@ -172,7 +172,7 @@
   padding: 10px 14px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #171717;
+  background: #1f1414;
   color: #f8fafc;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
@@ -189,9 +189,9 @@
   list-style: none;
   max-height: 210px;
   overflow-y: auto;
-  border: 1px solid #333333;
+  border: 1px solid #3f1b1b;
   border-radius: 12px;
-  background: #0f1116;
+  background: #0f0a0a;
 }
 
 .visita-client-option {
@@ -202,11 +202,11 @@
 }
 
 .visita-client-empty {
-  color: #94a3b8;
+  color: #d6b1b1;
   padding: 10px 14px;
-  border: 1px solid #333333;
+  border: 1px solid #3f1b1b;
   border-radius: 12px;
-  background: #0f1116;
+  background: #0f0a0a;
 }
 
 .visita-client-option:hover {

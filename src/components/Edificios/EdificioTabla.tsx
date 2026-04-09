@@ -15,14 +15,10 @@ const EdificioTabla = ({ edificios, onEdificioSelect }: EdificioTablaProps) => {
           <tr>
             <th>ID</th>
             <th>Dirección</th>
+            <th>Planta</th>
+            <th>Puerta</th>
             <th>Zona</th>
             <th>Tipo</th>
-            {edificios.some((e) => e.planta || e.puerta) && (
-              <>
-                <th>Planta</th>
-                <th>Puerta</th>
-              </>
-            )}
           </tr>
         </thead>
         <tbody>
@@ -35,14 +31,10 @@ const EdificioTabla = ({ edificios, onEdificioSelect }: EdificioTablaProps) => {
               >
                 <td className="edificio-cell edificio-cell-id">{edificio.id}</td>
                 <td className="edificio-cell edificio-cell-direccion">{edificio.direccion_completa}</td>
+                <td className="edificio-cell edificio-cell-planta">{edificio.planta || "-"}</td>
+                <td className="edificio-cell edificio-cell-puerta">{edificio.puerta || "-"}</td>
                 <td className="edificio-cell edificio-cell-zona">{edificio.id_zona}</td>
                 <td className="edificio-cell edificio-cell-tipo">{edificio.tipo}</td>
-                {edificios.some((e) => e.planta || e.puerta) && (
-                  <>
-                    <td className="edificio-cell edificio-cell-planta">{edificio.planta || "-"}</td>
-                    <td className="edificio-cell edificio-cell-puerta">{edificio.puerta || "-"}</td>
-                  </>
-                )}
               </tr>
             ))
           ) : (

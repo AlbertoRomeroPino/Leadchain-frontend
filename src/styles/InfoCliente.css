@@ -55,25 +55,25 @@
 }
 
 .cliente-action-button--edit {
-  background-color: #1b2333;
-  border-color: #334155;
-  color: #bfdbfe;
+  background-color: #261414;
+  border-color: #3f1b1b;
+  color: #fca5a5;
 }
 
 .cliente-action-button--edit:hover {
-  background-color: #243046;
-  border-color: #3b82f6;
+  background-color: #2c1818;
+  border-color: #dc2626;
 }
 
 .cliente-action-button--delete {
-  background-color: #2a1111;
-  border-color: #7f1d1d;
+  background-color: #2c1818;
+  border-color: #3f1b1b;
   color: #fecaca;
 }
 
 .cliente-action-button--delete:hover {
   background-color: #3a1414;
-  border-color: #ef4444;
+  border-color: #dc2626;
 }
 
 .cliente-action-button:disabled {

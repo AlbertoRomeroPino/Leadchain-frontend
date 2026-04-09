@@ -4,13 +4,13 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background-color: #1a1a1a;
+  background-color: #0f0a0a;
 }
 
 .gloval-map-header {
   padding: 16px 20px;
-  background-color: #1a1a1a;
-  border-bottom: 1px solid #333;
+  background-color: #0f0a0a;
+  border-bottom: 1px solid #3f1b1b;
   flex-shrink: 0;
 }
 
@@ -24,7 +24,7 @@
 .gloval-map-info {
   margin: 0;
   font-size: 14px;
-  color: #888;
+  color: #b98989;
 }
 
 .gloval-map-canvas-wrapper {
@@ -48,29 +48,29 @@
   margin: 0 0 8px 0;
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #ffffff;
 }
 
 .zona-popup p {
   margin: 4px 0;
   font-size: 13px;
-  color: #666;
+  color: #e5e5e5;
 }
 
 .zona-popup strong {
-  color: #333;
+  color: #fca5a5;
 }
 
 .zona-popup ul {
   margin: 8px 0 0 0;
   padding-left: 16px;
   font-size: 13px;
-  color: #666;
+  color: #e5e5e5;
 }
 
 .zona-popup li {
   margin: 4px 0;
-  color: #666;
+  color: #e5e5e5;
 }
 
 /* Estilos para estados de carga y error */
@@ -81,8 +81,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #1a1a1a;
-  color: #888;
+  background-color: #0f0a0a;
+  color: #b98989;
   font-size: 16px;
 }
 
@@ -92,19 +92,20 @@
 
 /* Asegurar que Leaflet se renderice correctamente */
 .leaflet-container {
-  background-color: #2a2a2a;
+  background-color: #0f0a0a;
   z-index: 1;
 }
 
 .leaflet-popup-content-wrapper {
-  background-color: #ffffff;
-  color: #333;
+  background-color: #1f1414;
+  color: #ffffff;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid #3f1b1b;
 }
 
 .leaflet-popup-tip {
-  background-color: #ffffff;
+  background-color: #1f1414;
 }
 
 /* Responsive */
