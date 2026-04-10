@@ -3,13 +3,13 @@ import type { User } from "../../../types/users/User";
 import type { Edificio } from "../../../types/edificios/Edificio";
 import type { Visita } from "../../../types/visitas/Visita";
 import type { Cliente } from "../../../types/clientes/Cliente";
-import { VisitasService } from "../../../services/VisitasService";
 import { EstadoVisitaService } from "../../../services/EstadoVisitaService";
-import { clientesService } from "../../../services/ClientesService";
-import { EdificiosService } from "../../../services/EdificiosService";
 
 interface ComercialCardProps {
   comerciales: User[];
+  visitas: Visita[];
+  clientes: Cliente[];
+  edificios: Edificio[];
 }
 
 interface ComercialStats {
@@ -120,24 +120,17 @@ const ComercialCardIndividual: React.FC<ComercialCardIndividualProps> = ({
   );
 };
 
-const ComercialCard = ({ comerciales }: ComercialCardProps) => {
+const ComercialCard = ({ comerciales, visitas, clientes, edificios }: ComercialCardProps) => {
   const [stats, setStats] = useState<Map<number, ComercialStats>>(new Map());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const cargarDatos = async () => {
+    const calcularEstadisticas = async () => {
       try {
         setLoading(true);
 
-        // Cargar estados de visita
+        // Cargar estados de visita para obtener categorías
         await EstadoVisitaService.getEstadosVisita();
-
-        // Cargar visitas, clientes y edificios
-        const [visitasData, clientesData, edificiosData] = await Promise.all([
-          VisitasService.getVisitas(),
-          clientesService.getClientes(),
-          EdificiosService.getEdificios(),
-        ]);
 
         // Definir categorías de estados
         const categoriasEstados: Record<
@@ -181,7 +174,7 @@ const ComercialCard = ({ comerciales }: ComercialCardProps) => {
 
         comerciales.forEach((comercial) => {
           // Obtener edificios de la zona del comercial
-          const edificiosDelComercial = edificiosData.filter(
+          const edificiosDelComercial = edificios.filter(
             (e: Edificio) => e.id_zona === comercial.id_zona
           );
 
@@ -196,13 +189,13 @@ const ComercialCard = ({ comerciales }: ComercialCardProps) => {
           });
 
           // Filtrar clientes que están en la zona
-          const clientesDelComercial = clientesData.filter(
+          const clientesDelComercial = clientes.filter(
             (c) => idsClientesUnicos.has(c.id)
           );
           const totalClientes = clientesDelComercial.length;
 
           // Filtrar visitas del comercial que pertenecen a clientes de su zona
-          const visitasDelComercial = visitasData.filter(
+          const visitasDelComercial = visitas.filter(
             (v: Visita) => v.id_usuario === comercial.id && idsClientesUnicos.has(v.id_cliente)
           );
           const totalVisitas = visitasDelComercial.length;
@@ -244,18 +237,18 @@ const ComercialCard = ({ comerciales }: ComercialCardProps) => {
 
         setStats(statsMap);
       } catch (error) {
-        console.error("Error al cargar datos de comerciales:", error);
+        console.error("Error al calcular estadísticas de comerciales:", error);
       } finally {
         setLoading(false);
       }
     };
 
     if (comerciales.length > 0) {
-      cargarDatos();
+      calcularEstadisticas();
     } else {
       setLoading(false);
     }
-  }, [comerciales]);
+  }, [comerciales, visitas, clientes, edificios]);
 
   return (
     <div className="comerciales-container">

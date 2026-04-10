@@ -4,8 +4,7 @@ import MapaEdificioPanel from "../components/MapaEdificioPanel";
 import Sidebar from "../layout/Sidebar";
 import "../styles/Map.css";
 import { useAuth } from "../auth/useAuth";
-import { ZonaService } from "../services/ZonaService";
-import { EdificiosService } from "../services/EdificiosService";
+import { InicioService } from "../services/InicioService";
 import type { Zona } from "../types/zonas/Zona";
 import type { Edificio } from "../types/edificios/Edificio";
 import type { LatLngBoundsExpression } from "leaflet";
@@ -25,12 +24,22 @@ const MapPage = () => {
       try {
         setLoading(true);
         setError(null);
-        const [zonasResponse, edificiosResponse] = await Promise.all([
-          ZonaService.getZonas(),
-          EdificiosService.getEdificios(),
-        ]);
-        setZonas(zonasResponse);
-        setEdificios(edificiosResponse);
+        // Una sola petición consolida zonas con edificios y clientes
+        const mapData = await InicioService.getMapaInicio();
+        console.log('Datos de mapa recibidos:', mapData);
+        setZonas(mapData.zonas);
+        
+        // Extraer todos los edificios de todas las zonas
+        const todosEdificios: Edificio[] = [];
+        mapData.zonas.forEach((zona) => {
+          if (zona.edificios && Array.isArray(zona.edificios)) {
+            zona.edificios.forEach((edificio) => {
+              todosEdificios.push(edificio as Edificio);
+            });
+          }
+        });
+        console.log('Edificios extraídos:', todosEdificios);
+        setEdificios(todosEdificios);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Error desconocido";
         setError(errorMessage);

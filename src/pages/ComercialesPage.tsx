@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../layout/Sidebar";
 import { UserService } from "../services/User";
-import { clientesService } from "../services/ClientesService";
 import type { User, UserVisitas } from "../types/users/User";
-import { authStorage } from "../auth/authStorage";
 import type { Visita } from "../types/visitas/Visita";
-import { VisitasService } from "../services/VisitasService";
-import type { Cliente } from "../types/clientes/Cliente";
 import type { Zona } from "../types/zonas/Zona";
 import "../styles/ComercialesPage.css";
 import { Trash, UserPlus2, UserRoundCog } from "lucide-react";
 import ComercialesForm from "../components/Comerciales/ComercialesForm";
-import { ZonaService } from "../services/ZonaService";
 import showStatusAlert from "../components/StatusAlert";
 
 const Comerciales = () => {
@@ -83,47 +78,14 @@ const Comerciales = () => {
   useEffect(() => {
     const loadComerciales = async () => {
       try {
-        // Usuario logueado (localStorage JWT + user)
-        const session = authStorage.get();
-        const currentUserId = session?.user?.id;
-
-        if (!currentUserId) {
-          throw new Error("Usuario no autenticado");
-        }
-
-        const [usuarios, visitas, clientes, zonasData] = await Promise.all([
-          UserService.getUsers(),
-          VisitasService.getVisitas(),
-          clientesService.getClientes(),
-          ZonaService.getZonas(),
-        ]);
-
-        const clienteById = new Map<number, Cliente>(
-          clientes.map((cliente) => [cliente.id, cliente]),
-        );
-
-        setZonas(zonasData);
-
-        const myComerciales = usuarios
-          .filter(
-            (usuario: User) =>
-              usuario.rol === "comercial" &&
-              usuario.id_responsable === currentUserId,
-          )
-          .map(
-            (usuario: User): UserVisitas => ({
-              ...usuario,
-              visitas: visitas
-                .filter((visita: Visita) => visita.id_usuario === usuario.id)
-                .map((visita: Visita) => ({
-                  ...visita,
-                  cliente: clienteById.get(visita.id_cliente) ?? null,
-                })),
-
-            }),
-          );
-
-        setComerciales(myComerciales);
+        // Una sola petición consolida comerciales con visitas anidadas y zonas
+        const data = await UserService.getComercialesAMiCargo();
+        
+        // Las visitas ya están anidadas en cada comercial con cliente y estado incluidos
+        const comercialesConVisitas: UserVisitas[] = data.comerciales as UserVisitas[];
+        
+        setZonas(data.zonas);
+        setComerciales(comercialesConVisitas);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Error cargando comerciales",

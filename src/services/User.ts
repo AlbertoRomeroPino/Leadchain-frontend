@@ -1,6 +1,12 @@
 import { authHttp } from "./https";
 import { ExceptionService } from "./ExceptionService";
 import type { User, UserInput, UserUpdateInput } from "../types/users/User";
+import type { Zona } from "../types/zonas/Zona";
+
+interface ComercialAMiCargoData {
+  comerciales: User[];
+  zonas: Zona[];
+}
 
 export const UserService = {
   async getCurrentUser() {
@@ -89,6 +95,26 @@ export const UserService = {
         ExceptionService.getErrorMessage(
           error,
           `Error al actualizar parcialmente el usuario con ID ${id}`,
+        ),
+      );
+    }
+  },
+
+  /**
+   * Obtener comerciales a cargo del usuario actual con visitas, clientes y zonas consolidados
+   * Una sola petición retorna toda la información necesaria para ComercialesPage
+   */
+  async getComercialesAMiCargo(): Promise<ComercialAMiCargoData> {
+    try {
+      const { data } = await authHttp.get<ComercialAMiCargoData>(
+        "/api/users/comerciales-a-cargo"
+      );
+      return data;
+    } catch (error) {
+      throw new Error(
+        ExceptionService.getErrorMessage(
+          error,
+          "Error al obtener comerciales a cargo"
         ),
       );
     }

@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../auth/useAuth";
-import { clientesService } from "../../../services/ClientesService";
-import { VisitasService } from "../../../services/VisitasService";
-import { EdificiosService } from "../../../services/EdificiosService";
+import { InicioService } from "../../../services/InicioService";
 import type { Cliente } from "../../../types/clientes/Cliente";
 import type { Visita } from "../../../types/visitas/Visita";
 import ClientesSinVisitar from "./ClientesSinVisitar";
@@ -32,37 +30,15 @@ const InicioComercial = () => {
         setLoading(true);
         setError(null);
 
-        // Obtener edificios de la zona del comercial
-        const edificiosData = await EdificiosService.getEdificios();
-        const edificiosDelComercial = edificiosData.filter(
-          (e) => e.id_zona === user.id_zona
-        );
+        // Una sola petición consolida todos los datos necesarios
+        const inicioData = await InicioService.getComercialInicio();
 
-        // Obtener IDs únicos de clientes de esos edificios
-        const idsClientesUnicos = new Set<number>();
-        edificiosDelComercial.forEach((edificio) => {
-          if (edificio.clientes && edificio.clientes.length > 0) {
-            edificio.clientes.forEach((cliente) => {
-              idsClientesUnicos.add(cliente.id);
-            });
-          }
-        });
-
-        // Obtener clientes y filtrar por los de la zona
-        const clientesData = await clientesService.getClientes();
-        const clientesZona = clientesData.filter((c) =>
-          idsClientesUnicos.has(c.id)
-        );
-
-        // Obtener todas las visitas del comercial
-        const visitasData = await VisitasService.getVisitas();
-        const visitasComercial = visitasData.filter(
-          (v) => v.id_usuario === user.id
-        );
+        // Extraer clientes de los edificios
+        const clientesZona = inicioData.clientes;
 
         // Crear mapa de visitas por cliente (última visita)
         const visitasPorCliente = new Map<number, Visita>();
-        visitasComercial.forEach((v) => {
+        inicioData.visitas.forEach((v) => {
           if (!visitasPorCliente.has(v.id_cliente)) {
             visitasPorCliente.set(v.id_cliente, v);
           } else {

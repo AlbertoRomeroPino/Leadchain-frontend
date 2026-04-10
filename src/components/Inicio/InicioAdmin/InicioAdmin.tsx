@@ -1,36 +1,61 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../auth/useAuth";
 import ComercialCard from "./ComercialCard";
-import { UserService } from "../../../services/User";
+import { InicioService } from "../../../services/InicioService";
 import type { User } from "../../../types/users/User";
+import type { Visita } from "../../../types/visitas/Visita";
+import type { Cliente } from "../../../types/clientes/Cliente";
+import type { Edificio } from "../../../types/edificios/Edificio";
+
+interface AdminDashboardState {
+  comerciales: User[];
+  visitas: Visita[];
+  clientes: Cliente[];
+  edificios: Edificio[];
+}
 
 const InicioAdmin = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [comerciales, setComerciales] = useState<User[]>([]);
+  const [data, setData] = useState<AdminDashboardState>({
+    comerciales: [],
+    visitas: [],
+    clientes: [],
+    edificios: [],
+  });
 
   useEffect(() => {
-    const cargarComerciales = async () => {
+    const cargarDatos = async () => {
       if (!user || user.rol !== "admin") {
         setLoading(false);
         return;
       }
 
       try {
-        const usuarios = await UserService.getUsers();
-        const comercialesData = usuarios.filter(
-          (usuario: User) =>
-            usuario.rol === "comercial" && usuario.id_responsable === user.id,
+        // Una sola petición consolida todos los datos necesarios
+        const inicioData = await InicioService.getAdminInicio();
+
+        // Filtrar solo comerciales que dependen de este admin
+        const comercialesData = inicioData.usuarios_comerciales.filter(
+          (usuario) =>
+            usuario.rol === "comercial" &&
+            usuario.id_responsable === user.id,
         );
-        setComerciales(comercialesData);
+
+        setData({
+          comerciales: comercialesData,
+          visitas: inicioData.visitas,
+          clientes: inicioData.clientes,
+          edificios: inicioData.edificios,
+        });
       } catch (err) {
-        console.error("Error al cargar comerciales:", err);
+        console.error("Error al cargar dashboard admin:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    cargarComerciales();
+    cargarDatos();
   }, [user]);
 
   if (loading) {
@@ -46,8 +71,13 @@ const InicioAdmin = () => {
         </p>
       </div>
 
-      {/* Placeholder para cards de comerciales */}
-      <ComercialCard comerciales={comerciales} />
+      {/* Pasar datos consolidados a ComercialCard */}
+      <ComercialCard 
+        comerciales={data.comerciales}
+        visitas={data.visitas}
+        clientes={data.clientes}
+        edificios={data.edificios}
+      />
     </div>
   );
 };

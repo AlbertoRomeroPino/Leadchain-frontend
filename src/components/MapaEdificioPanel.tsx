@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import type { Edificio } from "../types/edificios/Edificio";
 import type { Cliente } from "../types/clientes/Cliente";
 import type { Zona } from "../types/zonas/Zona";
-import { clientesService } from "../services/ClientesService";
-import { EdificiosService } from "../services/EdificiosService";
-import { ZonaService } from "../services/ZonaService";
+import { InicioService } from "../services/InicioService";
 import "../styles/MapaEdificioPanel.css";
 
 interface MapaEdificioPanelProps {
@@ -39,45 +37,20 @@ const MapaEdificioPanel = ({
         setLoading(true);
         setError(null);
 
-        // Cargar la zona del edificio
-        try {
-          const zonaData = await ZonaService.getZonaById(edificio.id_zona);
-          setZona(zonaData);
-        } catch (err) {
-          console.error("Error al cargar la zona:", err);
-          // No es fatal, continuar sin mostrar zona
-        }
+        // Una sola petición trae el edificio con zona y clientes
+        const detalleData = await InicioService.getDetalleEdificio(edificio.id);
+        setZona(detalleData.zona);
 
-        // Obtener todos los edificios para encontrar los de la misma dirección
-        const allEdificios = await EdificiosService.getEdificios();
-        const sameBlock = allEdificios.filter(
-          (edif: Edificio) =>
-            edif.direccion_completa === edificio.direccion_completa,
-        );
+        // Procesar clientes del edificio
+        const clientesFormateados: ClienteEnEdificio[] = (
+          detalleData.edificio.clientes || []
+        ).map((cliente) => ({
+          cliente,
+          planta: cliente.planta || null,
+          puerta: cliente.puerta || null,
+        }));
 
-        // Cargar clientes de todos los edificios del mismo bloque usando la relación many-to-many
-        const clientesDelBloqueBuffer = sameBlock
-          .flatMap((edif: Edificio) => {
-            if (!edif.clientes || edif.clientes.length === 0) return [];
-            return edif.clientes.map((cliente) => ({
-              cliente,
-              planta: cliente.planta ?? null,
-              puerta: cliente.puerta ?? null,
-            }));
-          });
-
-        // Eliminar duplicados
-        const clientesBloqueUnicos = Array.from(
-          new Map(
-            clientesDelBloqueBuffer
-              .map((c) => [
-                `${c.cliente.id}|${c.planta ?? ""}|${c.puerta ?? ""}`,
-                c,
-              ]),
-          ).values(),
-        );
-
-        setClientesBloque(clientesBloqueUnicos);
+        setClientesBloque(clientesFormateados);
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : "Error desconocido";

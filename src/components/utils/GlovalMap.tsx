@@ -62,17 +62,23 @@ const GlovalMap = ({
     return edificios;
   }, [edificios, userRole, userZonaId]);
 
-  // Crear icono personalizado para edificios
-  const edificioIcon = useMemo(() => {
-    return L.icon({
-      iconUrl:
-        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iNDIiIHZpZXdCb3g9IjAgMCAzMiA0MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSI0IiB5PSI0IiB3aWR0aD0iMjQiIGhlaWdodD0iMjgiIHJ4PSIyIiBmaWxsPSIjMzc4OGQ5Ii8+PGNpcmNsZSBjeD0iMTYiIGN5PSI4IiByPSIyIiBmaWxsPSIjZmZmZiIvPjxyZWN0IHg9IjgiIHk9IjEyIiB3aWR0aD0iNSIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmZiIgb3BhY2l0eT0iMC41Ii8+PHJlY3QgeD0iMTkiIHk9IjEyIiB3aWR0aD0iNSIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmZiIgb3BhY2l0eT0iMC41Ii8+PHJlY3QgeD0iOCIgeT0iMjAiIHdpZHRoPSI1IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmZmIiBvcGFjaXR5PSIwLjUiLz48cmVjdCB4PSIxOSIgeT0iMjAiIHdpZHRoPSI1IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmZmIiBvcGFjaXR5PSIwLjUiLz48cGF0aCBkPSJNNCA0MkwxNiAzNEwyOCA0MloiIGZpbGw9IiMzNzg4ZDkiLz48L3N2Zz4=",
-      iconSize: [32, 42],
-      iconAnchor: [16, 42],
+  // Crear icono personalizado para edificios con número de clientes
+  const createEdificioIcon = (clientesCount = 0) => {
+    const label = clientesCount > 99 ? "99+" : String(clientesCount);
+
+    return L.divIcon({
+      html: `
+        <div class="edificio-pin-icon">
+          <span>${label}</span>
+          <div class="edificio-pin-tail"></div>
+        </div>
+      `,
+      className: "edificio-pin-marker",
+      iconSize: [40, 46],
+      iconAnchor: [20, 46],
       popupAnchor: [0, -42],
-      className: "edificio-marker",
     });
-  }, []);
+  };
 
   // Convertir puntos GeoPoint a LatLngExpression para Leaflet
   const convertirAreaAPoligono = (area: GeoPoint[]): LatLngExpression[] => {
@@ -203,11 +209,19 @@ const GlovalMap = ({
           {edificiosAMostrar.map((edificio) => {
             if (!edificio.ubicacion) return null;
 
+            // Obtener el conteo de clientes - puede ser array o objeto con count
+            let clientesCount = 0;
+            if (Array.isArray(edificio.clientes)) {
+              clientesCount = edificio.clientes.length;
+            } else if (edificio.clientes && typeof edificio.clientes === 'object' && 'count' in edificio.clientes) {
+              clientesCount = edificio.clientes.count;
+            }
+
             return (
               <Marker
                 key={`edificio-${edificio.id}`}
                 position={[edificio.ubicacion.lat, edificio.ubicacion.lng]}
-                icon={edificioIcon}
+                icon={createEdificioIcon(clientesCount)}
                 eventHandlers={{
                   click: () => {
                     if (onEdificioClick) {
@@ -215,9 +229,7 @@ const GlovalMap = ({
                     }
                   },
                 }}
-              >
-                
-              </Marker>
+              />
             );
           })}
         </MapContainer>

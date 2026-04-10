@@ -1,4 +1,5 @@
 import type { GeoPoint } from "../shared/GeoPoint";
+import type { Cliente } from "../clientes/Cliente";
 
 // Definición de zona al crear o actualizar
 export type ZonaInput = {
@@ -24,10 +25,14 @@ export type Zona = {
     edificios?: Array<{
         id: number;
         direccion_completa: string;
-        planta: string | null;
-        puerta: string | null;
+        ubicacion: GeoPoint | null;
         id_zona: number;
         tipo: string;
         id_cliente: number | null;
+        created_at: string;
+        updated_at: string;
+        clientes?: Cliente[];
+        planta?: string | null;
+        puerta?: string | null;
     }>;
 };
