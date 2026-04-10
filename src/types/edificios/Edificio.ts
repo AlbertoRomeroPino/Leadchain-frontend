@@ -13,7 +13,9 @@ export type Edificio = {
     planta?: string | null;
     puerta?: string | null;
     cliente?: Cliente | null;
-    clientes?: Array<Cliente & { planta?: string | null; puerta?: string | null }>;
+    clientes?:
+      | Array<Cliente & { planta?: string | null; puerta?: string | null }>
+      | { count: number };
     created_at: string;
     updated_at: string;
 };

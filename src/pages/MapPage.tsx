@@ -26,7 +26,6 @@ const MapPage = () => {
         setError(null);
         // Una sola petición consolida zonas con edificios y clientes
         const mapData = await InicioService.getMapaInicio();
-        console.log('Datos de mapa recibidos:', mapData);
         setZonas(mapData.zonas);
         
         // Extraer todos los edificios de todas las zonas
@@ -38,7 +37,6 @@ const MapPage = () => {
             });
           }
         });
-        console.log('Edificios extraídos:', todosEdificios);
         setEdificios(todosEdificios);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Error desconocido";

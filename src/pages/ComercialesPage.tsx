@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Sidebar from "../layout/Sidebar";
 import { UserService } from "../services/User";
 import type { User, UserVisitas } from "../types/users/User";
@@ -190,9 +190,8 @@ const Comerciales = () => {
               </thead>
               <tbody>
                 {comerciales.map((comercialItem) => (
-                  <>
+                  <Fragment key={comercialItem.id}>
                     <tr
-                      key={comercialItem.id}
                       className="comerciales-row"
                       onClick={() => toggleComercialVisitas(comercialItem.id)}
                     >
@@ -249,7 +248,7 @@ const Comerciales = () => {
                         </td>
                       </tr>
                     ) : null}
-                  </>
+                  </Fragment>
                 ))}
               </tbody>
             </table>

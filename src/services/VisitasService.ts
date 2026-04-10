@@ -56,4 +56,18 @@ export const VisitasService = {
             throw new Error(ExceptionService.getErrorMessage(error, `Error al actualizar parcialmente visita con ID ${id}`));
         }
     },
+
+    /**
+     * Get consolidated data for visitas page
+     * Returns: visitas, clientes, and estados in a single optimized request
+     * Replaces 3 separate API calls with 1
+     */
+    async getVisitasPaginaDatos() {
+        try {
+            const response = await authHttp.get("/api/visitas/pagina/datos-consolidados");
+            return response.data;
+        } catch (error) {
+            throw new Error(ExceptionService.getErrorMessage(error, "Error al obtener datos de visitas"));
+        }
+    },
 };

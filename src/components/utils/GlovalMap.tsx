@@ -63,6 +63,19 @@ const GlovalMap = ({
   }, [edificios, userRole, userZonaId]);
 
   // Crear icono personalizado para edificios con número de clientes
+  type EdificioClientesCount = { count: number };
+
+  const isEdificioClientesCount = (
+    value: unknown,
+  ): value is EdificioClientesCount => {
+    return (
+      typeof value === "object" &&
+      value !== null &&
+      "count" in value &&
+      typeof (value as Record<string, unknown>).count === "number"
+    );
+  };
+
   const createEdificioIcon = (clientesCount = 0) => {
     const label = clientesCount > 99 ? "99+" : String(clientesCount);
 
@@ -84,6 +97,25 @@ const GlovalMap = ({
   const convertirAreaAPoligono = (area: GeoPoint[]): LatLngExpression[] => {
     return area.map((punto) => [punto.lat, punto.lng]);
   };
+
+  // Calcular conteo de edificios y clientes por zona
+  const zonasConConteo = useMemo(() => {
+    return zonasAMostrar.map((zona) => {
+      const edificiosCount = zona.edificios?.length ?? 0;
+      const clientesCount = zona.edificios?.reduce((total, edificio) => {
+        if (!edificio.clientes || edificio.clientes.length === 0) {
+          return total;
+        }
+        return total + edificio.clientes.length;
+      }, 0) ?? 0;
+
+      return {
+        zona,
+        edificiosCount,
+        clientesCount,
+      };
+    });
+  }, [zonasAMostrar]);
 
   // Colores para las zonas
   const coloresZonas = [
@@ -149,7 +181,7 @@ const GlovalMap = ({
           )}
 
           {/* Renderizar zonas */}
-          {zonasAMostrar.map((zona, index) => {
+          {zonasConConteo.map(({ zona, edificiosCount, clientesCount }, index) => {
             if (!zona.area || zona.area.length === 0) return null;
 
             const poligono = convertirAreaAPoligono(zona.area);
@@ -194,11 +226,12 @@ const GlovalMap = ({
                         </ul>
                       </div>
                     )}
-                    {zona.edificios && zona.edificios.length > 0 && (
-                      <p>
-                        <strong>Edificios:</strong> {zona.edificios.length}
-                      </p>
-                    )}
+                    <p>
+                      <strong>Edificios:</strong> {edificiosCount}
+                    </p>
+                    <p>
+                      <strong>Clientes:</strong> {clientesCount}
+                    </p>
                   </div>
                 </Popup>
               </Polygon>
@@ -213,7 +246,7 @@ const GlovalMap = ({
             let clientesCount = 0;
             if (Array.isArray(edificio.clientes)) {
               clientesCount = edificio.clientes.length;
-            } else if (edificio.clientes && typeof edificio.clientes === 'object' && 'count' in edificio.clientes) {
+            } else if (isEdificioClientesCount(edificio.clientes)) {
               clientesCount = edificio.clientes.count;
             }
 

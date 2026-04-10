@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../auth/useAuth";
 import Sidebar from "../layout/Sidebar";
 import { VisitasService } from "../services/VisitasService";
-import { clientesService } from "../services/ClientesService";
-import { EstadoVisitaService } from "../services/EstadoVisitaService";
 import type { Visita } from "../types/visitas/Visita";
 import type { Cliente } from "../types/clientes/Cliente";
 import type { EstadoVisita } from "../types/visitas/EstadoVisita";
@@ -25,15 +23,12 @@ const Visitas = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [visitasResponse, clientesResponse, estadosResponse] = await Promise.all([
-          VisitasService.getVisitas(),
-          clientesService.getClientes(),
-          EstadoVisitaService.getEstadosVisita(),
-        ]);
+        // Una sola petición consolida visitas, clientes y estados
+        const data = await VisitasService.getVisitasPaginaDatos();
 
-        setVisitas(visitasResponse);
-        setClientes(clientesResponse);
-        setEstados(estadosResponse);
+        setVisitas(data.visitas);
+        setClientes(data.clientes);
+        setEstados(data.estados);
       } catch (error) {
         console.error(error);
       }
@@ -61,8 +56,10 @@ const Visitas = () => {
 
   const refreshVisitas = async () => {
     try {
-      const data = await VisitasService.getVisitas();
-      setVisitas(data);
+      const data = await VisitasService.getVisitasPaginaDatos();
+      setVisitas(data.visitas);
+      setClientes(data.clientes);
+      setEstados(data.estados);
     } catch (error) {
       console.error(error);
     }
