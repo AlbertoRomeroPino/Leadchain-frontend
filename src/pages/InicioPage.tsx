@@ -2,6 +2,7 @@ import { useAuth } from "../auth/useAuth";
 import Sidebar from "../layout/Sidebar";
 import InicioComercial from "../components/Inicio/InicioComercial/InicioComercial";
 import InicioAdmin from "../components/Inicio/InicioAdmin/InicioAdmin";
+import "../styles/InicioPage.css";
 import "../styles/InicioComercial.css";
 import "../styles/InicioAdmin.css";
 
@@ -11,8 +12,7 @@ const InicioPage = () => {
   return (
     <>
       <Sidebar />
-      <main style={{ marginLeft: "80px", padding: "20px" }}>
-        <h1>Bienvenido a Leadchain</h1>
+      <main className="inicio-page-main">
         {user?.rol === "comercial" ? (
           <InicioComercial />
         ) : user?.rol === "admin" ? (

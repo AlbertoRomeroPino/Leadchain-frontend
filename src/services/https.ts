@@ -2,7 +2,7 @@ import axios from "axios";
 import type { AuthSession } from "../types/users/User";
 import { authStorage } from "../auth/authStorage";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string | undefined;
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() || "/";
 
 export const publicHttp = axios.create({ baseURL: API_BASE_URL });
 export const authHttp = axios.create({ baseURL: API_BASE_URL });

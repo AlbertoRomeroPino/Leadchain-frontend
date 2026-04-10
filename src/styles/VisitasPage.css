@@ -3,13 +3,33 @@
   padding: 20px;
 }
 
+/* Responsive: Tablet y Mobile */
+@media (max-width: 900px) {
+  .visitas-page {
+    margin-left: 0;
+    padding: 20px 20px 100px 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .visitas-page {
+    margin-left: 0;
+    padding: 16px 12px 100px 12px;
+  }
+}
+
 .visitas-page-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 20px;
-  flex-wrap: wrap;
   margin-bottom: 20px;
+}
+
+.visitas-page-header h1 {
+  text-align: center;
+  margin: 0;
 }
 
 .visitas-page-description {
@@ -22,8 +42,10 @@
   display: grid;
   grid-template-columns: 1fr 240px;
   gap: 18px;
-  margin-top: 16px;
+  margin-top: 0;
   align-items: flex-end;
+  width: 100%;
+  max-width: 600px;
 }
 
 @media (max-width: 880px) {
@@ -151,6 +173,20 @@
   color: #f8fafc;
   padding: 12px 14px;
   font-size: 0.95rem;
+}
+
+/* Hacer visible el botón del calendario */
+.visita-form input[type="datetime-local"],
+.visita-form input[type="date"],
+.visita-form input[type="time"] {
+  accent-color: #ffffff;
+  color-scheme: dark;
+}
+
+.visita-form input[type="datetime-local"]::placeholder,
+.visita-form input[type="date"]::placeholder,
+.visita-form input[type="time"]::placeholder {
+  color: #ffffff;
 }
 
 .visita-form textarea {

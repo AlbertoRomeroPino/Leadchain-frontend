@@ -355,7 +355,7 @@ const Zona = () => {
                     <Marker
                       key={`${cluster.lat}_${cluster.lng}_${index}`}
                       position={[cluster.lat, cluster.lng]}
-                      icon={createClusterIcon(cluster.count)}
+                      icon={createClusterIcon(totalClientes)}
                     >
                       <Popup className="custom-popup">
                         <div className="popup-content">

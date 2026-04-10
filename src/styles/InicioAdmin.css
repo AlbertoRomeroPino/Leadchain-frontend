@@ -5,10 +5,29 @@
   gap: 24px;
   padding: 20px;
   background-color: #0f0a0a;
+  margin-left: 80px;
+}
+
+/* Responsive: Tablet y Mobile */
+@media (max-width: 900px) {
+  .inicio-admin {
+    margin-left: 0;
+    padding: 20px 20px 100px 20px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .inicio-admin {
+    margin-left: 0;
+    padding: 12px 8px 100px 8px;
+    gap: 12px;
+  }
 }
 
 .admin-header {
   margin-bottom: 16px;
+  text-align: center;
 }
 
 .admin-title {
@@ -18,10 +37,30 @@
   color: #ffffff;
 }
 
+@media (max-width: 900px) {
+  .admin-title {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-title {
+    font-size: 18px;
+    margin: 0 0 4px 0;
+  }
+}
+
 .admin-subtitle {
   margin: 0;
   font-size: 14px;
   color: #b98989;
+}
+
+@media (max-width: 600px) {
+  .admin-subtitle {
+    font-size: 12px;
+  }
 }
 
 /* ==================== Comerciales Container ==================== */
@@ -42,11 +81,35 @@
   margin: 0;
 }
 
+@media (max-width: 600px) {
+  .comerciales-empty {
+    padding: 20px;
+    font-size: 12px;
+  }
+}
+
 /* ==================== Comerciales Grid ==================== */
 .comerciales-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 16px;
+  margin: 0 auto;
+  width: fit-content;
+  max-width: 100%;
+}
+
+@media (max-width: 900px) {
+  .comerciales-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .comerciales-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
 /* ==================== Individual Commercial Card ==================== */
@@ -182,7 +245,28 @@
   }
 
   .comercial-info-row {
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Ocultar cobertura antes de que colapse */
+  .comercial-info-row .info-item:last-child {
+    display: none;
+  }
+}
+
+/* Mobile: Reducir tamaño de items para que quepan 2 en fila */
+@media (max-width: 600px) {
+  .info-item {
+    padding: 6px;
+    gap: 2px;
+  }
+
+  .info-label {
+    font-size: 10px;
+  }
+
+  .info-value {
+    font-size: 16px;
   }
 }
 
