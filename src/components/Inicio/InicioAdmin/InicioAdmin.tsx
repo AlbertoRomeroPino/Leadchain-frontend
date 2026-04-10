@@ -66,9 +66,6 @@ const InicioAdmin = () => {
     <div className="inicio-admin">
       <div className="admin-header">
         <h2 className="admin-title">Panel de Comerciales</h2>
-        <p className="admin-subtitle">
-          Visualiza el progreso de tus comerciales y estadísticas de visitas
-        </p>
       </div>
 
       {/* Pasar datos consolidados a ComercialCard */}

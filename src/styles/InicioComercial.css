@@ -6,17 +6,51 @@
   padding: 20px;
   background-color: #0f0a0a;
   border-radius: 8px;
+  margin-left: 80px;
+}
+
+/* Responsive: Tablet y Mobile */
+@media (max-width: 900px) {
+  .clientes-sin-visitar-container {
+    margin-left: 0;
+    padding: 20px 20px 100px 20px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .clientes-sin-visitar-container {
+    margin-left: 0;
+    padding: 12px 8px 100px 8px;
+    gap: 14px;
+  }
 }
 
 /* ==================== Header con Estadísticas ==================== */
-.clientes-header {
+.dashboard-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   padding: 20px;
   background: linear-gradient(135deg, #161010 0%, #1f1414 100%);
   border-radius: 8px;
   border: 1px solid #3f1b1b;
+}
+
+@media (max-width: 900px) {
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 10px;
+  }
 }
 
 .clientes-stat {
@@ -29,6 +63,13 @@
   border-radius: 4px;
 }
 
+@media (max-width: 600px) {
+  .clientes-stat {
+    padding: 10px;
+    gap: 6px;
+  }
+}
+
 .stat-label {
   font-size: 12px;
   font-weight: 600;
@@ -37,10 +78,29 @@
   letter-spacing: 0.5px;
 }
 
+@media (max-width: 600px) {
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.3px;
+  }
+}
+
 .stat-value {
   font-size: 28px;
   font-weight: 700;
   color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .stat-value {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .stat-value {
+    font-size: 20px;
+  }
 }
 
 .stat-green {

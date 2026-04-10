@@ -1,12 +1,38 @@
 .map-page {
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
 .map-content {
   margin-left: clamp(70px, 8vw, 84px);
   width: calc(100vw - clamp(70px, 8vw, 84px));
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Responsive: Tablet y Mobile */
+@media (max-width: 900px) {
+  .map-content {
+    margin-left: 0;
+    width: 100%;
+    height: 100vh;
+  }
+}
+
+@media (max-width: 600px) {
+  .map-content {
+    margin-left: 0;
+    width: 100%;
+    height: 100vh;
+  }
 }
 
 .map-loading,

@@ -101,7 +101,7 @@ const GlovalMap = ({
     <div className="gloval-map-wrapper">
       <div className="gloval-map-header">
         <h2 className="gloval-map-title">{title}</h2>
-        {zonasAMostrar.length > 0 && (
+        {zonasAMostrar.length > 0 && userRole !== "comercial" && (
           <p className="gloval-map-info">
             Mostrando {zonasAMostrar.length} zona{zonasAMostrar.length !== 1 ? "s" : ""}
           </p>

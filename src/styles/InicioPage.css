@@ -1,0 +1,47 @@
+/* ==================== Inicio Page Main ==================== */
+.inicio-page-main {
+  margin-left: 80px;
+  padding: 20px;
+  width: calc(100% - 80px);
+  overflow-x: hidden;
+}
+
+/* Responsive: Tablet */
+@media (max-width: 900px) {
+  .inicio-page-main {
+    margin-left: 0;
+    padding: 20px 20px 100px 20px;
+    width: 100%;
+  }
+}
+
+/* Responsive: Mobile */
+@media (max-width: 600px) {
+  .inicio-page-main {
+    margin-left: 0;
+    padding: 12px 8px 100px 8px;
+    width: 100%;
+  }
+}
+
+/* Bienvenida Title */
+.inicio-page-main h1 {
+  margin: 0 0 16px 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .inicio-page-main h1 {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .inicio-page-main h1 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+}

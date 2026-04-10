@@ -164,12 +164,6 @@ const Visitas = () => {
         <div className="visitas-page-header">
           <div>
             <h1>Visitas</h1>
-            <p className="visitas-page-description">
-              {user?.rol === "admin" && "Mostrando las visitas de tu equipo."}
-              {user?.rol === "comercial" && "Mostrando solo tus visitas."}
-              {!user?.rol &&
-                "No tienes un rol asignado, por lo que no puedes ver las visitas."}
-            </p>
             <div className="visitas-search-row">
               <div className="visitas-search-wrapper">
                 <label htmlFor="search-user" className="visitas-search-label">

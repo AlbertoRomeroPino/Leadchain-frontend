@@ -2,11 +2,163 @@
   min-height: 100vh;
   background-color: #0f0a0a;
   color: #ffffff;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .comerciales-main {
   margin-left: 80px;
   padding: 32px;
+  width: calc(100% - 80px);
+  overflow-x: hidden;
+}
+
+/* Responsive: Tablet y Mobile */
+@media (max-width: 900px) {
+  .comerciales-main {
+    margin-left: 0;
+    padding: 32px 32px 100px 32px;
+    width: 100%;
+  }
+
+  /* Columna Seleccionar compacta en tablet */
+  .comerciales-table th:nth-child(1),
+  .comerciales-table td:nth-child(1) {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    padding: 6px 4px;
+    text-align: center;
+  }
+
+  .comerciales-table th:nth-child(1) {
+    font-size: 0;
+    overflow: hidden;
+  }
+
+  .comerciales-table input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .comerciales-main {
+    margin-left: 0;
+    padding: 16px 12px 100px 12px;
+    width: 100%;
+  }
+
+  /* Columna Seleccionar compacta en móvil */
+  .comerciales-table th:nth-child(1),
+  .comerciales-table td:nth-child(1) {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    padding: 6px 4px;
+    text-align: center;
+  }
+
+  .comerciales-table th:nth-child(1) {
+    font-size: 0;
+    overflow: hidden;
+  }
+
+  .comerciales-table input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Contenedor de tabla con overflow manejado */
+  .comerciales-page-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Tabla compacta en mobile */
+  .comerciales-table {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .comerciales-table th,
+  .comerciales-table td {
+    padding: 8px 6px;
+    font-size: 0.75rem;
+  }
+
+  /* Header más pequeño */
+  .comerciales-table th {
+    padding: 10px 6px;
+    font-size: 0.7rem;
+  }
+
+  /* Ocultar columna de Visitas */
+  .comerciales-table th:nth-child(5),
+  .comerciales-table td:nth-child(5) {
+    display: none;
+  }
+
+  /* Email muy comprimido */
+  .comerciales-table th:nth-child(3),
+  .comerciales-table td:nth-child(3) {
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.7rem;
+  }
+
+  /* Nombre un poco más ancho */
+  .comerciales-table th:nth-child(2),
+  .comerciales-table td:nth-child(2) {
+    max-width: 100px;
+    font-size: 0.75rem;
+  }
+
+  /* Zona */
+  .comerciales-table th:nth-child(4),
+  .comerciales-table td:nth-child(4) {
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.7rem;
+  }
+
+  .comerciales-title {
+    font-size: 1.25rem;
+    margin: 0 0 12px 0;
+  }
+
+  .comerciales-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .comerciales-button-group {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .comerciales-create-button,
+  .comerciales-delete-button {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  /* Ajustar altura de filas */
+  .comerciales-table tbody tr {
+    height: auto;
+  }
+
+  .comerciales-table td {
+    vertical-align: middle;
+  }
 }
 
 .comerciales-header {
@@ -197,8 +349,10 @@
   background-color: #161010;
   border: 1px solid #3f1b1b;
   border-radius: 16px;
-  overflow: hidden;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  width: 100%;
 }
 
 .comerciales-table {

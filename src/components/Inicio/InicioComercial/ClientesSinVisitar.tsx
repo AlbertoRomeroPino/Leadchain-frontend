@@ -100,7 +100,7 @@ const ClientesSinVisitar = ({
   return (
     <div className="clientes-sin-visitar-container">
       {/* Header con estadísticas */}
-      <div className="clientes-header">
+      <div className="dashboard-stats">
         <div className="clientes-stat">
           <span className="stat-label">Total Clientes</span>
           <span className="stat-value">{clientes.length}</span>
