@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import GlovalMap from "../components/utils/GlovalMap";
 import MapaEdificioPanel from "../components/MapaEdificioPanel";
 import Sidebar from "../layout/Sidebar";
 import "../styles/Map.css";
 import { useAuth } from "../auth/useAuth";
 import { InicioService } from "../services/InicioService";
+import { useInitialize } from "../hooks/useInitialize";
 import type { Zona } from "../types/zonas/Zona";
 import type { Edificio } from "../types/edificios/Edificio";
 import type { LatLngBoundsExpression } from "leaflet";
@@ -19,36 +20,32 @@ const MapPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const cargarDatos = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        // Una sola petición consolida zonas con edificios y clientes
-        const mapData = await InicioService.getMapaInicio();
-        setZonas(mapData.zonas);
-        
-        // Extraer todos los edificios de todas las zonas
-        const todosEdificios: Edificio[] = [];
-        mapData.zonas.forEach((zona) => {
-          if (zona.edificios && Array.isArray(zona.edificios)) {
-            zona.edificios.forEach((edificio) => {
-              todosEdificios.push(edificio as Edificio);
-            });
-          }
-        });
-        setEdificios(todosEdificios);
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Error desconocido";
-        setError(errorMessage);
-        console.error("Error al cargar datos:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    cargarDatos();
-  }, []);
+  useInitialize(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // Una sola petición consolida zonas con edificios y clientes
+      const mapData = await InicioService.getMapaInicio();
+      setZonas(mapData.zonas);
+      
+      // Extraer todos los edificios de todas las zonas
+      const todosEdificios: Edificio[] = [];
+      mapData.zonas.forEach((zona) => {
+        if (zona.edificios && Array.isArray(zona.edificios)) {
+          zona.edificios.forEach((edificio) => {
+            todosEdificios.push(edificio as Edificio);
+          });
+        }
+      });
+      setEdificios(todosEdificios);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Error desconocido";
+      setError(errorMessage);
+      console.error("Error al cargar datos:", err);
+    } finally {
+      setLoading(false);
+    }
+  });
 
   // Calcular centro, zoom y maxBounds para la zona del comercial
   const { centerCoords, zoomLevel, maxBounds, minZoomLevel } = useMemo(() => {

@@ -8,6 +8,7 @@ import type { Visita } from "../../types/visitas/Visita";
 import "../../styles/InfoCliente.css";
 import type { Zona } from "../../types/zonas/Zona";
 import { useAuth } from "../../auth/useAuth";
+import { useInitialize } from "../../hooks/useInitialize";
 import InfoClienteToolbar from "./Info/InfoClienteToolbar";
 import InfoClienteDatosCard from "./Info/InfoClienteDatosCard";
 import InfoClienteEdificioCard from "./Info/InfoClienteEdificioCard";
@@ -46,9 +47,8 @@ const InfoCliente = ({
     setClienteInfo(cliente);
   }, [cliente]);
 
-  useEffect(() => {
-    alertShownRef.current = false;
-    const loadData = async () => {
+  useInitialize(
+    async () => {
       try {
         setLoading(true);
         showStatusAlert({
@@ -111,10 +111,9 @@ const InfoCliente = ({
       } finally {
         setLoading(false);
       }
-    };
-
-    loadData();
-  }, [cliente.id]);
+    },
+    [cliente.id, onClienteUpdated]
+  );
 
   const handleUpdateCliente = async (clienteActualizado: {
     nombre: string;

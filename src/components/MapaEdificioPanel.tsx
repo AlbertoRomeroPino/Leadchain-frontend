@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Edificio } from "../types/edificios/Edificio";
 import type { Cliente } from "../types/clientes/Cliente";
 import type { Zona } from "../types/zonas/Zona";
 import { InicioService } from "../services/InicioService";
+import { useInitialize } from "../hooks/useInitialize";
 import "../styles/MapaEdificioPanel.css";
 
 interface MapaEdificioPanelProps {
@@ -29,40 +30,40 @@ const MapaEdificioPanel = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!isOpen || !edificio) return;
+  useInitialize(async () => {
+    if (!isOpen || !edificio) {
+      setClientesBloque([]);
+      setZona(null);
+      return;
+    }
 
-    const cargarDatos = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+    try {
+      setLoading(true);
+      setError(null);
 
-        // Una sola petición trae el edificio con zona y clientes
-        const detalleData = await InicioService.getDetalleEdificio(edificio.id);
-        setZona(detalleData.zona);
+      // Una sola petición trae el edificio con zona y clientes
+      const detalleCompleto = await InicioService.getDetalleEdificio(edificio.id);
+      setZona(detalleCompleto.zona || null);
 
-        // Procesar clientes del edificio
-        const clientesFormateados: ClienteEnEdificio[] = (
-          detalleData.edificio.clientes || []
-        ).map((cliente) => ({
-          cliente,
-          planta: cliente.planta || null,
-          puerta: cliente.puerta || null,
-        }));
+      // Procesar clientes del edificio
+      const clientesFormateados: ClienteEnEdificio[] = (
+        detalleCompleto.clientes || []
+      ).map((cliente) => ({
+        cliente,
+        planta: cliente.planta || null,
+        puerta: cliente.puerta || null,
+      }));
 
-        setClientesBloque(clientesFormateados);
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Error desconocido";
-        setError(errorMessage);
-        console.error("Error al cargar datos:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    cargarDatos();
-  }, [isOpen, edificio]);
+      setClientesBloque(clientesFormateados);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Error desconocido";
+      setError(errorMessage);
+      console.error("Error al cargar datos:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [isOpen, edificio?.id]);
 
   if (!isOpen) return null;
 

@@ -4,6 +4,15 @@ import { authHttp } from "./https";
 
 
 export const ZonaService = {
+    async getZonasPageData() {
+        try {
+            const response = await authHttp.get("/api/zonas/pagina/datos");
+            return response.data;
+        } catch (error) {
+            throw new Error(ExceptionService.getErrorMessage(error, "Error al obtener los datos de las zonas"));
+        }
+    },
+
     async getZonaById(id: number) {
         try {
             const response = await authHttp.get(`/api/zonas/${id}`);

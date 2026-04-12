@@ -23,6 +23,15 @@ export const EdificiosService = {
         }
     },
 
+    async getEdificioDetalle(id: number) {
+        try {
+            const response = await authHttp.get(`/api/edificios/${id}/detalle`);
+            return response.data;
+        } catch (error) {
+            throw new Error(ExceptionService.getErrorMessage(error, `Error al obtener detalles del edificio con ID ${id}`));
+        }
+    },
+
     async createEdificio(edificio: EdificioInput) {
         try {
             const response = await authHttp.post("/api/edificios", edificio);

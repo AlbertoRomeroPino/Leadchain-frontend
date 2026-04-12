@@ -1,6 +1,6 @@
 import type { Cliente } from "../types/clientes/Cliente";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { clientesService } from "../services/ClientesService";
 import { useAuth } from "../auth/useAuth";
 
@@ -11,6 +11,7 @@ import ClientesHeader from "../components/Clientes/ClientesHeader";
 import ClientesConEdificioTable from "../components/Clientes/ClientesConEdificioTable";
 import ClientesSinEdificioTable from "../components/Clientes/ClientesSinEdificioTable";
 import ClientesCreateModal from "../components/Clientes/ClientesCreateModal";
+import { useInitialize } from "../hooks/useInitialize";
 
 import "../styles/Clientes.css";
 
@@ -24,43 +25,39 @@ const Clientes = () => {
   const { user } = useAuth();
   const canCreateCliente = user?.rol === "admin";
 
-  useEffect(() => {
+  useInitialize(async () => {
     if (!user) return;
 
-    const loadClientes = async () => {
+    showStatusAlert({
+      type: "loading",
+      title: "Cargando clientes...",
+      duration: 8000,
+    });
+
+    try {
+      const [clientesConEdificio, sinEdificio] = await Promise.all([
+        clientesService.getClientes(),
+        user?.rol === "admin"
+          ? clientesService.getClientesSinEdificio()
+          : Promise.resolve([] as Cliente[]),
+      ]);
+
+      setClientes(clientesConEdificio);
+      setClientesSinEdificio(sinEdificio);
       showStatusAlert({
-        type: "loading",
-        title: "Cargando clientes...",
-        duration: 8000,
+        type: "success",
+        title: "Clientes cargados correctamente",
+        description: `Clientes encontrados: ${clientesConEdificio.length + sinEdificio.length}`,
       });
-
-      try {
-        const [clientesConEdificio, sinEdificio] = await Promise.all([
-          clientesService.getClientes(),
-          user?.rol === "admin"
-            ? clientesService.getClientesSinEdificio()
-            : Promise.resolve([] as Cliente[]),
-        ]);
-
-        setClientes(clientesConEdificio);
-        setClientesSinEdificio(sinEdificio);
-        showStatusAlert({
-          type: "success",
-          title: "Clientes cargados correctamente",
-          description: `Clientes encontrados: ${clientesConEdificio.length + sinEdificio.length}`,
-        });
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Error al cargar clientes";
-        showStatusAlert({
-          type: "error",
-          title: "Error al cargar clientes",
-          description: message,
-        });
-      }
-    };
-
-    loadClientes();
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Error al cargar clientes";
+      showStatusAlert({
+        type: "error",
+        title: "Error al cargar clientes",
+        description: message,
+      });
+    }
   }, [user]);
 
   const handleCreateCliente = async (cliente: {

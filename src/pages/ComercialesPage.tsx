@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import Sidebar from "../layout/Sidebar";
 import { UserService } from "../services/User";
 import type { User, UserVisitas } from "../types/users/User";
@@ -8,6 +8,7 @@ import "../styles/ComercialesPage.css";
 import { Trash, UserPlus2, UserRoundCog } from "lucide-react";
 import ComercialesForm from "../components/Comerciales/ComercialesForm";
 import showStatusAlert from "../components/StatusAlert";
+import { useInitialize } from "../hooks/useInitialize";
 
 const Comerciales = () => {
   const [comerciales, setComerciales] = useState<UserVisitas[]>([]);
@@ -75,28 +76,24 @@ const Comerciales = () => {
     }
   };
 
-  useEffect(() => {
-    const loadComerciales = async () => {
-      try {
-        // Una sola petición consolida comerciales con visitas anidadas y zonas
-        const data = await UserService.getComercialesAMiCargo();
-        
-        // Las visitas ya están anidadas en cada comercial con cliente y estado incluidos
-        const comercialesConVisitas: UserVisitas[] = data.comerciales as UserVisitas[];
-        
-        setZonas(data.zonas);
-        setComerciales(comercialesConVisitas);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Error cargando comerciales",
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadComerciales();
-  }, []);
+  useInitialize(async () => {
+    try {
+      // Una sola petición consolida comerciales con visitas anidadas y zonas
+      const data = await UserService.getComercialesAMiCargo();
+      
+      // Las visitas ya están anidadas en cada comercial con cliente y estado incluidos
+      const comercialesConVisitas: UserVisitas[] = data.comerciales as UserVisitas[];
+      
+      setZonas(data.zonas);
+      setComerciales(comercialesConVisitas);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Error cargando comerciales",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  });
 
   const handleCreateComercialSuccess = (comercial: User) => {
     // Cerrar modal

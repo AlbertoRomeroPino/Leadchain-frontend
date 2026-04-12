@@ -7,6 +7,7 @@ import { VisitasService } from "../../../services/VisitasService";
 import { EstadoVisitaService } from "../../../services/EstadoVisitaService";
 import { EdificiosService } from "../../../services/EdificiosService";
 import { useAuth } from "../../../auth/useAuth";
+import { useInitialize } from "../../../hooks/useInitialize";
 import VisitaFormularioModal from "../../Visitas/FormularioModal/VisitaFormularioModal";
 import type { VisitaFormValues } from "../../Visitas/FormularioModal/VisitaFormularioModal";
 
@@ -34,8 +35,8 @@ const ClientesSinVisitar = ({
   const [estados, setEstados] = useState<EstadoVisita[]>([]);
   const [clientes, setClientes] = useState<ClienteSinVisita[]>([]);
 
-  useEffect(() => {
-    const cargarEdificios = async () => {
+  useInitialize(
+    async () => {
       try {
         const estadosData = await EstadoVisitaService.getEstadosVisita();
         setEstados(estadosData);
@@ -58,9 +59,9 @@ const ClientesSinVisitar = ({
         console.error("Error al cargar datos:", err);
         setClientes(clientesData);
       }
-    };
-    cargarEdificios();
-  }, [clientesData]);
+    },
+    [clientesData]
+  );
 
   const clientesSinVisita = clientes.filter((c) => !c.tieneVisita);
   const clientesConVisita = clientes.filter((c) => c.tieneVisita);

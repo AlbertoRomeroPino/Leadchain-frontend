@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../auth/useAuth";
 import Sidebar from "../layout/Sidebar";
 import { VisitasService } from "../services/VisitasService";
+import { useInitialize } from "../hooks/useInitialize";
 import type { Visita } from "../types/visitas/Visita";
 import type { Cliente } from "../types/clientes/Cliente";
 import type { EstadoVisita } from "../types/visitas/EstadoVisita";
@@ -20,22 +21,18 @@ const Visitas = () => {
   const [selectedVisita, setSelectedVisita] = useState<Visita | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        // Una sola petición consolida visitas, clientes y estados
-        const data = await VisitasService.getVisitasPaginaDatos();
+  useInitialize(async () => {
+    try {
+      // Una sola petición consolida visitas, clientes y estados
+      const data = await VisitasService.getVisitasPaginaDatos();
 
-        setVisitas(data.visitas);
-        setClientes(data.clientes);
-        setEstados(data.estados);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    loadData();
-  }, []);
+      setVisitas(data.visitas);
+      setClientes(data.clientes);
+      setEstados(data.estados);
+    } catch (error) {
+      console.error(error);
+    }
+  });
 
   const availableClients = clientes;
 
@@ -161,6 +158,15 @@ const Visitas = () => {
         <div className="visitas-page-header">
           <div>
             <h1>Visitas</h1>
+            <div className="visitas-actions">
+              {user?.rol === "comercial" && (
+                <button type="button" onClick={openCreateModal} className="visitas-action-button">
+                  <MapPinPlusInside />
+                </button>
+              )}
+            </div>
+          </div>
+          <div>
             <div className="visitas-search-row">
               <div className="visitas-search-wrapper">
                 <label htmlFor="search-user" className="visitas-search-label">
@@ -198,14 +204,6 @@ const Visitas = () => {
                 </select>
               </div>
             </div>
-          </div>
-
-          <div className="visitas-actions">
-            {user?.rol === "comercial" && (
-              <button type="button" onClick={openCreateModal} className="visitas-action-button">
-                <MapPinPlusInside />
-              </button>
-            )}
           </div>
         </div>
 

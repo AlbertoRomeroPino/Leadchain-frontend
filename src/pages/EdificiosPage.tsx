@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Sidebar from "../layout/Sidebar";
 import type { Edificio, EdificioInput } from "../types/edificios/Edificio";
 import type { Zona } from "../types/zonas/Zona";
@@ -11,6 +11,7 @@ import { ZonaService } from "../services/ZonaService";
 import { clientesService } from "../services/ClientesService";
 import EdificioHeader from "../components/Edificios/EdificioHeader";
 import EdificioCreateModal from "../components/Edificios/EdificioCreateModal";
+import { useInitialize } from "../hooks/useInitialize";
 import "../styles/Edificios.css";
 
 const Edificios = () => {
@@ -23,53 +24,49 @@ const Edificios = () => {
   const { user } = useAuth();
   const canCreateEdificio = user?.rol === "admin";
 
-  useEffect(() => {
+  useInitialize(async () => {
     if (!user) return;
 
-    const loadEdificios = async () => {
+    showStatusAlert({
+      type: "loading",
+      title: "Cargando edificios y zonas...",
+      duration: 8000,
+    });
+
+    // TODO: los comerciales unicamente pueden ver los edificios de sus zonas
+    // y los administradores los de sus comerciales, pero eso lo dejamos para más adelante
+    try {
+      const edificiosData =
+        (await EdificiosService.getEdificios()) as Edificio[];
+
+      const edificiosUnicos = Array.from(
+        new Map(
+          edificiosData.map((edificio: Edificio) => [
+            edificio.direccion_completa,
+            edificio,
+          ]),
+        ).values(),
+      ) as Edificio[];
+
+      setEdificios(edificiosUnicos);
+
+      const zonasData = await ZonaService.getZonas();
+      setZonas(zonasData);
+
       showStatusAlert({
-        type: "loading",
-        title: "Cargando edificios y zonas...",
-        duration: 8000,
+        type: "success",
+        title: "Edificios y zonas cargados correctamente",
+        description: `Edificios: ${edificiosUnicos.length}`,
       });
-
-      // TODO: los comerciales unicamente pueden ver los edificios de sus zonas
-      // y los administradores los de sus comerciales, pero eso lo dejamos para más adelante
-      try {
-        const edificiosData =
-          (await EdificiosService.getEdificios()) as Edificio[];
-
-        const edificiosUnicos = Array.from(
-          new Map(
-            edificiosData.map((edificio: Edificio) => [
-              edificio.direccion_completa,
-              edificio,
-            ]),
-          ).values(),
-        ) as Edificio[];
-
-        setEdificios(edificiosUnicos);
-
-        const zonasData = await ZonaService.getZonas();
-        setZonas(zonasData);
-
-        showStatusAlert({
-          type: "success",
-          title: "Edificios y zonas cargados correctamente",
-          description: `Edificios: ${edificiosUnicos.length}`,
-        });
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Error al cargar edificios";
-        showStatusAlert({
-          type: "error",
-          title: "Error al cargar edificios",
-          description: message,
-        });
-      }
-    };
-
-    loadEdificios();
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Error al cargar edificios";
+      showStatusAlert({
+        type: "error",
+        title: "Error al cargar edificios",
+        description: message,
+      });
+    }
   }, [user]);
 
   const handleCreateEdificio = async (edificio: EdificioInput) => {

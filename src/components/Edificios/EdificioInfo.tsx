@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { Edificio, EdificioInput } from "../../types/edificios/Edificio";
 import type { Zona } from "../../types/zonas/Zona";
 import { useAuth } from "../../auth/useAuth";
 import showStatusAlert from "../StatusAlert";
 import { EdificiosService } from "../../services/EdificiosService";
-import { ZonaService } from "../../services/ZonaService";
-import { clientesService } from "../../services/ClientesService";
+import { useInitialize } from "../../hooks/useInitialize";
 import EdificioInfoToolbar from "./Info/EdificioInfoToolbar";
 import EdificioInfoDetailsCard from "./Info/EdificioInfoDetailsCard";
 import EdificioInfoClienteCard from "./Info/EdificioInfoClienteCard";
@@ -37,104 +36,68 @@ const EdificioInfo = ({
   const [showEditForm, setShowEditForm] = useState(false);
   const [deletingEdificio, setDeletingEdificio] = useState(false);
   const [updatingEdificio, setUpdatingEdificio] = useState(false);
-  const alertShownRef = React.useRef(false);
   const prevEdificioRef = React.useRef<Edificio>(edificio);
 
-  useEffect(() => {
-    setEdificioInfo(edificio);
-  }, [edificio]);
+  useInitialize(async () => {
+    try {
+      showStatusAlert({
+        type: "loading",
+        title: "Cargando información del edificio...",
+        description: "Por favor espera",
+        duration: 3000,
+      });
 
-  useEffect(() => {
-    let isMounted = true;
-    alertShownRef.current = false;
+      // Una sola petición trae todo: edificio, zona, bloque de edificios y todas las zonas
+      const detalleCompleto = await EdificiosService.getEdificioDetalle(
+        edificio.id,
+      );
 
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        showStatusAlert({
-          type: "loading",
-          title: "Cargando información del edificio...",
-          description: "Por favor espera",
-          duration: 3000,
+      // Usar los clientes desde la relación many-to-many con datos pivot
+      const clientesDelBloqueBuffer = [detalleCompleto, ...(detalleCompleto.bloqueEdificios || [])]
+        .flatMap((edif: Edificio) => {
+          if (!edif.clientes || edif.clientes.length === 0) return [];
+          return edif.clientes.map((cliente) => ({
+            cliente,
+            planta: cliente.planta ?? null,
+            puerta: cliente.puerta ?? null,
+          }));
         });
 
-        const detalle: Edificio = await EdificiosService.getEdificioById(
-          edificio.id,
-        );
-        const zonaDetalle = await ZonaService.getZonaById(detalle.id_zona);
-        const todasLasZonas = await ZonaService.getZonas();
+      const clientesBloqueUnicos = Array.from(
+        new Map(
+          clientesDelBloqueBuffer
+            .map((c) => [
+              `${c.cliente.id}|${c.planta ?? ""}|${c.puerta ?? ""}`,
+              c,
+            ]),
+        ).values(),
+      );
 
-        // Detectar si hay otros usuarios en el mismo bloque de pisos (misma dirección, distinto id)
-        const allEdificios =
-          (await EdificiosService.getEdificios()) as Edificio[];
-        const sameBlock = allEdificios.filter(
-          (edif: Edificio) =>
-            edif.direccion_completa === detalle.direccion_completa &&
-            edif.id !== detalle.id,
-        );
+      setZona(detalleCompleto.zona || null);
+      setZonas(detalleCompleto.todasLasZonas || []);
+      setClientesBloque(clientesBloqueUnicos);
+      prevEdificioRef.current = detalleCompleto;
+      setEdificioInfo(detalleCompleto);
 
-        // Usar los clientes desde la relación many-to-many con datos pivot
-        const clientesDelBloqueBuffer = [detalle, ...sameBlock]
-          .flatMap((edif: Edificio) => {
-            if (!edif.clientes || edif.clientes.length === 0) return [];
-            return edif.clientes.map((cliente) => ({
-              cliente,
-              planta: cliente.planta ?? null,
-              puerta: cliente.puerta ?? null,
-            }));
-          });
-
-        const clientesBloqueUnicos = Array.from(
-          new Map(
-            clientesDelBloqueBuffer
-              .map((c) => [
-                `${c.cliente.id}|${c.planta ?? ""}|${c.puerta ?? ""}`,
-                c,
-              ]),
-          ).values(),
-        );
-
-        if (!isMounted) return;
-
-        setZona(zonaDetalle);
-        setZonas(todasLasZonas);
-        setClientesBloque(clientesBloqueUnicos);
-        prevEdificioRef.current = detalle;
-        setEdificioInfo(detalle);
-
-        if (!alertShownRef.current) {
-          alertShownRef.current = true;
-          showStatusAlert({
-            type: "success",
-            title: "Información del edificio cargada",
-            duration: 3000,
-          });
-        }
-      } catch (error) {
-        if (isMounted) {
-          showStatusAlert({
-            type: "error",
-            title: "Error al cargar edificio",
-            description:
-              error instanceof Error
-                ? error.message
-                : "Error al cargar la información del edificio",
-            duration: 3000,
-          });
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [edificio.id, onEdificioUpdated]);
+      showStatusAlert({
+        type: "success",
+        title: "Información del edificio cargada",
+        duration: 3000,
+      });
+    } catch (error) {
+      showStatusAlert({
+        type: "error",
+        title: "Error al cargar edificio",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Error al cargar la información del edificio",
+        duration: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [edificio.id]);
 
   const handleDeleteEdificio = async () => {
     if (!canManageEdificio) return;

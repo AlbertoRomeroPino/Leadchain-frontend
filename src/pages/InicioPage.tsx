@@ -9,18 +9,33 @@ import "../styles/InicioAdmin.css";
 const InicioPage = () => {
   const { user } = useAuth();
 
+  if (!user) {
+    return (
+      <>
+        <Sidebar />
+        <div className="page-layout-wrapper">
+          <main className="inicio-page-main">
+            <p>Cargando usuario...</p>
+          </main>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Sidebar />
-      <main className="inicio-page-main">
-        {user?.rol === "comercial" ? (
-          <InicioComercial />
-        ) : user?.rol === "admin" ? (
-          <InicioAdmin />
-        ) : (
-          <p>Selecciona una sección del menú para comenzar a gestionar tus clientes y visitas.</p>
-        )}
-      </main>
+      <div className="page-layout-wrapper">
+        <main className="inicio-page-main">
+          {user.rol === "comercial" ? (
+            <InicioComercial />
+          ) : user.rol === "admin" ? (
+            <InicioAdmin />
+          ) : (
+            <p>Selecciona una sección del menú para comenzar a gestionar tus clientes y visitas.</p>
+          )}
+        </main>
+      </div>
     </>
   );
 };

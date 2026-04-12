@@ -3,7 +3,7 @@ import type { User } from "../../../types/users/User";
 import type { Edificio } from "../../../types/edificios/Edificio";
 import type { Visita } from "../../../types/visitas/Visita";
 import type { Cliente } from "../../../types/clientes/Cliente";
-import { EstadoVisitaService } from "../../../services/EstadoVisitaService";
+import { useInitialize } from "../../../hooks/useInitialize";
 
 interface ComercialCardProps {
   comerciales: User[];
@@ -124,13 +124,15 @@ const ComercialCard = ({ comerciales, visitas, clientes, edificios }: ComercialC
   const [stats, setStats] = useState<Map<number, ComercialStats>>(new Map());
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const calcularEstadisticas = async () => {
+  useInitialize(
+    async () => {
+      if (comerciales.length === 0) {
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
-
-        // Cargar estados de visita para obtener categorías
-        await EstadoVisitaService.getEstadosVisita();
 
         // Definir categorías de estados
         const categoriasEstados: Record<
@@ -241,14 +243,9 @@ const ComercialCard = ({ comerciales, visitas, clientes, edificios }: ComercialC
       } finally {
         setLoading(false);
       }
-    };
-
-    if (comerciales.length > 0) {
-      calcularEstadisticas();
-    } else {
-      setLoading(false);
-    }
-  }, [comerciales, visitas, clientes, edificios]);
+    },
+    [comerciales, visitas, clientes, edificios]
+  );
 
   return (
     <div className="comerciales-container">

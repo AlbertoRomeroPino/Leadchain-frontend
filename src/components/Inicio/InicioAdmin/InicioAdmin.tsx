@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../auth/useAuth";
+import { useInitialize } from "../../../hooks/useInitialize";
 import ComercialCard from "./ComercialCard";
 import { InicioService } from "../../../services/InicioService";
 import type { User } from "../../../types/users/User";
@@ -24,8 +25,8 @@ const InicioAdmin = () => {
     edificios: [],
   });
 
-  useEffect(() => {
-    const cargarDatos = async () => {
+  useInitialize(
+    async () => {
       if (!user || user.rol !== "admin") {
         setLoading(false);
         return;
@@ -53,10 +54,9 @@ const InicioAdmin = () => {
       } finally {
         setLoading(false);
       }
-    };
-
-    cargarDatos();
-  }, [user]);
+    },
+    [user?.id]
+  );
 
   if (loading) {
     return <div className="loading">Cargando dashboard...</div>;

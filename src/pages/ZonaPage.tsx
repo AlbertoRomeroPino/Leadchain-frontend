@@ -1,14 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { MapContainer, Marker, Popup, Polygon, Rectangle, TileLayer } from "react-leaflet";
 import { MapPlus, Pencil, MapMinus } from "lucide-react";
 import L from "leaflet";
 import Sidebar from "../layout/Sidebar";
 import type { Zona } from "../types/zonas/Zona";
 import type { Edificio } from "../types/edificios/Edificio";
+import type { Cliente } from "../types/clientes/Cliente";
 import type { GeoPoint } from "../types/shared/GeoPoint";
 import { ZonaService } from "../services/ZonaService";
-import { EdificiosService } from "../services/EdificiosService";
-import { clientesService } from "../services/ClientesService";
+import { useInitialize } from "../hooks/useInitialize";
 import ZonaFormularioModal from "../components/Zona/FormularioModal/ZonaFormularioModal";
 import {
   CORDOBA_BOUNDS,
@@ -22,52 +22,26 @@ import "../styles/ZonaPage.css";
 
 const Zona = () => {
   const [zonas, setZonas] = useState<Zona[]>([]);
-  const [edificios, setEdificios] = useState<Edificio[]>([]);
-  const [clientes, setClientes] = useState<
-    Record<
-      number,
-      { nombre: string; apellidos: string; telefono: string | null }
-    >
-  >({});
   const [selectedZona, setSelectedZona] = useState<Zona | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [creatingZona, setCreatingZona] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const zonasResponse = await ZonaService.getZonas();
-        const edificiosResponse = await EdificiosService.getEdificios();
-        const clientesResponse = await clientesService.getClientes();
-
-        setZonas(zonasResponse);
-        setEdificios(edificiosResponse);
-        setClientes(
-          clientesResponse.reduce(
-            (acc, cliente) => {
-              acc[cliente.id] = cliente;
-              return acc;
-            },
-            {} as Record<
-              number,
-              { nombre: string; apellidos: string; telefono: string | null }
-            >,
-          ),
-        );
-      } catch (error) {
-        console.error("Error fetching zonas, edificios o clientes:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  // Cargar datos optimizados en una única consulta
+  useInitialize(async () => {
+    try {
+      const zonasResponse = await ZonaService.getZonasPageData();
+      setZonas(zonasResponse);
+    } catch (error) {
+      console.error("Error fetching zonas:", error);
+    }
+  });
 
   const handleCreateZona = async (zona: { nombre_zona: string; area: GeoPoint[] }) => {
     try {
       setCreatingZona(true);
       await ZonaService.createZona(zona);
-      const zonasResponse = await ZonaService.getZonas();
+      const zonasResponse = await ZonaService.getZonasPageData();
       setZonas(zonasResponse);
       setShowCreateForm(false);
       setEditMode(false);
@@ -83,7 +57,7 @@ const Zona = () => {
     try {
       setCreatingZona(true);
       await ZonaService.updateZona(selectedZona.id, zona);
-      const zonasResponse = await ZonaService.getZonas();
+      const zonasResponse = await ZonaService.getZonasPageData();
       setZonas(zonasResponse);
       const updatedZona = zonasResponse.find((z: Zona) => z.id === selectedZona.id);
       if (updatedZona) setSelectedZona(updatedZona);
@@ -129,7 +103,7 @@ const Zona = () => {
       try {
         setCreatingZona(true);
         await ZonaService.deleteZona(selectedZona.id);
-        const zonasResponse = await ZonaService.getZonas();
+        const zonasResponse = await ZonaService.getZonasPageData();
         setZonas(zonasResponse);
         setSelectedZona(null);
       } catch (error) {
@@ -140,24 +114,27 @@ const Zona = () => {
     }
   };
 
+  // Obtener edificios de la zona seleccionada (ahora vienen dentro de la zona)
+  const selectedEdificios = useMemo(() => {
+    if (!selectedZona || !selectedZona.edificios) return [];
+    return selectedZona.edificios;
+  }, [selectedZona]);
+
+  // Calcular edificios con clientes asignados
+  const selectedAssignedEdificios = useMemo(() => {
+    return selectedEdificios.filter((edificio) => Array.isArray(edificio.clientes) && edificio.clientes.length > 0);
+  }, [selectedEdificios]);
+
+  // Contar edificios por zona
   const edificiosPorZona = useMemo(() => {
     const counts: Record<number, number> = {};
-    edificios.forEach((edificio) => {
-      if (edificio.id_zona) {
-        counts[edificio.id_zona] = (counts[edificio.id_zona] || 0) + 1;
+    zonas.forEach((zona) => {
+      if (zona.edificios) {
+        counts[zona.id] = zona.edificios.length;
       }
     });
     return counts;
-  }, [edificios]);
-
-  const selectedEdificios = useMemo(() => {
-    if (!selectedZona) return [];
-    return edificios.filter((edificio) => edificio.id_zona === selectedZona.id);
-  }, [selectedZona, edificios]);
-
-  const selectedAssignedEdificios = useMemo(() => {
-    return selectedEdificios.filter((edificio) => edificio.clientes && edificio.clientes.length > 0);
-  }, [selectedEdificios]);
+  }, [zonas]);
 
   const clusteredMarkers = useMemo(() => {
     const clusters: Record<
@@ -184,7 +161,7 @@ const Zona = () => {
         };
       }
       clusters[key].count += 1;
-      if (edificio.clientes && edificio.clientes.length > 0) {
+      if (Array.isArray(edificio.clientes) && edificio.clientes.length > 0) {
         clusters[key].assignedClients += 1;
       }
       clusters[key].edificios.push(edificio);
@@ -341,8 +318,8 @@ const Zona = () => {
                 {clusteredMarkers.map((cluster, index) => {
                   // Crear un array de clientes con sus edificios asociados
                   const clientesConEdificio = cluster.edificios.flatMap((ed) =>
-                    ed.clientes && ed.clientes.length > 0
-                      ? ed.clientes.map((cliente) => ({
+                    Array.isArray(ed.clientes) && ed.clientes.length > 0
+                      ? ed.clientes.map((cliente: Cliente & { planta?: string | null; puerta?: string | null }) => ({
                           cliente,
                           edificio: ed,
                         }))
