@@ -1,4 +1,4 @@
-import { useEffect, useRef, DependencyList } from 'react';
+import { useEffect, useRef, type DependencyList } from 'react';
 
 /**
  * Hook para ejecutar una función async solo una vez al montar el componente
@@ -44,5 +44,6 @@ export const useInitialize = (
         console.error('Error in useInitialize:', error);
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps ? deps : []);
 };
