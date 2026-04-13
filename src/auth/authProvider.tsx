@@ -46,6 +46,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       onUnauthorized: () => {
         logout();
       },
+      onTokenRefreshed: (newToken) => {
+        // Actualizar el token en el estado cuando se renueve automáticamente
+        setToken(newToken);
+      },
+      onUserUpdated: (updatedUser) => {
+        // Actualizar datos del usuario cuando se obtienen del endpoint /me
+        setUser(updatedUser);
+      },
     });
   }, [logout]);
 
