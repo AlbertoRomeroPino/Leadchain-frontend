@@ -1,21 +1,33 @@
-.info-cliente {
+/* Grid container parent para estructura cuadriculada */
+.clientes-main:has(.info-cliente-toolbar) {
   display: grid;
-  gap: 16px;
-  margin-left: 80px;
-  padding: 20px;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-left: 100px;
+  margin-top: 20px;
+  padding: 20px !important;
 }
 
 .info-cliente-toolbar {
+  grid-column: 1 / -1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  align-items: center;
-  margin-bottom: 20px;
-  width: 100%;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+}
+
+.info-cliente {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: 1fr 1fr;
 }
 
 .info-cliente-back-button {
-  grid-column: 1 / 2;
+  grid-column: 1 / -1;
   width: 100%;
   min-height: 44px;
   padding: 10px 18px;
@@ -27,32 +39,35 @@
   cursor: pointer;
   transition: background-color 0.2s;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .info-cliente-back-button:hover {
   background-color: #374151;
 }
 
-.buttons-section {
-  grid-column: 2 / 3;
-  display: flex;
-  gap: 12px;
-  width: 100%;
-}
-
 .cliente-action-button {
-  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  min-height: 44px;
+  min-height: 48px;
   padding: 10px;
   border-radius: 8px;
   border: none;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.cliente-action-button:nth-of-type(1) {
+  grid-column: 1 / 2;
+}
+
+.cliente-action-button:nth-of-type(2) {
+  grid-column: 2 / 3;
 }
 
 .cliente-action-button--edit {
@@ -76,9 +91,20 @@
 }
 
 .info-cliente-top {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 16px;
+  display: contents;
+}
+
+.info-cliente-top > :first-child {
+  grid-column: 1 / 2;
+}
+
+.info-cliente-top > :last-child {
+  grid-column: 2 / 3;
+}
+
+.info-cliente-card-visita {
+  grid-column: 1 / -1;
+  width: 100%;
 }
 
 .info-cliente-loading {
@@ -139,10 +165,6 @@
   margin-bottom: 6px;
 }
 
-.info-cliente-card-visita {
-  width: 100%;
-}
-
 .info-cliente-state {
   display: inline-flex;
   align-items: center;
@@ -154,35 +176,56 @@
 }
 
 @media (max-width: 1024px) {
-  .info-cliente-toolbar {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  .clientes-main:has(.info-cliente-toolbar) {
+    grid-template-columns: 1fr 1fr;
   }
 
-  .info-cliente-back-button,
-  .buttons-section {
-    grid-column: 1 / -1 !important;
-    width: 100%;
+  .cliente-action-button:nth-of-type(1) {
+    grid-column: 1 / 2;
+  }
+
+  .cliente-action-button:nth-of-type(2) {
+    grid-column: 2 / 3;
   }
 }
 
 @media (max-width: 900px) {
-  .info-cliente {
-    margin-left: 0;
-    padding: 20px 20px 100px 20px;
+  .clientes-main:has(.info-cliente-toolbar) {
+    grid-template-columns: 1fr;
+    margin-left: 16px;
+    padding: 16px 16px 100px 16px !important;
   }
 
   .info-cliente-toolbar {
-    gap: 10px;
-  }
-
-  .buttons-section {
-    gap: 10px;
-  }
-
-  .info-cliente-top {
+    grid-column: 1 / -1;
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
+  }
+
+  .info-cliente-back-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .cliente-action-button:nth-of-type(1),
+  .cliente-action-button:nth-of-type(2) {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .info-cliente {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr;
+    margin-left: 0;
+  }
+
+  .info-cliente-top > :first-child,
+  .info-cliente-top > :last-child {
+    grid-column: auto;
+  }
+
+  .info-cliente-card-visita {
+    grid-column: auto;
   }
 
   .info-cliente-grid {
@@ -204,13 +247,14 @@
 }
 
 @media (max-width: 600px) {
-  .info-cliente {
-    margin-left: 0;
-    padding: 10px 10px 100px 10px;
+  .clientes-main:has(.info-cliente-toolbar) {
+    grid-template-columns: 1fr;
+    margin-left: 8px;
+    padding: 10px 10px 100px 10px !important;
   }
 
   .info-cliente-toolbar {
-    padding: 12px 10px;
+    grid-template-columns: 1fr;
     gap: 8px;
   }
 
@@ -218,11 +262,37 @@
     min-height: 40px;
     padding: 8px 14px;
     font-size: 0.85rem;
+    grid-column: 1 / -1;
   }
 
-  .buttons-section {
-    gap: 8px;
+  .cliente-action-button:nth-of-type(1),
+  .cliente-action-button:nth-of-type(2) {
+    min-height: 40px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    grid-column: 1 / -1;
   }
+
+  .info-cliente-card {
+    padding: 14px;
+  }
+
+  .info-cliente-title {
+    font-size: 1.6rem;
+  }
+
+  .info-cliente-subtitle {
+    font-size: 1rem;
+  }
+
+  .info-cliente-address {
+    font-size: 1.1rem;
+  }
+
+  .info-cliente-line {
+    font-size: 0.9rem;
+  }
+}
 
   .cliente-action-button {
     min-height: 40px;
@@ -250,8 +320,3 @@
     font-size: 0.9rem;
   }
 
-  .cliente-action-button {
-    padding: 0 10px;
-    font-size: 0.85rem;
-  }
-}

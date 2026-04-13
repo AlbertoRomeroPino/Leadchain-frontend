@@ -34,7 +34,7 @@ const InfoClienteToolbar = ({
       )}
 
       {canManageCliente && (
-        <div className="buttons-section">
+        <>
           <button
             type="button"
             className="cliente-action-button cliente-action-button--edit"
@@ -50,7 +50,7 @@ const InfoClienteToolbar = ({
           >
             <UserRoundX /> Borrar
           </button>
-        </div>
+        </>
       )}
     </section>
   );

@@ -43,7 +43,7 @@ export const authService = {
   },
 
   async me(): Promise<User> {
-    const response = await authHttp.get<User>("/api/auth/me");
-    return response.data;
+    const response = await authHttp.get<{ success: boolean; user: User; dashboard: string }>("/api/auth/me");
+    return response.data.user;
   },
 };

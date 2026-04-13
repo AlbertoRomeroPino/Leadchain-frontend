@@ -41,13 +41,13 @@ const MapaEdificioPanel = ({
       setLoading(true);
       setError(null);
 
-      // Una sola petición trae el edificio con zona y clientes
-      const detalleCompleto = await InicioService.getDetalleEdificio(edificio.id);
-      setZona(detalleCompleto.zona || null);
+      // Panel ligero: solo zona y clientes
+      const panelData = await InicioService.getDetalleEdificio(edificio.id);
+      setZona(panelData.zona || null);
 
       // Procesar clientes del edificio
       const clientesFormateados: ClienteEnEdificio[] = (
-        detalleCompleto.clientes || []
+        panelData.clientes || []
       ).map((cliente) => ({
         cliente,
         planta: cliente.planta || null,

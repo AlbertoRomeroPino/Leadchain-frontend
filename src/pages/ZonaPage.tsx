@@ -46,7 +46,7 @@ const Zona = () => {
       setShowCreateForm(false);
       setEditMode(false);
     } catch (error) {
-      console.error("Error al crear zona:", error);
+      // Error al crear zona
     } finally {
       setCreatingZona(false);
     }
@@ -64,7 +64,7 @@ const Zona = () => {
       setShowCreateForm(false);
       setEditMode(false);
     } catch (error) {
-      console.error("Error al actualizar zona:", error);
+      // Error al actualizar zona
     } finally {
       setCreatingZona(false);
     }
@@ -107,7 +107,7 @@ const Zona = () => {
         setZonas(zonasResponse);
         setSelectedZona(null);
       } catch (error) {
-        console.error("Error al eliminar zona:", error);
+        // Error al eliminar zona
       } finally {
         setCreatingZona(false);
       }

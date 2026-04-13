@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import type { Edificio, EdificioInput } from "../../types/edificios/Edificio";
 import type { Zona } from "../../types/zonas/Zona";
 import { useAuth } from "../../auth/useAuth";
-import showStatusAlert from "../StatusAlert";
 import { EdificiosService } from "../../services/EdificiosService";
 import { useInitialize } from "../../hooks/useInitialize";
 import EdificioInfoToolbar from "./Info/EdificioInfoToolbar";
@@ -40,13 +39,6 @@ const EdificioInfo = ({
 
   useInitialize(async () => {
     try {
-      showStatusAlert({
-        type: "loading",
-        title: "Cargando información del edificio...",
-        description: "Por favor espera",
-        duration: 3000,
-      });
-
       // Una sola petición trae todo: edificio, zona, bloque de edificios y todas las zonas
       const detalleCompleto = await EdificiosService.getEdificioDetalle(
         edificio.id,
@@ -78,22 +70,7 @@ const EdificioInfo = ({
       setClientesBloque(clientesBloqueUnicos);
       prevEdificioRef.current = detalleCompleto;
       setEdificioInfo(detalleCompleto);
-
-      showStatusAlert({
-        type: "success",
-        title: "Información del edificio cargada",
-        duration: 3000,
-      });
     } catch (error) {
-      showStatusAlert({
-        type: "error",
-        title: "Error al cargar edificio",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Error al cargar la información del edificio",
-        duration: 3000,
-      });
     } finally {
       setLoading(false);
     }
@@ -102,44 +79,19 @@ const EdificioInfo = ({
   const handleDeleteEdificio = async () => {
     if (!canManageEdificio) return;
 
-    showStatusAlert({
-      type: "action",
-      title: "Eliminar edificio",
-      description: `¿Estás seguro de que deseas eliminar el edificio "${edificioInfo.direccion_completa}"? Esta acción no se puede deshacer.`,
-      actionLabel: "Eliminar",
-      onAction: async () => {
-        setDeletingEdificio(true);
-        try {
-          await EdificiosService.deleteEdificio(edificioInfo.id);
-          
-          // Mostrar éxito y cerrar
-          showStatusAlert({
-            type: "success",
-            title: "Edificio eliminado",
-            description: "El edificio ha sido eliminado correctamente",
-            duration: 2000,
-          });
-          
-          // Pequeño delay para que se vea el éxito antes de navegar
-          setTimeout(() => {
-            onEdificioDeleted?.(edificioInfo.id);
-          }, 500);
-          
-        } catch (error) {
-          showStatusAlert({
-            type: "error",
-            title: "Error al eliminar",
-            description:
-              error instanceof Error
-                ? error.message
-                : "Error al eliminar el edificio",
-            duration: 3000,
-          });
-        } finally {
-          setDeletingEdificio(false);
-        }
-      },
-    });
+    // TODO: Implementar confirmación de eliminar
+    setDeletingEdificio(true);
+    try {
+      await EdificiosService.deleteEdificio(edificioInfo.id);
+      // Pequeño delay para que se vea el éxito antes de navegar
+      setTimeout(() => {
+        onEdificioDeleted?.(edificioInfo.id);
+      }, 500);
+    } catch (error) {
+      // Error handling when deleting building
+    } finally {
+      setDeletingEdificio(false);
+    }
   };
 
   const handleUpdateEdificio = async (id: number, payload: EdificioInput) => {
@@ -147,23 +99,7 @@ const EdificioInfo = ({
     try {
       const edificioActualizado = await EdificiosService.updateEdificio(id, payload);
       setEdificioInfo(edificioActualizado);
-      onEdificioUpdated?.(edificioActualizado);
-      showStatusAlert({
-        type: "success",
-        title: "Edificio actualizado",
-        description: "Los cambios se han guardado correctamente",
-        duration: 3000,
-      });
     } catch (error) {
-      showStatusAlert({
-        type: "error",
-        title: "Error al actualizar",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Error al actualizar el edificio",
-        duration: 3000,
-      });
       throw error;
     } finally {
       setUpdatingEdificio(false);

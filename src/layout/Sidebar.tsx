@@ -1,6 +1,5 @@
 import { House, Map, User, MapPin, BookUser, LogOut, Building, Scan} from "lucide-react";
 import "../styles/Sidebar.css";
-import showStatusAlert from "../components/StatusAlert";
 import { MenuButtons } from "../components/MenuButtons";
 import { useAuth } from "../auth/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -52,7 +51,6 @@ function Sidebar() {
 
   const handleLogout = () => {
     logout();
-    showStatusAlert({ title: "Sesión cerrada correctamente", type: "success" });
     navigate("/Login");
   };
 
@@ -60,8 +58,18 @@ function Sidebar() {
   const setActiveIndex = () => {};
 
   // Filtrar menú según el rol del usuario
-  const userRole = user!.rol;
-  const allowedLabels = ROLE_PERMISSIONS[userRole];
+  let userRole = 'comercial'; // Default
+  
+  if (user) {
+    // Validar si user es la respuesta completa o solo el usuario
+    if ('user' in user && typeof (user as any).user === 'object' && !('nombre' in user)) {
+      userRole = (user as any).user?.rol || 'comercial';
+    } else {
+      userRole = (user as any).rol || 'comercial';
+    }
+  }
+  
+  const allowedLabels = ROLE_PERMISSIONS[userRole] || [];
   const filteredMenuItems = menuItems.filter((item) =>
     allowedLabels.includes(item.label),
   );

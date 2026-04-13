@@ -7,7 +7,6 @@ import type { Zona } from "../types/zonas/Zona";
 import "../styles/ComercialesPage.css";
 import { Trash, UserPlus2, UserRoundCog } from "lucide-react";
 import ComercialesForm from "../components/Comerciales/ComercialesForm";
-import showStatusAlert from "../components/StatusAlert";
 import { useInitialize } from "../hooks/useInitialize";
 
 const Comerciales = () => {
@@ -39,11 +38,6 @@ const Comerciales = () => {
 
   const handleDeleteComerciales = async () => {
     if (selectedComercialIds.size === 0) {
-      showStatusAlert({
-        type: "error",
-        title: "No hay seleccionados",
-        description: "Selecciona al menos un comercial para eliminar",
-      });
       return;
     }
 
@@ -57,20 +51,9 @@ const Comerciales = () => {
         prev.filter((c) => !selectedComercialIds.has(c.id))
       );
       setSelectedComercialIds(new Set());
-
-      showStatusAlert({
-        type: "success",
-        title: "Comerciales eliminados",
-        description: `Se eliminaron ${selectedComercialIds.size} comercial(es) correctamente`,
-      });
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Error desconocido";
-      showStatusAlert({
-        type: "error",
-        title: "Error al eliminar comerciales",
-        description: message,
-      });
     } finally {
       setIsLoading(false);
     }

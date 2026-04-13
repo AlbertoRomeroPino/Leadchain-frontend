@@ -5,7 +5,6 @@ import { clientesService } from "../services/ClientesService";
 import { useAuth } from "../auth/useAuth";
 
 import Sidebar from "../layout/Sidebar";
-import showStatusAlert from "../components/StatusAlert";
 import InfoCliente from "../components/Clientes/ClienteInfo";
 import ClientesHeader from "../components/Clientes/ClientesHeader";
 import ClientesConEdificioTable from "../components/Clientes/ClientesConEdificioTable";
@@ -28,12 +27,6 @@ const Clientes = () => {
   useInitialize(async () => {
     if (!user) return;
 
-    showStatusAlert({
-      type: "loading",
-      title: "Cargando clientes...",
-      duration: 8000,
-    });
-
     try {
       const [clientesConEdificio, sinEdificio] = await Promise.all([
         clientesService.getClientes(),
@@ -44,19 +37,9 @@ const Clientes = () => {
 
       setClientes(clientesConEdificio);
       setClientesSinEdificio(sinEdificio);
-      showStatusAlert({
-        type: "success",
-        title: "Clientes cargados correctamente",
-        description: `Clientes encontrados: ${clientesConEdificio.length + sinEdificio.length}`,
-      });
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Error al cargar clientes";
-      showStatusAlert({
-        type: "error",
-        title: "Error al cargar clientes",
-        description: message,
-      });
     }
   }, [user]);
 
@@ -67,11 +50,6 @@ const Clientes = () => {
     email?: string;
   }) => {
     if (!canCreateCliente) {
-      showStatusAlert({
-        type: "error",
-        title: "No autorizado",
-        description: "No tienes permisos para crear clientes",
-      });
       return;
     }
 
@@ -93,20 +71,9 @@ const Clientes = () => {
         return [...prev, nuevoCliente];
       });
       setShowCreateForm(false);
-
-      showStatusAlert({
-        type: "success",
-        title: "Cliente creado",
-        description: "El cliente se creó correctamente",
-      });
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Error al crear cliente";
-      showStatusAlert({
-        type: "error",
-        title: "Error al crear cliente",
-        description: message,
-      });
     } finally {
       setCreatingCliente(false);
     }

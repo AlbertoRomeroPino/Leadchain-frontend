@@ -3,7 +3,6 @@ import { Navigate, useNavigate } from "react-router-dom";
 import type { LoginCredentials } from "../types/users/User";
 import { useAuth } from "../auth/useAuth";
 import { authService } from "../services/authService";
-import showStatusAlert from "../components/StatusAlert";
 import "../styles/Login.css";
 
 const Login = () => {
@@ -31,11 +30,6 @@ const Login = () => {
       const alertType = missingFields.length > 1 ? "warning" : "info";
       const description = `Faltan: ${missingFields.join(", ")}.`;
       setError(description);
-      showStatusAlert({
-        type: alertType,
-        title: "Campos obligatorios",
-        description,
-      });
       return;
     }
 
@@ -46,21 +40,10 @@ const Login = () => {
 
     try {
       setLoading(true);
-      showStatusAlert({
-        type: "loading",
-        title: "Entrando...",
-        description: "Validando tus credenciales",
-      });
 
       const session = await authService.login(credentials);
       login(session);
       const nombre = session.user?.nombre ?? "usuario";
-
-      showStatusAlert({
-        type: "success",
-        title: "Acceso correcto",
-        description: `Has accedido ${nombre}`,
-      });
 
       navigate("/Inicio", { replace: true });
     } catch (error) {
@@ -80,11 +63,6 @@ const Login = () => {
       }
 
       setError(message);
-      showStatusAlert({
-        type: "error",
-        title: "Error",
-        description: message,
-      });
     } finally {
       setLoading(false);
     }

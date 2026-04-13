@@ -49,7 +49,7 @@ authHttp.interceptors.request.use((config: CustomAxiosRequestConfig) => {
     config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${session.token}`;
 
-    // Verificar si el token está por expirar (en los próximos 5 minutos)
+    // Verificar si el token está por expirar (en los próximos 5 minutos = 300 segundos)
     if (isTokenExpiringIn(session.token, 300)) {
       // Marcar la solicitud para posible refresh después de respuesta
       config.__shouldRefreshToken = true;
@@ -74,10 +74,11 @@ async function attemptTokenRefresh(): Promise<string | null> {
       // Importar aquí para evitar circularidad
       const { authService } = await import("./authService");
 
+      const session = authStorage.get();
+
       const { token: newToken } = await authService.refresh();
 
       // Actualizar el token en storage y axios
-      const session = authStorage.get();
       if (session) {
         const updatedSession: AuthSession = { ...session, token: newToken };
         authStorage.set(updatedSession);
@@ -99,7 +100,6 @@ async function attemptTokenRefresh(): Promise<string | null> {
             onUserUpdated(updatedUser);
           }
         } catch (error) {
-          console.warn("No se pudieron obtener datos actualizados del usuario:", error);
           // No es crítico si falla, el token ya se renovó
         }
 
@@ -107,7 +107,6 @@ async function attemptTokenRefresh(): Promise<string | null> {
       }
       return null;
     } catch (error) {
-      console.error("Error refrescando token:", error);
       return null;
     } finally {
       refreshPromise = null;
@@ -119,7 +118,9 @@ async function attemptTokenRefresh(): Promise<string | null> {
 
 // Interceptor de response - manejar errores y refresh automático
 authHttp.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   async (error: AxiosError) => {
     const config = error.config as CustomAxiosRequestConfig | undefined;
     if (!config) return Promise.reject(error);

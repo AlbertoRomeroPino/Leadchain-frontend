@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from "react";
-import showStatusAlert from "../StatusAlert";
 import { clientesService } from "../../services/ClientesService";
 import type { Cliente } from "../../types/clientes/Cliente";
 import type { ClienteDetalleResponse } from "../../types/clientes/ClienteDetalle";
@@ -51,12 +50,6 @@ const InfoCliente = ({
     async () => {
       try {
         setLoading(true);
-        showStatusAlert({
-          type: "loading",
-          title: "Cargando información del cliente...",
-          description: "Por favor espera",
-          duration: 3000,
-        });
 
         const detalle: ClienteDetalleResponse =
           await clientesService.getClienteDetalle(cliente.id);
@@ -86,11 +79,6 @@ const InfoCliente = ({
 
         if (!alertShownRef.current) {
           alertShownRef.current = true;
-          showStatusAlert({
-            type: "success",
-            title: "Información cargada",
-            duration: 1000,
-          });
         }
       } catch {
         setEdificio(null);
@@ -101,12 +89,6 @@ const InfoCliente = ({
         setUltimoUsuario("–");
         if (!alertShownRef.current) {
           alertShownRef.current = true;
-          showStatusAlert({
-            type: "error",
-            title: "Error al cargar",
-            description: "No se pudieron cargar los datos del cliente",
-            duration: 3000,
-          });
         }
       } finally {
         setLoading(false);
@@ -122,11 +104,6 @@ const InfoCliente = ({
     email?: string;
   }) => {
     if (!canManageCliente) {
-      showStatusAlert({
-        type: "error",
-        title: "No autorizado",
-        description: "No tienes permisos para actualizar clientes",
-      });
       return;
     }
 
@@ -148,20 +125,9 @@ const InfoCliente = ({
       setClienteInfo(updatedCliente);
       onClienteUpdated?.(updatedCliente);
       setShowEditForm(false);
-
-      showStatusAlert({
-        type: "success",
-        title: "Cliente actualizado",
-        description: "Los datos se guardaron correctamente",
-      });
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Error al actualizar cliente";
-      showStatusAlert({
-        type: "error",
-        title: "Error al actualizar cliente",
-        description: message,
-      });
     } finally {
       setSavingCliente(false);
     }
@@ -169,11 +135,6 @@ const InfoCliente = ({
 
   const handleDeleteCliente = async () => {
     if (!canManageCliente) {
-      showStatusAlert({
-        type: "error",
-        title: "No autorizado",
-        description: "No tienes permisos para eliminar clientes",
-      });
       return;
     }
 
@@ -184,12 +145,6 @@ const InfoCliente = ({
 
       onClienteDeleted?.(clienteInfo.id);
       setShowEditForm(false);
-
-      showStatusAlert({
-        type: "success",
-        title: "Cliente eliminado",
-        description: "El cliente se eliminó correctamente",
-      });
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Error al eliminar cliente";
@@ -199,11 +154,7 @@ const InfoCliente = ({
       ) {
         onClienteDeleted?.(clienteInfo.id);
         setShowEditForm(false);
-        showStatusAlert({
-          type: "success",
-          title: "Cliente ya eliminado",
-          description: "El cliente ya no existía en base de datos",
-        });
+
         return;
       }
 
@@ -212,19 +163,8 @@ const InfoCliente = ({
         message.toLowerCase().includes("foreign key") ||
         message.toLowerCase().includes("constraint")
       ) {
-        showStatusAlert({
-          type: "error",
-          title: "No se puede eliminar",
-          description: "Este cliente tiene visitas asociadas. Debes eliminar las visitas primero antes de eliminar el cliente.",
-        });
         return;
       }
-
-      showStatusAlert({
-        type: "error",
-        title: "Error al eliminar cliente",
-        description: "No se pudo eliminar el cliente. Por favor intenta más tarde.",
-      });
     } finally {
       setDeletingCliente(false);
     }

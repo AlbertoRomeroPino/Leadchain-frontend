@@ -3,7 +3,6 @@ import type { Zona } from "../../types/zonas/Zona";
 import type { UserInput, User, UserUpdateInput } from "../../types/users/User";
 import { UserService } from "../../services/User";
 import { authStorage } from "../../auth/authStorage";
-import showStatusAlert from "../StatusAlert";
 
 interface ComercialesFormProps {
   zonas: Zona[];
@@ -34,20 +33,10 @@ const ComercialesForm = ({ zonas, comercialAEditar = null, onSuccess }: Comercia
       : [nombre, apellidos, email, password, zonaSeleccionada];
 
     if (camposRequired.some((campo) => !campo)) {
-      showStatusAlert({
-        type: "error",
-        title: "Campos requeridos",
-        description: "Por favor completa todos los campos",
-      });
       return;
     }
 
     if (!currentUserId) {
-      showStatusAlert({
-        type: "error",
-        title: "Usuario no autenticado",
-        description: "No se pudo obtener el usuario actual",
-      });
       return;
     }
 
@@ -70,12 +59,6 @@ const ComercialesForm = ({ zonas, comercialAEditar = null, onSuccess }: Comercia
         }
 
         comercialResultado = await UserService.updateUser(comercialAEditar!.id, usuarioActualizado);
-
-        showStatusAlert({
-          type: "success",
-          title: "Comercial actualizado",
-          description: `${nombre} ${apellidos} ha sido actualizado correctamente`,
-        });
       } else {
         // Modo creación
         const nuevoUsuario: UserInput = {
@@ -89,12 +72,6 @@ const ComercialesForm = ({ zonas, comercialAEditar = null, onSuccess }: Comercia
         };
 
         comercialResultado = await UserService.createUser(nuevoUsuario);
-
-        showStatusAlert({
-          type: "success",
-          title: "Comercial creado",
-          description: `${nombre} ${apellidos} ha sido creado correctamente`,
-        });
       }
 
       // Limpiar formulario
@@ -110,12 +87,6 @@ const ComercialesForm = ({ zonas, comercialAEditar = null, onSuccess }: Comercia
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Error desconocido";
-
-      showStatusAlert({
-        type: "error",
-        title: esEdicion ? "Error al actualizar comercial" : "Error al crear comercial",
-        description: message,
-      });
     } finally {
       setIsLoading(false);
     }

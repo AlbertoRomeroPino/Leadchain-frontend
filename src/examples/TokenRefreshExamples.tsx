@@ -103,7 +103,6 @@ export function TokenRefreshNotifier() {
   const { token } = useAuth();
 
   useEffect(() => {
-    console.log('✓ Token renovado automáticamente');
     // Descomenta la siguiente línea si tienes sonner instalado:
     // toast.success('Tu sesión se ha renovado automáticamente', { duration: 3000 });
   }, [token]);

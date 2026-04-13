@@ -5,7 +5,6 @@ import type { Zona } from "../types/zonas/Zona";
 import EdificioInfo from "../components/Edificios/EdificioInfo";
 import EdificioTabla from "../components/Edificios/EdificioTabla";
 import { useAuth } from "../auth/useAuth";
-import showStatusAlert from "../components/StatusAlert";
 import { EdificiosService } from "../services/EdificiosService";
 import { ZonaService } from "../services/ZonaService";
 import { clientesService } from "../services/ClientesService";
@@ -27,12 +26,6 @@ const Edificios = () => {
   useInitialize(async () => {
     if (!user) return;
 
-    showStatusAlert({
-      type: "loading",
-      title: "Cargando edificios y zonas...",
-      duration: 8000,
-    });
-
     // TODO: los comerciales unicamente pueden ver los edificios de sus zonas
     // y los administradores los de sus comerciales, pero eso lo dejamos para más adelante
     try {
@@ -52,30 +45,14 @@ const Edificios = () => {
 
       const zonasData = await ZonaService.getZonas();
       setZonas(zonasData);
-
-      showStatusAlert({
-        type: "success",
-        title: "Edificios y zonas cargados correctamente",
-        description: `Edificios: ${edificiosUnicos.length}`,
-      });
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Error al cargar edificios";
-      showStatusAlert({
-        type: "error",
-        title: "Error al cargar edificios",
-        description: message,
-      });
     }
   }, [user]);
 
   const handleCreateEdificio = async (edificio: EdificioInput) => {
     if (!canCreateEdificio) {
-      showStatusAlert({
-        type: "error",
-        title: "No autorizado",
-        description: "No tienes permisos para crear edificios",
-      });
       return;
     }
 
@@ -86,20 +63,9 @@ const Edificios = () => {
 
       setEdificios((prev) => [...prev, nuevoEdificio]);
       setShowCreateForm(false);
-
-      showStatusAlert({
-        type: "success",
-        title: "Edificio creado",
-        description: "El edificio se creó correctamente",
-      });
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Error al crear edificio";
-      showStatusAlert({
-        type: "error",
-        title: "Error al crear edificio",
-        description: message,
-      });
     } finally {
       setCreatingEdificio(false);
     }
@@ -171,20 +137,9 @@ const Edificios = () => {
           ),
         );
       }
-
-      showStatusAlert({
-        type: "success",
-        title: "Cliente adjuntado",
-        description: `Cliente adjuntado al edificio ${targetEdificio ? targetEdificio.direccion_completa : edificioId}`,
-      });
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Error al adjuntar cliente";
-      showStatusAlert({
-        type: "error",
-        title: "Error",
-        description: message,
-      });
     } finally {
       setCreatingEdificio(false);
       setShowCreateForm(false);

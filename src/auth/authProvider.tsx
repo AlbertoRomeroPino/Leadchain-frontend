@@ -6,8 +6,19 @@ import { AuthContext, type AuthContextValue } from "./AuthContext";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const initial: AuthSession | null = authStorage.get();
+  
+  // Extraer usuario correctamente desde localStorage
+  let initialUser: User | null = null;
+  if (initial?.user) {
+    // Si localStorage contiene la respuesta completa por error anterior
+    if ('user' in initial.user && !('nombre' in initial.user)) {
+      initialUser = (initial.user as any).user;
+    } else {
+      initialUser = initial.user as User;
+    }
+  }
 
-  const [user, setUser] = useState<User | null>(initial?.user ?? null);
+  const [user, setUser] = useState<User | null>(initialUser ?? null);
   const [token, setToken] = useState<string | null>(initial?.token ?? null);
 
   const logout = useCallback(() => {
@@ -24,18 +35,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuthToken(session.token);
   }, []);
 
-  const updateUser = useCallback((userData: Partial<User>) => {
-    setUser((currentUser) => {
-      if (currentUser) {
-        const updatedUser = { ...currentUser, ...userData };
-        if (token) {
-          authStorage.set({ token, user: updatedUser });
-        }
-        return updatedUser;
-      }
-      return currentUser;
+  const updateUser = useCallback((userData: User | Partial<User>) => {
+    setUser((prevUser) => {
+      const updated = { ...(prevUser || {}), ...(userData || {}) } as User;
+      return updated;
     });
-  }, [token]);
+  }, []);
+
+  // Sincronizar cambios de usuario y token a localStorage
+  useEffect(() => {
+    if (user && token) {
+      authStorage.set({ token, user });
+    }
+  }, [user, token]);
 
   useEffect(() => {
     setAuthToken(token);
@@ -52,7 +64,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       },
       onUserUpdated: (updatedUser) => {
         // Actualizar datos del usuario cuando se obtienen del endpoint /me
-        setUser(updatedUser);
+        // Validar que no sea la respuesta completa
+        let userToUse = updatedUser;
+        if ('user' in updatedUser && typeof (updatedUser as any).user === 'object' && !('nombre' in updatedUser)) {
+          userToUse = (updatedUser as any).user;
+        }
+        setUser(userToUse as User);
       },
     });
   }, [logout]);
