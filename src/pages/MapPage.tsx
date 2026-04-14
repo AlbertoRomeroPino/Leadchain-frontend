@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import GlovalMap from "../components/utils/GlovalMap";
-import MapaEdificioPanel from "../components/MapaEdificioPanel";
+import MapaEdificioPanel from "../components/utils/MapaEdificioPanel";
 import Sidebar from "../layout/Sidebar";
 import "../styles/Map.css";
 import { useAuth } from "../auth/useAuth";

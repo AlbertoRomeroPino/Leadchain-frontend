@@ -37,3 +37,5 @@ export const MenuButtons = ({
     </button>
   );
 };
+
+export default MenuButtons;

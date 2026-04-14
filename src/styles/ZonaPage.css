@@ -283,6 +283,150 @@
   flex-wrap: wrap;
 }
 
+.zona-info-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.zona-info-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid #3f1b1b;
+  border-radius: 10px;
+  color: #f4f4f5;
+  background: #161010;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.zona-info-back-button:hover {
+  background: #1f1414;
+}
+
+.zona-info-subtitle {
+  margin: 4px 0 0;
+  color: #d1d5db;
+  font-size: 0.95rem;
+}
+
+.zona-page-grid {
+  display: grid;
+  grid-template-columns: minmax(360px, 1.1fr) minmax(380px, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+  margin-left: 80px;
+  padding: 0 20px;
+}
+
+.zona-list-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.zona-info-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.zona-info-empty {
+  background: #161010;
+  border: 1px solid #3f1b1b;
+  border-radius: 16px;
+  padding: 28px;
+  color: #f4f4f5;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.zona-info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.zona-info-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.zona-info-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(480px, 2fr);
+  gap: 24px;
+}
+
+.zona-info-card,
+.zona-map-card {
+  background: #161010;
+  border: 1px solid #3f1b1b;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.zona-map-card {
+  min-height: 520px;
+}
+
+.zona-details-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.zona-card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.zona-card-subtitle {
+  margin: 0;
+  color: #d1d5db;
+  font-size: 0.95rem;
+}
+
+.zona-details-content {
+  display: grid;
+  gap: 14px;
+}
+
+.zona-detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  background: #1f1414;
+  border: 1px solid #2c1818;
+  border-radius: 12px;
+  color: #e5e7eb;
+}
+
+.zona-detail-row span {
+  color: #fca5a5;
+}
+
+.zona-info .zona-details-section {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
 .zona-section-title {
   margin: 0;
   color: #ffffff;
@@ -349,6 +493,12 @@
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
+  }
+
+  .zona-page-grid {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+    padding: 0 20px;
   }
 
   .zona-container {

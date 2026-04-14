@@ -41,62 +41,44 @@ const VisitaFormularioModal = ({
   mode,
 }: VisitaFormularioModalProps) => {
   const isEditMode = mode === "edit";
+  const clientId = selectedClient?.id ?? initialValues?.id_cliente ?? 0;
+  const localClient = clientId ? clientes.find((cliente) => cliente.id === clientId) : undefined;
+  const defaultClientName = selectedClient
+    ? `${selectedClient.nombre} ${selectedClient.apellidos}`
+    : localClient
+    ? `${localClient.nombre} ${localClient.apellidos}`
+    : "";
+
   const [values, setValues] = useState<VisitaFormValues>({
-    id_cliente: initialValues?.id_cliente ?? 0,
+    id_cliente: clientId,
     fecha_hora: initialValues
       ? formatDateForInput(initialValues.fecha_hora)
       : new Date().toISOString().slice(0, 16),
     id_estado: initialValues?.id_estado ?? estados[0]?.id ?? 0,
     observaciones: initialValues?.observaciones ?? "",
   });
-  const [clientQuery, setClientQuery] = useState("");
+  const [clientQuery, setClientQuery] = useState(defaultClientName);
 
   useEffect(() => {
-    if (!open) return;
+    if (!isEditMode || clientId <= 0 || defaultClientName) return;
 
-    const clientId = selectedClient?.id ?? initialValues?.id_cliente ?? 0;
-    const localClient = clientId ? clientes.find((cliente) => cliente.id === clientId) : undefined;
-    const selectedCustomerName = selectedClient
-      ? `${selectedClient.nombre} ${selectedClient.apellidos}`
-      : localClient
-      ? `${localClient.nombre} ${localClient.apellidos}`
-      : "";
+    let cancelled = false;
 
-    setValues({
-      id_cliente: clientId,
-      fecha_hora: initialValues
-        ? formatDateForInput(initialValues.fecha_hora)
-        : new Date().toISOString().slice(0, 16),
-      id_estado: initialValues?.id_estado ?? estados[0]?.id ?? 0,
-      observaciones: initialValues?.observaciones ?? "",
-    });
+    clientesService
+      .getClienteById(clientId)
+      .then((cliente) => {
+        if (cancelled) return;
+        setClientQuery(`${cliente.nombre} ${cliente.apellidos}`);
+        setValues((prev) => ({ ...prev, id_cliente: cliente.id }));
+      })
+      .catch((error) => {
+        console.error("Error al cargar cliente de edición:", error);
+      });
 
-    setClientQuery(selectedCustomerName);
-
-    if (isEditMode && clientId > 0 && !selectedCustomerName) {
-      clientesService
-        .getClienteById(clientId)
-        .then((cliente) => {
-          setClientQuery(`${cliente.nombre} ${cliente.apellidos}`);
-          setValues((prev) => ({ ...prev, id_cliente: cliente.id }));
-        })
-        .catch((error) => {
-          console.error("Error al cargar cliente de edición:", error);
-        });
-    }
-  }, [
-    open,
-    selectedClient?.id,
-    selectedClient?.nombre,
-    selectedClient?.apellidos,
-    initialValues?.id_cliente,
-    initialValues?.fecha_hora,
-    initialValues?.id_estado,
-    initialValues?.observaciones,
-    clientes.length,
-    estados.length,
-    isEditMode,
-  ]);
+    return () => {
+      cancelled = true;
+    };
+  }, [clientId, defaultClientName, isEditMode]);
 
   const editClient = initialValues
     ? clientes.find((cliente) => cliente.id === initialValues.id_cliente)

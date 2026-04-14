@@ -1,10 +1,10 @@
 import { useState } from "react";
-import type { Edificio } from "../types/edificios/Edificio";
-import type { Cliente } from "../types/clientes/Cliente";
-import type { Zona } from "../types/zonas/Zona";
-import { InicioService } from "../services/InicioService";
-import { useInitialize } from "../hooks/useInitialize";
-import "../styles/MapaEdificioPanel.css";
+import type { Cliente } from "../../types/clientes/Cliente";
+import type { Zona } from "../../types/zonas/Zona";
+import { InicioService } from "../../services/InicioService";
+import { useInitialize } from "../../hooks/useInitialize";
+import type { Edificio } from "../../types/edificios/Edificio";
+import "../../styles/MapaEdificioPanel.css";
 
 interface MapaEdificioPanelProps {
   edificio: Edificio;

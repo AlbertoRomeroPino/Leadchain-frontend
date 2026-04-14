@@ -1,6 +1,6 @@
 import { House, Map, User, MapPin, BookUser, LogOut, Building, Scan} from "lucide-react";
 import "../styles/Sidebar.css";
-import { MenuButtons } from "../components/MenuButtons";
+import { MenuButtons } from "../components/sidebar/MenuButtons";
 import { useAuth } from "../auth/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -57,15 +57,18 @@ function Sidebar() {
   // Dummy setActiveIndex para compatibilidad con MenuButtons
   const setActiveIndex = () => {};
 
+  type MaybeNestedUser = { user?: { rol?: string } } & { rol?: string };
+
   // Filtrar menú según el rol del usuario
   let userRole = 'comercial'; // Default
   
   if (user) {
-    // Validar si user es la respuesta completa o solo el usuario
-    if ('user' in user && typeof (user as any).user === 'object' && !('nombre' in user)) {
-      userRole = (user as any).user?.rol || 'comercial';
+    const authUser = user as MaybeNestedUser;
+
+    if (authUser.user && typeof authUser.user === 'object') {
+      userRole = authUser.user.rol || 'comercial';
     } else {
-      userRole = (user as any).rol || 'comercial';
+      userRole = authUser.rol || 'comercial';
     }
   }
   
