@@ -1,6 +1,7 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import type { Cliente } from "../../../types/clientes/Cliente";
 import type { EstadoVisita } from "../../../types/visitas/EstadoVisita";
+import { clientesService } from "../../../services/ClientesService";
 
 export type VisitaFormValues = {
   id_cliente: number;
@@ -40,28 +41,76 @@ const VisitaFormularioModal = ({
   mode,
 }: VisitaFormularioModalProps) => {
   const isEditMode = mode === "edit";
-  const [values, setValues] = useState<VisitaFormValues>(() => ({
+  const [values, setValues] = useState<VisitaFormValues>({
     id_cliente: initialValues?.id_cliente ?? 0,
     fecha_hora: initialValues
       ? formatDateForInput(initialValues.fecha_hora)
       : new Date().toISOString().slice(0, 16),
     id_estado: initialValues?.id_estado ?? estados[0]?.id ?? 0,
     observaciones: initialValues?.observaciones ?? "",
-  }));
-  const [clientQuery, setClientQuery] = useState(() => {
-    if (isEditMode && selectedClient) {
-      return `${selectedClient.nombre} ${selectedClient.apellidos}`;
-    }
-    if (!initialValues) return "";
-    const selected = clientes.find((cliente) => cliente.id === initialValues.id_cliente);
-    return selected ? `${selected.nombre} ${selected.apellidos}` : "";
   });
+  const [clientQuery, setClientQuery] = useState("");
+
+  useEffect(() => {
+    if (!open) return;
+
+    const clientId = selectedClient?.id ?? initialValues?.id_cliente ?? 0;
+    const localClient = clientId ? clientes.find((cliente) => cliente.id === clientId) : undefined;
+    const selectedCustomerName = selectedClient
+      ? `${selectedClient.nombre} ${selectedClient.apellidos}`
+      : localClient
+      ? `${localClient.nombre} ${localClient.apellidos}`
+      : "";
+
+    setValues({
+      id_cliente: clientId,
+      fecha_hora: initialValues
+        ? formatDateForInput(initialValues.fecha_hora)
+        : new Date().toISOString().slice(0, 16),
+      id_estado: initialValues?.id_estado ?? estados[0]?.id ?? 0,
+      observaciones: initialValues?.observaciones ?? "",
+    });
+
+    setClientQuery(selectedCustomerName);
+
+    if (isEditMode && clientId > 0 && !selectedCustomerName) {
+      clientesService
+        .getClienteById(clientId)
+        .then((cliente) => {
+          setClientQuery(`${cliente.nombre} ${cliente.apellidos}`);
+          setValues((prev) => ({ ...prev, id_cliente: cliente.id }));
+        })
+        .catch((error) => {
+          console.error("Error al cargar cliente de edición:", error);
+        });
+    }
+  }, [
+    open,
+    selectedClient?.id,
+    selectedClient?.nombre,
+    selectedClient?.apellidos,
+    initialValues?.id_cliente,
+    initialValues?.fecha_hora,
+    initialValues?.id_estado,
+    initialValues?.observaciones,
+    clientes.length,
+    estados.length,
+    isEditMode,
+  ]);
 
   const editClient = initialValues
     ? clientes.find((cliente) => cliente.id === initialValues.id_cliente)
     : undefined;
 
-  const editClientName = editClient ? `${editClient.nombre} ${editClient.apellidos}` : "";
+  const selectedClientName = selectedClient
+    ? `${selectedClient.nombre} ${selectedClient.apellidos}`
+    : editClient
+    ? `${editClient.nombre} ${editClient.apellidos}`
+    : "";
+
+  const clientPlaceholder = isEditMode
+    ? selectedClientName || "Cliente cargando..."
+    : "Escribe el nombre del cliente";
 
   if (!open) return null;
 
@@ -83,7 +132,7 @@ const VisitaFormularioModal = ({
   });
 
   const showClientSuggestions = !isEditMode && clientQuery.trim().length > 0 && !exactMatchClient && filteredClients.length > 0;
-  const canSubmit = values.id_cliente > 0 && (isEditMode || Boolean(exactMatchClient));
+  const canSubmit = values.id_cliente > 0;
 
   const getCurrentLocalDateTime = () => {
     const date = new Date();
@@ -142,18 +191,14 @@ const VisitaFormularioModal = ({
           <input
             id="cliente-search"
             type="text"
-            value={isEditMode ? editClientName : clientQuery}
+            value={isEditMode ? selectedClientName : clientQuery}
             onChange={(event) => {
               if (!isEditMode) {
                 handleClientQueryChange(event.target.value);
               }
             }}
             className="visita-search-input"
-            placeholder={
-              isEditMode
-                ? editClientName || "Cargando cliente..."
-                : "Escribe el nombre del cliente"
-            }
+            placeholder={clientPlaceholder}
             autoComplete="off"
             disabled={isEditMode}
           />

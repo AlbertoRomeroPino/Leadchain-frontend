@@ -25,7 +25,10 @@ export interface InicioMapaData {
   zonas: Zona[];
 }
 
-export interface DetalleEdificioData extends Edificio {}
+export interface DetalleEdificioData extends Edificio {
+  zona?: Zona | null;
+  clientes?: Array<Cliente & { planta?: string | null; puerta?: string | null }>;
+}
 
 export const InicioService = {
   /**

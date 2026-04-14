@@ -12,6 +12,10 @@ interface EdificioModalEdificioProps {
   idCliente: number | null;
   setIdCliente: (idCliente: number | null) => void;
   zonas: { id: number; nombre_zona: string }[];
+  clientePlanta: string;
+  setClientePlanta: (planta: string) => void;
+  clientePuerta: string;
+  setClientePuerta: (puerta: string) => void;
 }
 
 const EdificioModalEdificio = ({
@@ -24,6 +28,10 @@ const EdificioModalEdificio = ({
   idCliente,
   setIdCliente,
   zonas,
+  clientePlanta,
+  setClientePlanta,
+  clientePuerta,
+  setClientePuerta,
 }: EdificioModalEdificioProps) => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
 
@@ -84,6 +92,22 @@ const EdificioModalEdificio = ({
           </option>
         ))}
       </select>
+      <input
+        className="form-edificio-input"
+        type="text"
+        placeholder="Piso/Planta del cliente"
+        value={clientePlanta}
+        onChange={(e) => setClientePlanta(e.target.value)}
+        required
+      />
+      <input
+        className="form-edificio-input"
+        type="text"
+        placeholder="Puerta del cliente"
+        value={clientePuerta}
+        onChange={(e) => setClientePuerta(e.target.value)}
+        required
+      />
     </>
   );
 };

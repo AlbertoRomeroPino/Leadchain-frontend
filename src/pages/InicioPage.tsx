@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAuth } from "../auth/useAuth";
 import Sidebar from "../layout/Sidebar";
 import InicioComercial from "../components/Inicio/InicioComercial/InicioComercial";
@@ -8,6 +9,10 @@ import "../styles/InicioAdmin.css";
 
 const InicioPage = () => {
   const { user } = useAuth();
+
+  useEffect(() => {
+    // El loading/status alert se gestiona en los componentes de inicio.
+  }, []);
 
   if (!user) {
     return (

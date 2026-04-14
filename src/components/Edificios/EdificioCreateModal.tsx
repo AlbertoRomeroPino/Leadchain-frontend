@@ -15,7 +15,7 @@ interface EdificioCreateModalProps {
   zonas: Zona[];
   edificios: Edificio[];
   onClose: () => void;
-  onCreateEdificio: (payload: EdificioInput) => Promise<void>;
+  onCreateEdificio: (payload: EdificioInput) => Promise<Edificio>;
   onAppendToExisting: (
     edificioId: number,
     clienteNombre?: string,
@@ -68,7 +68,7 @@ const EdificioCreateModal = ({
   const [clientesSinEdificio, setClientesSinEdificio] = useState<Cliente[]>([]);
   const [clientePlanta, setClientePlanta] = useState<string>("");
   const [clientePuerta, setClientePuerta] = useState<string>("");
-  const [loadingClientes, setLoadingClientes] = useState(false);
+  // const [loadingClientes, setLoadingClientes] = useState(false);
 
   useEffect(() => {
     if (!show) return;
@@ -121,7 +121,7 @@ const EdificioCreateModal = ({
     if (!show || mode !== "existing") return;
 
     const cargarClientesSinEdificio = async () => {
-      setLoadingClientes(true);
+      // setLoadingClientes(true);
       try {
         const clientes = await clientesService.getClientesSinEdificio();
         setClientesSinEdificio(clientes);
@@ -129,7 +129,7 @@ const EdificioCreateModal = ({
         console.error("Error al cargar clientes sin edificio:", err);
         setClientesSinEdificio([]);
       } finally {
-        setLoadingClientes(false);
+        // setLoadingClientes(false);
       }
     };
 
@@ -216,6 +216,11 @@ const EdificioCreateModal = ({
         return;
       }
 
+      if (!clientePlanta.trim() || !clientePuerta.trim()) {
+        alert("Completa piso y puerta del cliente");
+        return;
+      }
+
       if (lat == null || lng == null) {
         alert("Selecciona una ubicación en el mapa dentro de la zona.");
         return;
@@ -227,13 +232,25 @@ const EdificioCreateModal = ({
       }
 
       try {
-        await onCreateEdificio({
+        const nuevoEdificio = await onCreateEdificio({
           direccion_completa: direccionCompleta.trim(),
           tipo: tipo.trim(),
           id_zona: idZona,
           ubicacion: { lat, lng },
-          id_cliente: idCliente,
+          // NO pasar id_cliente aquí - será adjuntado después en la pivote
         });
+
+        // Adjuntar cliente con planta y puerta
+        await onAppendToExisting(
+          nuevoEdificio.id,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          idCliente,
+          clientePlanta.trim(),
+          clientePuerta.trim()
+        );
 
         alert("Edificio creado correctamente");
       } catch (createError) {
@@ -350,6 +367,10 @@ const EdificioCreateModal = ({
                 idCliente={idCliente}
                 setIdCliente={setIdCliente}
                 zonas={zonas}
+                clientePlanta={clientePlanta}
+                setClientePlanta={setClientePlanta}
+                clientePuerta={clientePuerta}
+                setClientePuerta={setClientePuerta}
               />
 
               <EdificioModalMapa

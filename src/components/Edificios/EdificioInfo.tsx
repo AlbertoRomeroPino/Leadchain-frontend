@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import "../../styles/InfoEdificio.css";
 import type { Edificio, EdificioInput } from "../../types/edificios/Edificio";
 import type { Zona } from "../../types/zonas/Zona";
 import { useAuth } from "../../auth/useAuth";
 import { EdificiosService } from "../../services/EdificiosService";
 import { useInitialize } from "../../hooks/useInitialize";
+import showStatusAlert from "../utils/StatusAlert";
 import EdificioInfoToolbar from "./Info/EdificioInfoToolbar";
 import EdificioInfoDetailsCard from "./Info/EdificioInfoDetailsCard";
 import EdificioInfoClienteCard from "./Info/EdificioInfoClienteCard";
@@ -16,7 +18,6 @@ interface EdificioInfoProps {
   onEdificioDeleted?: (edificioId: number) => void;
   onBack?: () => void;
 }
-// TODO: implementar la vista
 const EdificioInfo = ({
   edificio,
   onEdificioUpdated,
@@ -25,7 +26,7 @@ const EdificioInfo = ({
 }: EdificioInfoProps) => {
   const { user } = useAuth();
   const canManageEdificio = user?.rol === "admin";
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [edificioInfo, setEdificioInfo] = useState<Edificio>(edificio);
   const [zona, setZona] = useState<Zona | null>(null);
   const [zonas, setZonas] = useState<Zona[]>([]);
@@ -35,10 +36,14 @@ const EdificioInfo = ({
   const [showEditForm, setShowEditForm] = useState(false);
   const [deletingEdificio, setDeletingEdificio] = useState(false);
   const [updatingEdificio, setUpdatingEdificio] = useState(false);
-  const prevEdificioRef = React.useRef<Edificio>(edificio);
 
   useInitialize(async () => {
     try {
+      showStatusAlert({
+        type: "loading",
+        title: "Cargando información del edificio...",
+        duration: null,
+      });
       // Una sola petición trae todo: edificio, zona, bloque de edificios y todas las zonas
       const detalleCompleto = await EdificiosService.getEdificioDetalle(
         edificio.id,
@@ -47,7 +52,7 @@ const EdificioInfo = ({
       // Usar los clientes desde la relación many-to-many con datos pivot
       const clientesDelBloqueBuffer = [detalleCompleto, ...(detalleCompleto.bloqueEdificios || [])]
         .flatMap((edif: Edificio) => {
-          if (!edif.clientes || edif.clientes.length === 0) return [];
+          if (!Array.isArray(edif.clientes) || edif.clientes.length === 0) return [];
           return edif.clientes.map((cliente) => ({
             cliente,
             planta: cliente.planta ?? null,
@@ -68,9 +73,19 @@ const EdificioInfo = ({
       setZona(detalleCompleto.zona || null);
       setZonas(detalleCompleto.todasLasZonas || []);
       setClientesBloque(clientesBloqueUnicos);
-      prevEdificioRef.current = detalleCompleto;
       setEdificioInfo(detalleCompleto);
+      showStatusAlert({
+        type: "success",
+        title: "Información cargada",
+        duration: 2000,
+      });
     } catch (error) {
+      showStatusAlert({
+        type: "error",
+        title: "Error",
+        duration: 4000,
+      });
+      console.error("Error al cargar detalle del edificio:", error);
     } finally {
       setLoading(false);
     }
@@ -79,7 +94,6 @@ const EdificioInfo = ({
   const handleDeleteEdificio = async () => {
     if (!canManageEdificio) return;
 
-    // TODO: Implementar confirmación de eliminar
     setDeletingEdificio(true);
     try {
       await EdificiosService.deleteEdificio(edificioInfo.id);
@@ -88,7 +102,7 @@ const EdificioInfo = ({
         onEdificioDeleted?.(edificioInfo.id);
       }, 500);
     } catch (error) {
-      // Error handling when deleting building
+      console.error("Error al eliminar edificio:", error);
     } finally {
       setDeletingEdificio(false);
     }
@@ -99,8 +113,7 @@ const EdificioInfo = ({
     try {
       const edificioActualizado = await EdificiosService.updateEdificio(id, payload);
       setEdificioInfo(edificioActualizado);
-    } catch (error) {
-      throw error;
+      onEdificioUpdated?.(edificioActualizado);
     } finally {
       setUpdatingEdificio(false);
     }
@@ -115,6 +128,11 @@ const EdificioInfo = ({
     setShowEditForm(false);
   };
 
+  const notImplementedCreateEdificio = async (_payload: EdificioInput): Promise<Edificio> => {
+    void _payload;
+    throw new Error("No implementado");
+  };
+
   return (
     <div className="info-edificio info-edificio-main">
       <EdificioInfoToolbar
@@ -127,16 +145,22 @@ const EdificioInfo = ({
       />
 
       <section>
-        {loading ? (
-          <div>Cargando información del edificio...</div>
-        ) : (
           <>
             <EdificioInfoDetailsCard
               edificio={edificioInfo}
               zona={zona}
             />
 
-            <EdificioInfoClienteCard clientes={clientesBloque} />
+            <EdificioInfoClienteCard 
+              edificioId={edificioInfo.id}
+              clientes={clientesBloque}
+              canManage={canManageEdificio}
+              onClienteRemoved={(clienteId) => {
+                setClientesBloque((prev) => 
+                  prev.filter((c) => c.cliente.id !== clienteId)
+                );
+              }}
+            />
 
             <EdificioInfoMapCard
               ubicacion={edificioInfo.ubicacion}
@@ -151,18 +175,17 @@ const EdificioInfo = ({
                 zonas={zonas}
                 edificios={[]}
                 onClose={handleCloseEdit}
-                onCreateEdificio={async () => {}}
+                onCreateEdificio={notImplementedCreateEdificio}
                 onAppendToExisting={async () => {}}
                 edificioAEditar={edificioInfo}
                 onUpdateEdificio={handleUpdateEdificio}
               />
             )}
           </>
-        )}
       </section>
 
     </div>
   );
-};
+}
 
 export default EdificioInfo;

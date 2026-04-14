@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../auth/useAuth";
 import { InicioService } from "../../../services/InicioService";
+import showStatusAlert from "../../../components/utils/StatusAlert";
 import type { Cliente } from "../../../types/clientes/Cliente";
 import type { Visita } from "../../../types/visitas/Visita";
-import ClientesSinVisitar from "./ClientesSinVisitar";
+import ClientesSinVisitar from "./ClientesSinVisitar/ClientesSinVisitar";
 
 interface ClienteSinVisita {
   cliente: Cliente;
@@ -27,6 +28,13 @@ const InicioComercial = () => {
 
     const cargarDatos = async () => {
       try {
+        showStatusAlert({
+          type: "loading",
+          title: "Cargando inicio...",
+          description: "Obteniendo datos de clientes y visitas",
+          duration: null,
+        });
+
         setLoading(true);
         setError(null);
 
@@ -57,10 +65,20 @@ const InicioComercial = () => {
         }));
 
         setClientes(clientesConVisita);
+        showStatusAlert({
+          type: "success",
+          title: "Información cargada",
+          duration: 2000,
+        });
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : "Error desconocido";
         setError(errorMessage);
+        showStatusAlert({
+          type: "error",
+          title: "Error",
+          duration: 4000,
+        });
         console.error("Error al cargar datos:", err);
       } finally {
         setLoading(false);

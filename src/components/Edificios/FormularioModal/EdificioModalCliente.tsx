@@ -17,7 +17,7 @@ interface EdificioModalClienteProps {
   // Para seleccionar cliente existente
   clienteSinEdificioId: number | null;
   setClienteSinEdificioId: (id: number | null) => void;
-  clientesSinEdificio: { id: number; nombre: string; apellidos: string; email?: string; telefono?: string }[];
+  clientesSinEdificio: Cliente[];
   // Edificios
   edificios: { id: number; direccion_completa: string }[];
   // Piso y puerta

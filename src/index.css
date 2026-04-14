@@ -17,46 +17,24 @@ body {
   box-sizing: border-box;
 }
 
-/* Contenedor del Título (La burbuja pequeña de arriba) */
-.sileo-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: #ffffff;
-  padding: 0px; 
-  text-align: center;
-  width: 100%;
-
-  /* --- AJUSTE DE POSICIÓN --- */
-  /* Cambia -2px por -4px, -5px, etc., para subirlo más. 
-     Valores positivos (ej. 2px) lo bajan. */
-  transform: translateY(0px); 
-  /* --------------------------- */
-}
-
 /* Contenedor de la Descripción (El cuerpo de abajo) */
 .sileo-description {
-  display: flex;
-  align-items: center;    /* Centra el texto verticalmente en el rectángulo */
-  justify-content: center; /* Centra el texto horizontalmente */
-  text-align: center;
   color: #e5e5e5;
-  font-size: 0.95rem;
-  padding: 20px;
-  min-height: 60px; 
-  width: 100%;
-  line-height: 1.4;
 }
 
-/* Badge (El icono circular al lado del título) */
-.sileo-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0px;
-  
-  /* IMPORTANTE: Si subes el título, el icono debe subir con él */
-  transform: translateY(0px); 
+:root {
+  /* State colors (oklch) */
+  --sileo-state-success: oklch(0.723 0.219 142.136);
+  --sileo-state-loading: oklch(0.556 0 0);
+  --sileo-state-error: oklch(0.637 0.237 25.331);
+  --sileo-state-warning: oklch(0.795 0.184 86.047);
+  --sileo-state-info: oklch(0.685 0.169 237.323);
+  --sileo-state-action: oklch(0.623 0.214 259.815);
+
+  /* Dimensions */
+  --sileo-width: 350px;
+  --sileo-height: 40px;
+
+  /* Animation */
+  --sileo-duration: 600ms;
 }

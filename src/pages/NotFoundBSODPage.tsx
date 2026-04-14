@@ -1,7 +1,27 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/useAuth";
+import showStatusAlert from "../components/utils/StatusAlert";
 import "../styles/NotFound.css";
 
 const NotFoundBSOD = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
+
+  const handleLogout = () => {
+    showStatusAlert({
+      type: "action",
+      title: "Cerrar sesión",
+      description: "¿Deseas cerrar la sesión y volver al login?",
+      actionLabel: "Cerrar sesión",
+      onAction: () => {
+        if (isAuthenticated) {
+          logout();
+        }
+        navigate("/Login", { replace: true });
+      },
+    });
+  };
+
   return (
     <main className="notfound-page">
       <section className="notfound-card" aria-labelledby="notfound-title">
@@ -20,9 +40,13 @@ const NotFoundBSOD = () => {
           <Link className="notfound-button notfound-button-primary" to="/Inicio">
             Ir al inicio
           </Link>
-          <Link className="notfound-button notfound-button-secondary" to="/Login">
+          <button
+            className="notfound-button notfound-button-secondary"
+            type="button"
+            onClick={handleLogout}
+          >
             Volver al login
-          </Link>
+          </button>
         </div>
 
         <p className="notfound-help">

@@ -9,6 +9,7 @@ import type { Cliente } from "../types/clientes/Cliente";
 import type { GeoPoint } from "../types/shared/GeoPoint";
 import { ZonaService } from "../services/ZonaService";
 import { useInitialize } from "../hooks/useInitialize";
+import showStatusAlert from "../components/utils/StatusAlert";
 import ZonaFormularioModal from "../components/Zona/FormularioModal/ZonaFormularioModal";
 import {
   CORDOBA_BOUNDS,
@@ -30,9 +31,26 @@ const Zona = () => {
   // Cargar datos optimizados en una única consulta
   useInitialize(async () => {
     try {
+      showStatusAlert({
+        type: "loading",
+        title: "Cargando zonas...",
+        duration: null,
+      });
+
       const zonasResponse = await ZonaService.getZonasPageData();
       setZonas(zonasResponse);
+
+      showStatusAlert({
+        type: "success",
+        title: "Información cargada",
+        duration: 2000,
+      });
     } catch (error) {
+      showStatusAlert({
+        type: "error",
+        title: "Error",
+        duration: 4000,
+      });
       console.error("Error fetching zonas:", error);
     }
   });

@@ -6,6 +6,7 @@ import "../styles/Map.css";
 import { useAuth } from "../auth/useAuth";
 import { InicioService } from "../services/InicioService";
 import { useInitialize } from "../hooks/useInitialize";
+import showStatusAlert from "../components/utils/StatusAlert";
 import type { Zona } from "../types/zonas/Zona";
 import type { Edificio } from "../types/edificios/Edificio";
 import type { LatLngBoundsExpression } from "leaflet";
@@ -24,6 +25,11 @@ const MapPage = () => {
     try {
       setLoading(true);
       setError(null);
+      showStatusAlert({
+        type: "loading",
+        title: "Cargando mapa...",
+        duration: null,
+      });
       // Una sola petición consolida zonas con edificios y clientes
       const mapData = await InicioService.getMapaInicio();
       setZonas(mapData.zonas);
@@ -38,9 +44,19 @@ const MapPage = () => {
         }
       });
       setEdificios(todosEdificios);
+      showStatusAlert({
+        type: "success",
+        title: "Información cargada",
+        duration: 2000,
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Error desconocido";
       setError(errorMessage);
+      showStatusAlert({
+        type: "error",
+        title: "Error",
+        duration: 4000,
+      });
       console.error("Error al cargar datos:", err);
     } finally {
       setLoading(false);
@@ -99,12 +115,12 @@ const MapPage = () => {
 
     // Por defecto, usar Córdoba
     return {
-      centerCoords: [37.8847, -4.7792] as [number, number],
-      zoomLevel: 12,
+      centerCoords: [37.8847, -4.7792] as [number, number], // Coordenadas aproximadas del centro de Córdoba
+      zoomLevel: 12, // Zoom inicial para toda la ciudad
       maxBounds: [
         [37.75, -5.02],
         [37.99, -4.62],
-      ] as LatLngBoundsExpression,
+      ] as LatLngBoundsExpression, // Limitar a Córdoba con un pequeño buffer
       minZoomLevel: 11, // Admins pueden ver más allá
     };
   }, [user, zonas]);
@@ -117,11 +133,7 @@ const MapPage = () => {
     <div className="map-page">
       <Sidebar />
       <main className="map-content">
-        {loading ? (
-          <div className="map-loading">
-            <p>Cargando mapa...</p>
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="map-error">
             <p>Error: {error}</p>
           </div>

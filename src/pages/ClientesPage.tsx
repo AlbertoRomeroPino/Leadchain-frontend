@@ -3,6 +3,7 @@ import type { Cliente } from "../types/clientes/Cliente";
 import { useState } from "react";
 import { clientesService } from "../services/ClientesService";
 import { useAuth } from "../auth/useAuth";
+import showStatusAlert from "../components/utils/StatusAlert";
 
 import Sidebar from "../layout/Sidebar";
 import InfoCliente from "../components/Clientes/ClienteInfo";
@@ -28,6 +29,12 @@ const Clientes = () => {
     if (!user) return;
 
     try {
+      showStatusAlert({
+        type: "loading",
+        title: "Cargando clientes...",
+        duration: null,
+      });
+
       const [clientesConEdificio, sinEdificio] = await Promise.all([
         clientesService.getClientes(),
         user?.rol === "admin"
@@ -37,9 +44,21 @@ const Clientes = () => {
 
       setClientes(clientesConEdificio);
       setClientesSinEdificio(sinEdificio);
+
+      showStatusAlert({
+        type: "success",
+        title: "Información cargada",
+        duration: 2000,
+      });
     } catch (err) {
+      showStatusAlert({
+        type: "error",
+        title: "Error",
+        duration: 4000,
+      });
       const message =
         err instanceof Error ? err.message : "Error al cargar clientes";
+      console.error(message);
     }
   }, [user]);
 

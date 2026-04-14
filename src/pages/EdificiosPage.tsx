@@ -11,6 +11,7 @@ import { clientesService } from "../services/ClientesService";
 import EdificioHeader from "../components/Edificios/EdificioHeader";
 import EdificioCreateModal from "../components/Edificios/EdificioCreateModal";
 import { useInitialize } from "../hooks/useInitialize";
+import showStatusAlert from "../components/utils/StatusAlert";
 import "../styles/Edificios.css";
 
 const Edificios = () => {
@@ -26,9 +27,13 @@ const Edificios = () => {
   useInitialize(async () => {
     if (!user) return;
 
-    // TODO: los comerciales unicamente pueden ver los edificios de sus zonas
-    // y los administradores los de sus comerciales, pero eso lo dejamos para más adelante
     try {
+      showStatusAlert({
+        type: "loading",
+        title: "Cargando edificios...",
+        duration: null,
+      });
+
       const edificiosData =
         (await EdificiosService.getEdificios()) as Edificio[];
 
@@ -45,30 +50,35 @@ const Edificios = () => {
 
       const zonasData = await ZonaService.getZonas();
       setZonas(zonasData);
+
+      showStatusAlert({
+        type: "success",
+        title: "Datos cargados",
+        duration: 2000,
+      });
     } catch (err) {
+      showStatusAlert({
+        type: "error",
+        title: "Error",
+        duration: 4000,
+      });
       const message =
         err instanceof Error ? err.message : "Error al cargar edificios";
+      console.error(message);
     }
   }, [user]);
 
   const handleCreateEdificio = async (edificio: EdificioInput) => {
     if (!canCreateEdificio) {
-      return;
+      throw new Error("No autorizado para crear edificios");
     }
 
-    try {
-      setCreatingEdificio(true);
+    const nuevoEdificio = await EdificiosService.createEdificio(edificio);
 
-      const nuevoEdificio = await EdificiosService.createEdificio(edificio);
-
-      setEdificios((prev) => [...prev, nuevoEdificio]);
-      setShowCreateForm(false);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Error al crear edificio";
-    } finally {
-      setCreatingEdificio(false);
-    }
+    setEdificios((prev) => [...prev, nuevoEdificio]);
+    setShowCreateForm(false);
+    
+    return nuevoEdificio;
   };
 
   const handleEdificioUpdated = (edificioActualizado: Edificio) => {
@@ -97,7 +107,6 @@ const Edificios = () => {
     planta?: string,
     puerta?: string,
   ) => {
-    const targetEdificio = edificios.find((e) => e.id === edificioId);
     try {
       setCreatingEdificio(true);
       let idCliente: number;
@@ -120,26 +129,20 @@ const Edificios = () => {
       }
 
       // Adjuntar cliente al edificio usando la relación many-to-many
-      if (targetEdificio) {
-        await EdificiosService.attachCliente(edificioId, idCliente, planta, puerta);
-        
-        // Actualizar el estado local para reflejar el cambio
-        setEdificios((prev) =>
-          prev.map((item) =>
-            item.id === edificioId
-              ? {
-                  ...item,
-                  clientes: item.clientes
-                    ? [...item.clientes, { id: idCliente, nombre: nombre || "", apellidos: apellidos || "", telefono: telefono || null, email: email || null }]
-                    : [{ id: idCliente, nombre: nombre || "", apellidos: apellidos || "", telefono: telefono || null, email: email || null }],
-                }
-              : item,
-          ),
-        );
-      }
+      await EdificiosService.attachCliente(edificioId, idCliente, planta, puerta);
+      
+      // Hacer refresh del edificio desde el servidor para obtener los datos actualizados
+      const edificioActualizado = await EdificiosService.getEdificioDetalle(edificioId);
+      
+      setEdificios((prev) =>
+        prev.map((item) =>
+          item.id === edificioId ? edificioActualizado : item
+        )
+      );
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Error al adjuntar cliente";
+      throw new Error(message);
     } finally {
       setCreatingEdificio(false);
       setShowCreateForm(false);

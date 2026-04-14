@@ -6,10 +6,14 @@ interface StatusAlertProps {
   type: SileoType;
   title: string;
   description?: string;
-  duration?: number;
+  duration?: number | null;
   onAction?: () => void | Promise<void>;
   actionLabel?: string;
 }
+
+const stopStatusAlert = (): void => {
+  sileo.clear();
+};
 
 const showStatusAlert = ({ 
   type, 
@@ -19,6 +23,8 @@ const showStatusAlert = ({
   onAction,
   actionLabel,
 }: StatusAlertProps): void => {
+  stopStatusAlert();
+
   // Para tipo "action", usar sileo.action con estructura específica
   if (type === "action" && onAction) {
     sileo.action({
@@ -32,7 +38,6 @@ const showStatusAlert = ({
     return;
   }
 
-  // Para otros tipos, usar sileo.show
   sileo.show({
     title,
     description,
@@ -46,9 +51,5 @@ const showStatusAlert = ({
     },
   });
 };
-
-export const destroyStatusAlert = (): void => {
-  sileo.clear();
-}
 
 export default showStatusAlert;

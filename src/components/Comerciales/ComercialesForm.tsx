@@ -3,6 +3,7 @@ import type { Zona } from "../../types/zonas/Zona";
 import type { UserInput, User, UserUpdateInput } from "../../types/users/User";
 import { UserService } from "../../services/User";
 import { authStorage } from "../../auth/authStorage";
+import showStatusAlert from "../utils/StatusAlert";
 
 interface ComercialesFormProps {
   zonas: Zona[];
@@ -87,6 +88,12 @@ const ComercialesForm = ({ zonas, comercialAEditar = null, onSuccess }: Comercia
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Error desconocido";
+      showStatusAlert({
+        type: "error",
+        title: "Error",
+        description: message,
+        duration: 4000,
+      });
     } finally {
       setIsLoading(false);
     }

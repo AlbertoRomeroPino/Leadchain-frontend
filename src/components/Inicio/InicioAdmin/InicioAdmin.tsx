@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../../../auth/useAuth";
 import { useInitialize } from "../../../hooks/useInitialize";
-import ComercialCard from "./ComercialCard";
+import ComercialCard from "./ComercialCard/ComercialCard";
 import { InicioService } from "../../../services/InicioService";
+import showStatusAlert from "../../utils/StatusAlert";
 import type { User } from "../../../types/users/User";
 import type { Visita } from "../../../types/visitas/Visita";
 import type { Cliente } from "../../../types/clientes/Cliente";
@@ -25,41 +26,54 @@ const InicioAdmin = () => {
     edificios: [],
   });
 
-  useInitialize(
-    async () => {
-      if (!user || user.rol !== "admin") {
-        setLoading(false);
-        return;
-      }
+  useInitialize(async () => {
+    if (!user || user.rol !== "admin") {
+      setLoading(false);
+      return;
+    }
 
-      try {
-        // Una sola petición consolida todos los datos necesarios
-        const inicioData = await InicioService.getAdminInicio();
+    try {
+      setLoading(true);
+      showStatusAlert({
+        type: "loading",
+        title: "Cargando tablero...",
+        description: "Obteniendo datos de comerciales, clientes y visitas",
+        duration: null,
+      });
 
-        // Filtrar solo comerciales que dependen de este admin
-        const comercialesData = inicioData.usuarios_comerciales.filter(
-          (usuario) =>
-            usuario.rol === "comercial" &&
-            usuario.id_responsable === user.id,
-        );
+      const inicioData = await InicioService.getAdminInicio();
 
-        setData({
-          comerciales: comercialesData,
-          visitas: inicioData.visitas,
-          clientes: inicioData.clientes,
-          edificios: inicioData.edificios,
-        });
-      } catch (err) {
-        console.error("Error al cargar dashboard admin:", err);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [user?.id]
-  );
+      // Filtrar solo comerciales que dependen de este admin
+      const comercialesData = inicioData.usuarios_comerciales.filter(
+        (usuario) =>
+          usuario.rol === "comercial" && usuario.id_responsable === user.id,
+      );
+
+      setData({
+        comerciales: comercialesData,
+        visitas: inicioData.visitas,
+        clientes: inicioData.clientes,
+        edificios: inicioData.edificios,
+      });
+      showStatusAlert({
+        type: "success",
+        title: "Información cargada",
+        duration: 2000,
+      });
+    } catch (error) {
+      showStatusAlert({
+        type: "error",
+        title: "No encontrado",
+        duration: 4000,
+      });
+      console.error("Error al cargar dashboard admin:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.id]);
 
   if (loading) {
-    return <div className="loading">Cargando dashboard...</div>;
+    return <div className="loading"></div>;
   }
 
   return (
@@ -69,7 +83,7 @@ const InicioAdmin = () => {
       </div>
 
       {/* Pasar datos consolidados a ComercialCard */}
-      <ComercialCard 
+      <ComercialCard
         comerciales={data.comerciales}
         visitas={data.visitas}
         clientes={data.clientes}
