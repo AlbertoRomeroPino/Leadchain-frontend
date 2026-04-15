@@ -1,4 +1,5 @@
 import { MapContainer, Marker, Popup, Polygon, Rectangle, TileLayer } from "react-leaflet";
+import "../../styles/components/Zona/ZonaMap.css";
 import type { Zona } from "../../types/zonas/Zona";
 import type { Edificio } from "../../types/edificios/Edificio";
 import type { Cliente } from "../../types/clientes/Cliente";

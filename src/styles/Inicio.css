@@ -1,0 +1,58 @@
+/* ==========================================================
+   ESTILOS GENERALES - PÁGINA INICIO
+   ========================================================== */
+
+/* Layout Wrapper */
+.page-layout-wrapper {
+  margin-left: clamp(70px, 8vw, 84px);
+  width: calc(100% - clamp(70px, 8vw, 84px));
+}
+
+/* Main Content Area */
+.inicio-page-main {
+  padding: 20px 20px 20px 0px;
+  overflow-x: hidden;
+}
+
+.inicio-page-main h1 {
+  margin: 0 0 16px 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* ==========================================================
+   RESPONSIVE DESIGN
+   ========================================================== */
+
+@media (max-width: 900px) {
+  .page-layout-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .inicio-page-main {
+    padding: 20px 20px 100px 20px;
+  }
+
+  .inicio-page-main h1 {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-layout-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .inicio-page-main {
+    padding: 12px 8px 100px 8px;
+  }
+
+  .inicio-page-main h1 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+}

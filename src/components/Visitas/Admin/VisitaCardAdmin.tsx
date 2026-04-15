@@ -1,6 +1,7 @@
 import type { Visita } from "../../../types/visitas/Visita";
 import type { CSSProperties } from "react";
 import { Trash2 } from "lucide-react";
+import "../../../styles/components/Visitas/Admin/VisitaCardAdmin.css";
 
 type VisitaCardAdminProps = {
   visita: Visita;

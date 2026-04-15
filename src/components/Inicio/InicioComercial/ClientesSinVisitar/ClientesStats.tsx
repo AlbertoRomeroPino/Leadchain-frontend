@@ -1,3 +1,5 @@
+import "../../../../styles/components/Inicio/InicioComercial/ClientesSinVisitar/ClientesStats.css";
+
 interface ClientesStatsProps {
   totalClientes: number;
   conVisita: number;

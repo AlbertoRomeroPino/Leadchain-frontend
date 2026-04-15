@@ -1,0 +1,94 @@
+/* ==========================================================
+   HEADER - ZONA
+   ========================================================== */
+
+.zona-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 24px;
+  margin-left: clamp(70px, 8vw, 84px);
+  padding: 0 20px;
+}
+
+.zona-info-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.zona-info-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid #3f1b1b;
+  border-radius: 10px;
+  color: #f4f4f5;
+  background: #161010;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.zona-info-back-button:hover {
+  background: #1f1414;
+}
+
+.zona-info-subtitle {
+  margin: 4px 0 0;
+  color: #d1d5db;
+  font-size: 0.95rem;
+}
+
+/* Botón Crear Zona */
+.zona-create-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #dc2626;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.zona-create-button:hover:not(:disabled) {
+  background-color: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+.zona-create-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .zona-header {
+    margin-left: 0;
+    padding: 20px 20px 0 20px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .zona-create-button {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .zona-header {
+    margin-left: 0;
+    padding: 10px 10px 0 10px;
+  }
+}

@@ -1,0 +1,24 @@
+/* ==========================================================
+   ESTILOS GENERALES - PÁGINA ZONA
+   ========================================================== */
+
+.zona-page-wrapper {
+  margin-left: clamp(70px, 8vw, 84px);
+  width: calc(100vw - clamp(70px, 8vw, 84px));
+}
+
+/* Responsive: Tablet */
+@media (max-width: 900px) {
+  .zona-page-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* Responsive: Mobile */
+@media (max-width: 600px) {
+  .zona-page-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+}

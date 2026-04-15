@@ -1,0 +1,19 @@
+/* ==========================================================
+   TARJETA DE CLIENTE CON VISITA (COMPLETADA)
+   ========================================================== */
+
+.cliente-card-completed {
+  opacity: 0.75;
+}
+
+.cliente-card-completed:hover {
+  border-color: #22c55e;
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.15);
+}
+
+.cliente-card-completed .cliente-card-header {
+  background-color: rgba(34, 197, 94, 0.08);
+}
+
+/* Estilos heredados de ClienteSinVisitaCard */
+/* La tarjeta mantiene la misma estructura, solo cambian colores */

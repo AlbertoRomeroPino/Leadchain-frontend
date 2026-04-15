@@ -10,7 +10,7 @@ import ZonaHeader from "../components/Zona/ZonaHeader";
 import ZonaInfo from "../components/Zona/ZonaInfo";
 import ZonaList from "../components/Zona/ZonaList";
 import "leaflet/dist/leaflet.css";
-import "../styles/ZonaPage.css";
+import "../styles/Zona.css";
 
 const Zona = () => {
   const [zonas, setZonas] = useState<Zona[]>([]);
@@ -129,9 +129,14 @@ const Zona = () => {
     return selectedZona.edificios;
   }, [selectedZona]);
 
-  // Calcular edificios con clientes asignados
-  const selectedAssignedEdificios = useMemo(() => {
-    return selectedEdificios.filter((edificio) => Array.isArray(edificio.clientes) && edificio.clientes.length > 0);
+  // Contar total de clientes en edificios con clientes asignados
+  const selectedAssignedClientsCount = useMemo(() => {
+    return selectedEdificios.reduce((total, edificio) => {
+      if (Array.isArray(edificio.clientes)) {
+        return total + edificio.clientes.length;
+      }
+      return total;
+    }, 0);
   }, [selectedEdificios]);
 
   // Contar edificios por zona
@@ -158,7 +163,7 @@ const Zona = () => {
           <ZonaInfo
             selectedZona={selectedZona}
             selectedEdificiosCount={selectedEdificios.length}
-            selectedAssignedEdificiosCount={selectedAssignedEdificios.length}
+            selectedAssignedEdificiosCount={selectedAssignedClientsCount}
             creatingZona={creatingZona}
             onEdit={handleOpenEdit}
             onDelete={handleDeleteZona}

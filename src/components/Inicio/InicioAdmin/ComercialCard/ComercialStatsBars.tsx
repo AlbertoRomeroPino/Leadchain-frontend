@@ -1,3 +1,5 @@
+import "../../../../styles/components/Inicio/InicioAdmin/ComercialCard/ComercialStatsBars.css";
+
 interface ComercialStatsBarsProps {
   exitosos: number;
   rechazados: number;

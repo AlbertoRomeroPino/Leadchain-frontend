@@ -1,5 +1,6 @@
 
 import { useNavigate } from "react-router-dom";
+import "../../styles/components/sidebar/MenuButtons.css";
 
 interface MenuButtonsProps {
   icon: React.ReactNode;

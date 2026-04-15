@@ -1,4 +1,5 @@
 import { MapPlus } from "lucide-react";
+import "../../styles/components/Zona/ZonaHeader.css";
 
 interface ZonaHeaderProps {
   onCreate: () => void;

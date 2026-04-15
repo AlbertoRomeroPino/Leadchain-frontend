@@ -1,0 +1,27 @@
+/* ==========================================================
+   ESTILOS GENERALES - PÁGINA VISITAS
+   ========================================================== */
+
+.visitas-page {
+  margin-left: clamp(70px, 8vw, 84px);
+  padding: 20px;
+  width: calc(100vw - clamp(70px, 8vw, 84px));
+}
+
+/* Responsive: Tablet */
+@media (max-width: 900px) {
+  .visitas-page {
+    margin-left: 0;
+    width: 100%;
+    padding: 20px 20px 100px 20px;
+  }
+}
+
+/* Responsive: Mobile */
+@media (max-width: 600px) {
+  .visitas-page {
+    margin-left: 0;
+    width: 100%;
+    padding: 16px 12px 100px 12px;
+  }
+}

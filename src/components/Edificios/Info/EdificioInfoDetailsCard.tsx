@@ -1,5 +1,7 @@
 import type { Edificio } from '../../../types/edificios/Edificio'
 
+import '../../../styles/components/Edificios/Info/EdificioInfoDetailsCard.css';
+
 interface EdificioInfoDetailsCardProps {
   edificio: Edificio
   zona?: { nombre_zona?: string } | null

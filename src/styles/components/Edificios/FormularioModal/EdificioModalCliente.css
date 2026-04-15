@@ -1,0 +1,31 @@
+/* Componente Cliente del modal */
+/* Modo selector y creador */
+.form-edificio-mode-selector {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 10px 14px;
+  background-color: #261414;
+  border: 1px solid #3f1b1b;
+  border-radius: 6px;
+  color: #ffe4e6;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.mode-btn:hover {
+  border-color: #dc2626;
+  background-color: #2c1818;
+}
+
+.mode-btn.active {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}

@@ -1,5 +1,7 @@
 import type { Cliente } from "../../../types/clientes/Cliente";
 
+import '../../../styles/components/Edificios/FormularioModal/EdificioModalCliente.css';
+
 interface EdificioModalClienteProps {
   existingEdificioId: number;
   setExistingEdificioId: (id: number) => void;
@@ -49,6 +51,11 @@ const EdificioModalCliente = ({
   clientePuerta,
   setClientePuerta,
 }: EdificioModalClienteProps) => {
+  const handleFillHouseFields = () => {
+    setClientePlanta("Baja");
+    setClientePuerta("S/N");
+  };
+
   return (
     <>
       <h2 className="form-edificio-title">
@@ -69,23 +76,35 @@ const EdificioModalCliente = ({
         ))}
       </select>
 
-      {/* Piso y puerta */}
-      <input
-        className="form-edificio-input"
-        type="text"
-        placeholder="Piso/Planta"
-        value={clientePlanta}
-        onChange={(e) => setClientePlanta(e.target.value)}
-        required
-      />
-      <input
-        className="form-edificio-input"
-        type="text"
-        placeholder="Puerta"
-        value={clientePuerta}
-        onChange={(e) => setClientePuerta(e.target.value)}
-        required
-      />
+      {/* Piso y puerta con botón de Casa */}
+      <div className="form-edificio-fields-group">
+        <div className="form-edificio-fields-wrapper">
+          <input
+            className="form-edificio-input"
+            type="text"
+            placeholder="Piso/Planta"
+            value={clientePlanta}
+            onChange={(e) => setClientePlanta(e.target.value)}
+            required
+          />
+          <input
+            className="form-edificio-input"
+            type="text"
+            placeholder="Puerta"
+            value={clientePuerta}
+            onChange={(e) => setClientePuerta(e.target.value)}
+            required
+          />
+        </div>
+        <button
+          type="button"
+          className="form-edificio-house-btn"
+          onClick={handleFillHouseFields}
+          title="Rellenar para una casa (Baja, S/N)"
+        >
+          🏠 Casa
+        </button>
+      </div>
 
       {/* Selector de modo: crear vs seleccionar */}
       <div className="form-edificio-mode-selector">

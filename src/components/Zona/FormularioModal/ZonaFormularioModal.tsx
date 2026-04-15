@@ -13,7 +13,7 @@ import {
   getCentroPoligono,
   CORDOBA_MAP_CONFIG,
 } from "../../utils/cordobaMapConfig";
-import "../../../styles/ZonaFormularioModal.css";
+import "../../../styles/components/Zona/FormularioModal/ZonaFormularioModal.css";
 
 interface ZonaFormularioModalProps {
   show: boolean;

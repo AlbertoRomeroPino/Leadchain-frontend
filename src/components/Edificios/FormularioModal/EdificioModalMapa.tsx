@@ -11,6 +11,28 @@ import {
 import L, { type LatLngLiteral } from "leaflet";
 import { CORDOBA_CENTER } from "../../utils/cordobaMapConfig";
 
+import '../../../styles/components/Edificios/FormularioModal/EdificioModalMapa.css';
+
+// Crear un ícono simple y limpio
+const createSimpleMarkerIcon = () => {
+  return L.divIcon({
+    html: `
+      <div style="
+        width: 30px;
+        height: 30px;
+        background-color: #dc2626;
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.6);
+      "></div>
+    `,
+    className: "simple-marker-icon",
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -15],
+  });
+};
+
 interface EdificioModalMapaProps {
   idZona: number;
   zonas: {
@@ -175,7 +197,7 @@ const EdificioModalMapa = ({
         ) : null}
 
         {lat != null && lng != null ? (
-          <Marker position={[lat, lng]}>
+          <Marker position={[lat, lng]} icon={createSimpleMarkerIcon()}>
             <Popup>Ubicación seleccionada</Popup>
           </Marker>
         ) : null}

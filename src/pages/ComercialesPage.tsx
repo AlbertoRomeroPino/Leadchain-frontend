@@ -3,7 +3,7 @@ import Sidebar from "../layout/Sidebar";
 import { UserService } from "../services/User";
 import type { User, UserVisitas } from "../types/users/User";
 import type { Zona } from "../types/zonas/Zona";
-import "../styles/ComercialesPage.css";
+import "../styles/Comerciales.css";
 import { useInitialize } from "../hooks/useInitialize";
 import showStatusAlert from "../components/utils/StatusAlert";
 import ComercialesHeader from "../components/Comerciales/ComercialesHeader";

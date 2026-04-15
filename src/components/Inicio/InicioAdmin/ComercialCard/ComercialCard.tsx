@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../../../../styles/components/Inicio/InicioAdmin/ComercialCard/ComercialCard.css";
 import { useInitialize } from "../../../../hooks/useInitialize";
 import type { User } from "../../../../types/users/User";
 import type { Visita } from "../../../../types/visitas/Visita";

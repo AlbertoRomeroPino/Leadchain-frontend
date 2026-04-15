@@ -1,4 +1,5 @@
 import type { Cliente } from "../../../types/clientes/Cliente";
+import "../../../styles/components/Clientes/Info/InfoClienteDatosCard.css";
 
 interface InfoClienteDatosCardProps {
   cliente: Cliente;

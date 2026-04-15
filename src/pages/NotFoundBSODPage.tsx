@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/useAuth";
-import showStatusAlert from "../components/utils/StatusAlert";
 import "../styles/NotFound.css";
+import { useAuth } from "../auth/useAuth";
 
 const NotFoundBSOD = () => {
   const navigate = useNavigate();

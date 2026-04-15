@@ -1,0 +1,41 @@
+/* Tarjeta de Detalles */
+.edificio-details-card {
+  grid-column: 1 / 2;
+  display: flex;
+  flex-direction: column;
+  min-height: 520px;
+}
+
+.edificio-details-title {
+  color: #fca5a5;
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #2c1818;
+  padding-bottom: 10px;
+  font-weight: 700;
+}
+
+.edificio-details-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #2c1818;
+  font-size: 0.95rem;
+  color: #ffe4e6;
+}
+
+.edificio-details-row:last-child {
+  border-bottom: none;
+}
+
+.edificio-details-label {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .edificio-details-card {
+    grid-column: 1 / -1;
+    min-height: auto;
+  }
+}

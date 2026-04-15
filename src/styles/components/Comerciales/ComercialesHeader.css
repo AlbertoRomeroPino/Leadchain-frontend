@@ -1,0 +1,102 @@
+.comerciales-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.comerciales-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+
+.comerciales-button-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.comerciales-create-button,
+.comerciales-delete-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.comerciales-create-button {
+  background-color: #dc2626;
+  color: #ffffff;
+  border: none;
+}
+
+.comerciales-create-button:hover {
+  background-color: #b91c1c;
+}
+
+.comerciales-delete-button {
+  background-color: transparent;
+  color: #fca5a5;
+  border: 2px solid #525252;
+  transition: all 0.2s ease;
+}
+
+.comerciales-delete-button:hover:not(:disabled) {
+  border-color: #dc2626;
+  color: #dc2626;
+  background-color: rgba(220, 38, 38, 0.1);
+}
+
+.comerciales-delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: #6b7280;
+  border-color: #3f3f3f;
+}
+
+.comerciales-delete-button:not(:disabled) {
+  border-color: #dc2626;
+  color: #fca5a5;
+}
+
+.comerciales-delete-button:not(:disabled):hover {
+  border-color: #ea5555;
+  color: #fca5a5;
+  background-color: rgba(220, 38, 38, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .comerciales-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .comerciales-button-group {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .comerciales-create-button,
+  .comerciales-delete-button {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .comerciales-title {
+    font-size: 1.25rem;
+    margin: 0 0 12px 0;
+  }
+}

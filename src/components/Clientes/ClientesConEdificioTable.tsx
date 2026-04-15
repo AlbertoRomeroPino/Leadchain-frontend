@@ -1,5 +1,6 @@
 import type { Cliente } from "../../types/clientes/Cliente";
 import ClienteTabla from "./ClienteTabla";
+import "../../styles/components/Clientes/ClientesConEdificioTable.css";
 
 interface ClientesConEdificioTableProps {
   clientes: Cliente[];

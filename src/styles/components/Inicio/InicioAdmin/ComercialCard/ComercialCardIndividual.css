@@ -1,0 +1,190 @@
+/* ==========================================================
+   TARJETA INDIVIDUAL DE COMERCIAL
+   ========================================================== */
+
+.comercial-card-individual {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, #161010 0%, #1f1414 100%);
+  border-radius: 8px;
+  border: 1px solid #3f1b1b;
+  transition: all 0.3s ease;
+}
+
+.comercial-card-individual:hover {
+  border-color: #dc2626;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+}
+
+/* Header de Tarjeta */
+.comercial-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #3f1b1b;
+}
+
+.comercial-card-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.comercial-card-email {
+  margin: 0;
+  font-size: 12px;
+  color: #b98989;
+}
+
+/* Cuerpo de Tarjeta */
+.comercial-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Fila de Info */
+.comercial-info-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  background-color: rgba(220, 38, 38, 0.08);
+  border-left: 2px solid #dc2626;
+  border-radius: 4px;
+}
+
+.info-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #b98989;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fca5a5;
+}
+
+/* ==========================================================
+   RESPONSIVE DESIGN
+   ========================================================== */
+
+/* Desktop: 3 columnas fijas */
+@media (min-width: 1024px) {
+  .comercial-info-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+}
+
+/* Tablet: 3 columnas fijas, sin colapso */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .comercial-card-individual {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .comercial-info-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .info-item {
+    padding: 8px;
+    gap: 3px;
+  }
+
+  .info-label {
+    font-size: 10px;
+  }
+
+  .info-value {
+    font-size: 15px;
+  }
+}
+
+/* Tablet pequeño: 3 columnas fijas, muy compacto */
+@media (min-width: 600px) and (max-width: 767px) {
+  .comercial-card-individual {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .comercial-card-name {
+    font-size: 14px;
+  }
+
+  .comercial-card-email {
+    font-size: 11px;
+  }
+
+  .comercial-info-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .info-item {
+    padding: 6px;
+    gap: 2px;
+  }
+
+  .info-label {
+    font-size: 9px;
+  }
+
+  .info-value {
+    font-size: 14px;
+  }
+}
+
+/* Móvil: 1 columna o 3 dependiendo del espacio */
+@media (max-width: 599px) {
+  .comercial-card-individual {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .comercial-card-header {
+    gap: 4px;
+    padding-bottom: 8px;
+  }
+
+  .comercial-card-name {
+    font-size: 13px;
+  }
+
+  .comercial-card-email {
+    font-size: 10px;
+  }
+
+  .comercial-info-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+
+  .info-item {
+    padding: 5px;
+    gap: 1px;
+  }
+
+  .info-label {
+    font-size: 8px;
+  }
+
+  .info-value {
+    font-size: 12px;
+  }
+}

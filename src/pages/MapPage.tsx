@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import GlovalMap from "../components/utils/GlovalMap";
-import MapaEdificioPanel from "../components/utils/MapaEdificioPanel";
 import Sidebar from "../layout/Sidebar";
 import "../styles/Map.css";
 import { useAuth } from "../auth/useAuth";
@@ -15,9 +14,6 @@ const MapPage = () => {
   const { user } = useAuth();
   const [zonas, setZonas] = useState<Zona[]>([]);
   const [edificios, setEdificios] = useState<Edificio[]>([]);
-  const [selectedEdificio, setSelectedEdificio] = useState<Edificio | null>(
-    null,
-  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,7 +39,11 @@ const MapPage = () => {
           });
         }
       });
+      
+      // Los edificios ya vienen con sus clientes desde getMapaInicio()
+      // No es necesario hacer peticiones adicionales - esto fue el cuello de botella
       setEdificios(todosEdificios);
+      
       showStatusAlert({
         type: "success",
         title: "Información cargada",
@@ -148,21 +148,12 @@ const MapPage = () => {
               zoomLevel={zoomLevel}
               minZoomLevel={minZoomLevel}
               customMaxBounds={maxBounds}
-              onEdificioClick={setSelectedEdificio}
               title={
                 user.rol === "comercial"
                   ? "Mapa de tu Zona"
                   : "Mapa de Todas las Zonas"
               }
             />
-            {selectedEdificio && (
-              <MapaEdificioPanel
-                edificio={selectedEdificio}
-                isOpen={Boolean(selectedEdificio)}
-                onClose={() => setSelectedEdificio(null)}
-                userRole={user.rol}
-              />
-            )}
           </>
         )}
       </main>

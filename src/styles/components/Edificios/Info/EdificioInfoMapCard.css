@@ -1,0 +1,64 @@
+/* Tarjeta de Mapa */
+.edificio-map-card {
+  grid-column: 1 / -1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 650px;
+  flex-shrink: 0;
+}
+
+.edificio-map-title {
+  color: #fca5a5;
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #2c1818;
+  padding-bottom: 10px;
+  font-weight: 700;
+}
+
+.edificio-map-leaflet {
+  width: 100%;
+  height: 600px;
+  border-radius: 12px;
+  border: 1px solid #3f1b1b;
+  z-index: 1;
+  flex: 1;
+  user-select: none !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: grab !important;
+  touch-action: none !important;
+}
+
+.edificio-map-leaflet.leaflet-dragging {
+  cursor: grabbing !important;
+}
+
+.edificio-map-leaflet * {
+  cursor: grab !important;
+  user-select: none !important;
+}
+
+.edificio-map-leaflet.leaflet-dragging * {
+  cursor: grabbing !important;
+}
+
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (max-width: 1024px) {
+  .edificio-map-card {
+    height: 450px;
+  }
+}
+
+@media (max-width: 600px) {
+  .edificio-map-card {
+    height: 300px;
+  }
+}

@@ -1,0 +1,145 @@
+/* ==========================================================
+   TARJETA DE CLIENTE SIN VISITA
+   ========================================================== */
+
+.cliente-card {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #161010 0%, #1f1414 100%);
+  border: 1px solid #3f1b1b;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.cliente-card:hover {
+  border-color: #dc2626;
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.15);
+  transform: translateY(-4px);
+}
+
+/* Encabezado de Tarjeta */
+.cliente-card-header {
+  padding: 16px;
+  border-bottom: 1px solid #3f1b1b;
+  background-color: rgba(220, 38, 38, 0.08);
+}
+
+.cliente-card-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Contenido de Tarjeta */
+.cliente-card-content {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cliente-card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #b98989;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.field-value-small {
+  font-size: 12px;
+  color: #d6b1b1;
+  margin-top: 2px;
+}
+
+/* Footer de Tarjeta */
+.cliente-card-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #3f1b1b;
+  background-color: rgba(220, 38, 38, 0.05);
+}
+
+.btn-crear-visita {
+  width: 100%;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-crear-visita:hover {
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btn-crear-visita:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================================
+   RESPONSIVENESS
+   ========================================================== */
+
+@media (max-width: 768px) {
+  .cliente-card-name {
+    font-size: 14px;
+  }
+
+  .field-value {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .cliente-card-header {
+    padding: 12px;
+  }
+
+  .cliente-card-content {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .cliente-card-footer {
+    padding: 10px 12px;
+  }
+
+  .btn-crear-visita {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .field-label {
+    font-size: 10px;
+  }
+
+  .field-value {
+    font-size: 11px;
+  }
+}

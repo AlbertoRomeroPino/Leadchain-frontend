@@ -1,3 +1,4 @@
+import "../../../../styles/components/Inicio/InicioComercial/ClientesSinVisitar/ClienteConVisitaCard.css";
 import type { ClienteSinVisita } from "./ClientesSinVisitar";
 
 interface ClienteConVisitaCardProps {

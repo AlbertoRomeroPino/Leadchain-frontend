@@ -1,6 +1,6 @@
-import { MapContainer, Polygon, Rectangle, TileLayer, Popup, Marker } from "react-leaflet";
+import { MapContainer, Polygon, Rectangle, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import "../../styles/GlovalMap.css";
+import "../../styles/components/utils/GlovalMap.css";
 import {
   CORDOBA_BOUNDS,
   CORDOBA_CENTER,
@@ -10,9 +10,10 @@ import {
 } from "./cordobaMapConfig";
 import type { Zona } from "../../types/zonas/Zona";
 import type { Edificio } from "../../types/edificios/Edificio";
+import type { Cliente } from "../../types/clientes/Cliente";
 import type { GeoPoint } from "../../types/shared/GeoPoint";
 import type { LatLngExpression, LatLngBoundsExpression } from "leaflet";
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import L from "leaflet";
 
 interface GlovalMapProps {
@@ -25,8 +26,83 @@ interface GlovalMapProps {
   zoomLevel?: number;
   minZoomLevel?: number;
   customMaxBounds?: LatLngBoundsExpression;
-  onEdificioClick?: (edificio: Edificio) => void;
 }
+
+// Componente memoizado para cada marcador de edificio
+// Esto evita que se re-rendericen todos los edificios cuando cambia algo
+interface EdificioMarkerProps {
+  edificio: Edificio;
+  icon: L.DivIcon;
+}
+
+const EdificioMarker = memo(({ edificio, icon }: EdificioMarkerProps) => {
+  if (!edificio.ubicacion) return null;
+
+  // Obtener el conteo de clientes - puede ser array u objeto con count
+  let clientesCount = 0;
+  let clientesArray: (Cliente & { planta?: string | null; puerta?: string | null })[] = [];
+  
+  if (Array.isArray(edificio.clientes)) {
+    clientesCount = edificio.clientes.length;
+    clientesArray = edificio.clientes;
+  } else if (edificio.clientes && typeof edificio.clientes === 'object' && 'count' in edificio.clientes) {
+    clientesCount = (edificio.clientes as { count: number }).count;
+  }
+
+  const clientesConEdificio = Array.isArray(edificio.clientes)
+    ? edificio.clientes.map((cliente: Cliente & { planta?: string | null; puerta?: string | null }) => ({
+        cliente,
+        edificio,
+      }))
+    : [];
+
+  return (
+    <Marker
+      key={`edificio-${edificio.id}`}
+      position={[edificio.ubicacion.lat, edificio.ubicacion.lng]}
+      icon={icon}
+    >
+      <Popup className="custom-popup">
+        <div className="popup-content">
+          <p className="popup-address">
+            {edificio.direccion_completa ?? "Dirección no disponible"}
+          </p>
+          <p className="popup-info">
+            {clientesCount > 0
+              ? `${clientesCount} cliente${clientesCount !== 1 ? "s" : ""} en esta ubicación`
+              : "Sin clientes asignados"}
+          </p>
+          <div className="popup-list">
+            {clientesConEdificio.slice(0, 15).map((item, idx) => (
+              <div
+                key={`${item.cliente.id}-${item.edificio.id}-${idx}`}
+                className="popup-item"
+              >
+                <div>
+                  <p className="popup-client-name">
+                    {item.cliente.nombre} {item.cliente.apellidos}
+                  </p>
+                  <p className="popup-client-details">
+                    Piso: {item.cliente.planta ?? "N/A"} • Puerta: {item.cliente.puerta ?? "N/A"}
+                    <br />
+                    Tel: {item.cliente.telefono ?? "N/A"}
+                  </p>
+                </div>
+              </div>
+            ))}
+            {clientesConEdificio.length > 15 && (
+              <p className="popup-footer">
+                Mostrando 15 de {clientesConEdificio.length} clientes
+              </p>
+            )}
+          </div>
+        </div>
+      </Popup>
+    </Marker>
+  );
+});
+
+EdificioMarker.displayName = "EdificioMarker";
 
 const GlovalMap = ({
   zonas = [],
@@ -76,22 +152,24 @@ const GlovalMap = ({
     );
   };
 
-  const createEdificioIcon = (clientesCount = 0) => {
-    const label = clientesCount > 99 ? "99+" : String(clientesCount);
+  const createEdificioIcon = useMemo(() => {
+    return (clientesCount = 0) => {
+      const label = clientesCount > 99 ? "99+" : String(clientesCount);
 
-    return L.divIcon({
-      html: `
-        <div class="edificio-pin-icon">
-          <span>${label}</span>
-          <div class="edificio-pin-tail"></div>
-        </div>
-      `,
-      className: "edificio-pin-marker",
-      iconSize: [40, 46],
-      iconAnchor: [20, 46],
-      popupAnchor: [0, -42],
-    });
-  };
+      return L.divIcon({
+        html: `
+          <div class="edificio-pin-icon">
+            <span>${label}</span>
+            <div class="edificio-pin-tail"></div>
+          </div>
+        `,
+        className: "edificio-pin-marker",
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -35],
+      });
+    };
+  }, []);
 
   // Convertir puntos GeoPoint a LatLngExpression para Leaflet
   const convertirAreaAPoligono = (area: GeoPoint[]): LatLngExpression[] => {
@@ -209,32 +287,8 @@ const GlovalMap = ({
                 key={zona.id}
                 positions={poligono}
                 pathOptions={pathOptions}
-              >
-                <Popup>
-                  <div className="zona-popup">
-                    <h3>{zona.nombre_zona}</h3>
-                    <p>ID: {zona.id}</p>
-                    {zona.usuarios && zona.usuarios.length > 0 && (
-                      <div>
-                        <strong>Comerciales:</strong>
-                        <ul>
-                          {zona.usuarios.map((usuario) => (
-                            <li key={usuario.id}>
-                              {usuario.nombre} {usuario.apellidos}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    <p>
-                      <strong>Edificios:</strong> {edificiosCount}
-                    </p>
-                    <p>
-                      <strong>Clientes:</strong> {clientesCount}
-                    </p>
-                  </div>
-                </Popup>
-              </Polygon>
+                interactive={false}
+              />
             );
           })}
 
@@ -242,7 +296,6 @@ const GlovalMap = ({
           {edificiosAMostrar.map((edificio) => {
             if (!edificio.ubicacion) return null;
 
-            // Obtener el conteo de clientes - puede ser array o objeto con count
             let clientesCount = 0;
             if (Array.isArray(edificio.clientes)) {
               clientesCount = edificio.clientes.length;
@@ -251,17 +304,10 @@ const GlovalMap = ({
             }
 
             return (
-              <Marker
+              <EdificioMarker
                 key={`edificio-${edificio.id}`}
-                position={[edificio.ubicacion.lat, edificio.ubicacion.lng]}
+                edificio={edificio}
                 icon={createEdificioIcon(clientesCount)}
-                eventHandlers={{
-                  click: () => {
-                    if (onEdificioClick) {
-                      onEdificioClick(edificio);
-                    }
-                  },
-                }}
               />
             );
           })}
@@ -270,5 +316,6 @@ const GlovalMap = ({
     </div>
   );
 };
+
 
 export default GlovalMap;

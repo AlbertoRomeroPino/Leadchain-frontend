@@ -1,4 +1,5 @@
 import { UserPlus2 } from "lucide-react";
+import "../../styles/components/Clientes/ClientesHeader.css";
 
 interface ClientesHeaderProps {
   canCreateCliente: boolean;

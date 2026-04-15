@@ -1,4 +1,5 @@
 import type { Zona } from "../../types/zonas/Zona";
+import "../../styles/components/Zona/ZonaDetails.css";
 
 interface ZonaDetailsProps {
   selectedZona: Zona;
@@ -17,7 +18,6 @@ const ZonaDetails = ({
   <div className="zona-details-section">
     <div className="zona-details-card-header">
       <h3 className="zona-card-title">Información de la zona</h3>
-      <p className="zona-card-subtitle">{selectedZona.nombre_zona}</p>
     </div>
 
     <div className="zona-details-content">

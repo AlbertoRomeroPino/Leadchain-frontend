@@ -9,6 +9,8 @@ interface ClienteInfo {
   puerta: string | null
 }
 
+import '../../../styles/components/Edificios/Info/EdificioInfoClienteCard.css';
+
 interface EdificioInfoClienteCardProps {
   edificioId: number
   clientes: ClienteInfo[]

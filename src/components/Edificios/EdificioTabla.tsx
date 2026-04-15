@@ -1,6 +1,5 @@
 import type { Edificio } from "../../types/edificios/Edificio";
-
-
+import "../../styles/components/Edificios/EdificioTabla.css";
 
 interface EdificioTablaProps {
   edificios: Edificio[];

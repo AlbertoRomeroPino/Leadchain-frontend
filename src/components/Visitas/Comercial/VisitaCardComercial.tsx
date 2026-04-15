@@ -1,6 +1,7 @@
 import type { Visita } from "../../../types/visitas/Visita";
 import type { CSSProperties } from "react";
 import { MapPinPen } from "lucide-react";
+import "../../../styles/components/Visitas/Comercial/VisitaCardComercial.css";
 
 type VisitaCardComercialProps = {
   visita: Visita;

@@ -1,0 +1,270 @@
+/* ==========================================================
+   ESTILOS - COMPONENTE STATUS ALERT (SILEO TOASTS)
+   ========================================================== */
+
+/* Contenedor de Sileo */
+[data-sileo-viewport="true"] {
+  z-index: 99999 !important;
+}
+
+/* Contenedor del toast */
+[role="alert"],
+.sileo-toast {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  padding: 16px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #161010 0%, #0f0a0a 100%) !important;
+  border: 1px solid #3f1b1b !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6) !important;
+  animation: slideUp 0.3s ease-out !important;
+  font-family: inherit;
+  max-width: 400px;
+  min-width: 280px;
+  z-index: 99999 !important;
+}
+
+/* Estados del toast */
+[role="alert"].success,
+.sileo-toast.success {
+  border-color: #22c55e;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, #0f0a0a 100%) !important;
+}
+
+[role="alert"].error,
+.sileo-toast.error {
+  border-color: #dc2626;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.08) 0%, #0f0a0a 100%) !important;
+}
+
+[role="alert"].warning,
+.sileo-toast.warning {
+  border-color: #f59e0b;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, #0f0a0a 100%) !important;
+}
+
+[role="alert"].info,
+.sileo-toast.info {
+  border-color: #38bdf8;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, #0f0a0a 100%) !important;
+}
+
+[role="alert"].loading,
+.sileo-toast.loading {
+  border-color: #dc2626;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.08) 0%, #0f0a0a 100%) !important;
+}
+
+[role="alert"].action,
+.sileo-toast.action {
+  border-color: #dc2626;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.08) 0%, #0f0a0a 100%) !important;
+}
+
+/* Contenedor de contenido */
+[role="alert"] > div,
+.sileo-toast > div {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  gap: 8px !important;
+}
+
+/* Título del toast */
+[role="alert"] [class*="title"],
+[role="alert"] p:first-child,
+.sileo-toast-title {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+[role="alert"].success [class*="title"],
+[role="alert"].success p:first-child {
+  color: #22c55e !important;
+}
+
+[role="alert"].error [class*="title"],
+[role="alert"].error p:first-child {
+  color: #dc2626 !important;
+}
+
+[role="alert"].warning [class*="title"],
+[role="alert"].warning p:first-child {
+  color: #f59e0b !important;
+}
+
+[role="alert"].info [class*="title"],
+[role="alert"].info p:first-child {
+  color: #38bdf8 !important;
+}
+
+/* Descripción del toast */
+[role="alert"] [class*="description"],
+[role="alert"] p:not(:first-child),
+.sileo-toast-description {
+  font-size: 13px !important;
+  color: #b98989 !important;
+  margin: 0 !important;
+  line-height: 1.5 !important;
+}
+
+/* Botón de acción */
+[role="alert"] button,
+.sileo-toast-button {
+  margin-top: auto !important;
+  width: 100% !important;
+  padding: 10px 16px !important;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  text-align: center;
+  font-family: inherit;
+}
+
+[role="alert"] button:hover,
+.sileo-toast-button:hover {
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%) !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+[role="alert"] button:active,
+.sileo-toast-button:active {
+  transform: translateY(0) !important;
+}
+
+/* Botón con estado success */
+[role="alert"].success button {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+}
+
+[role="alert"].success button:hover {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4) !important;
+}
+
+/* Botón con estado warning */
+[role="alert"].warning button {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+}
+
+[role="alert"].warning button:hover {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4) !important;
+}
+
+/* Botón con estado info */
+[role="alert"].info button {
+  background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%) !important;
+}
+
+[role="alert"].info button:hover {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4) !important;
+}
+
+/* Ícono de carga */
+[role="alert"].loading::before,
+.sileo-toast.loading::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #dc2626;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Animación de spin */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Cerrar toast */
+[role="alert"] [class*="close"],
+.sileo-toast-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none !important;
+  border: none !important;
+  color: #b98989 !important;
+  cursor: pointer !important;
+  font-size: 20px !important;
+  padding: 4px !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: color 0.2s ease !important;
+}
+
+[role="alert"] [class*="close"]:hover,
+.sileo-toast-close:hover {
+  color: #dc2626 !important;
+}
+
+/* ==========================================================
+   RESPONSIVE DESIGN
+   ========================================================== */
+
+@media (max-width: 768px) {
+  [role="alert"],
+  .sileo-toast {
+    max-width: 95vw;
+    min-width: 85vw;
+    padding: 14px !important;
+  }
+
+  [role="alert"] [class*="title"],
+  [role="alert"] p:first-child {
+    font-size: 13px !important;
+  }
+
+  [role="alert"] [class*="description"],
+  [role="alert"] p:not(:first-child) {
+    font-size: 12px !important;
+  }
+
+  [role="alert"] button {
+    padding: 10px 14px !important;
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  [role="alert"],
+  .sileo-toast {
+    max-width: 90vw;
+    min-width: 80vw;
+    padding: 12px !important;
+    gap: 10px !important;
+  }
+
+  [role="alert"] [class*="title"],
+  [role="alert"] p:first-child {
+    font-size: 12px !important;
+  }
+
+  [role="alert"] [class*="description"],
+  [role="alert"] p:not(:first-child) {
+    font-size: 11px !important;
+  }
+
+  [role="alert"] button {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+}

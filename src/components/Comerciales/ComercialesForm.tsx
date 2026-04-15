@@ -4,6 +4,7 @@ import type { UserInput, User, UserUpdateInput } from "../../types/users/User";
 import { UserService } from "../../services/User";
 import { authStorage } from "../../auth/authStorage";
 import showStatusAlert from "../utils/StatusAlert";
+import "../../styles/components/Comerciales/ComercialesForm.css";
 
 interface ComercialesFormProps {
   zonas: Zona[];
@@ -25,15 +26,37 @@ const ComercialesForm = ({ zonas, comercialAEditar = null, onSuccess }: Comercia
   const session = authStorage.get();
   const currentUserId = session?.user?.id ?? null;
 
+  const validateForm = () => {
+    const errors: string[] = [];
+
+    if (!nombre.trim()) errors.push("Nombre es requerido");
+    if (!apellidos.trim()) errors.push("Apellidos son requeridos");
+    if (!email.trim()) errors.push("Email es requerido");
+    if (!zonaSeleccionada) errors.push("Zona debe estar seleccionada");
+
+    if (!esEdicion) {
+      if (!password) errors.push("Contraseña es requerida");
+      else if (password.length < 8) errors.push("Contraseña debe tener al menos 8 caracteres");
+    } else {
+      if (password && password.length < 8) errors.push("Contraseña debe tener al menos 8 caracteres");
+    }
+
+    if (errors.length > 0) {
+      showStatusAlert({
+        type: "info",
+        title: "Información faltante",
+        description: errors.join(", "),
+        duration: 4000,
+      });
+    }
+
+    return errors.length === 0;
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // En edición, la contraseña es opcional
-    const camposRequired = esEdicion
-      ? [nombre, apellidos, email, zonaSeleccionada]
-      : [nombre, apellidos, email, password, zonaSeleccionada];
-
-    if (camposRequired.some((campo) => !campo)) {
+    if (!validateForm()) {
       return;
     }
 

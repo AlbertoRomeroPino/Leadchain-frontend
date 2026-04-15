@@ -1,3 +1,5 @@
+import '../../../styles/components/Edificios/FormularioModal/EdificioModalPestaña.css';
+
 interface EdificioModalPestañaProps {
   mode: "new" | "existing";
   setMode: (mode: "new" | "existing") => void;

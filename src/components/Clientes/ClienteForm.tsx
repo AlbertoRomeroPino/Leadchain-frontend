@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { ClienteInput } from "../../types/clientes/Cliente";
+import "../../styles/components/Clientes/ClienteForm.css";
 
 interface FormClienteProps {
   onSubmit: (cliente: ClienteInput) => Promise<void>;

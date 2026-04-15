@@ -1,4 +1,5 @@
 import { HousePlus } from "lucide-react";
+import "../../styles/components/Edificios/EdificioHeader.css";
 
 interface EdificioHeaderProps {
   canCreateEdificio: boolean;

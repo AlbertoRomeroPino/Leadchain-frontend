@@ -4,6 +4,8 @@ import L from 'leaflet'
 import type { GeoPoint } from '../../../types/shared/GeoPoint'
 import { CORDOBA_CENTER } from '../../utils/cordobaMapConfig'
 
+import '../../../styles/components/Edificios/Info/EdificioInfoMapCard.css';
+
 interface EdificioInfoMapCardProps {
   ubicacion: { lat: number; lng: number } | null
   direccion: string
@@ -49,7 +51,7 @@ const EdificioInfoMapCard = ({ ubicacion, direccion, zonaArea }: EdificioInfoMap
       map.fitBounds(bounds, { padding: [20, 20] })
       const minZoom = map.getBoundsZoom(bounds, false)
       map.setMinZoom(minZoom)
-      map.setMaxZoom(minZoom + 2)
+      map.setMaxZoom(50)
 
       const ensureInPolygon = () => {
         const center = map.getCenter()
@@ -77,11 +79,12 @@ const EdificioInfoMapCard = ({ ubicacion, direccion, zonaArea }: EdificioInfoMap
         className="edificio-map-leaflet"
         bounds={hasZonaArea ? zonaArea?.map((p) => [p.lat, p.lng] as [number, number]) : undefined}
         maxBounds={hasZonaArea ? zonaArea?.map((p) => [p.lat, p.lng] as [number, number]) : undefined}
-        maxBoundsViscosity={1.0}
-        dragging={hasZonaArea}
-        touchZoom={hasZonaArea}
-        doubleClickZoom={hasZonaArea}
-        zoomControl={hasZonaArea}
+        maxBoundsViscosity={0.5}
+        dragging={true}
+        touchZoom={true}
+        doubleClickZoom={true}
+        zoomControl={true}
+        boxZoom={true}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 

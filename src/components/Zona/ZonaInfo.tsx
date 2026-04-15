@@ -1,4 +1,5 @@
 import { ArrowLeft, MapMinus, Pencil } from "lucide-react";
+import "../../styles/components/Zona/ZonaInfo.css";
 import type { Zona } from "../../types/zonas/Zona";
 import ZonaDetails from "./ZonaDetails";
 import ZonaMap from "./ZonaMap";
@@ -45,10 +46,6 @@ const ZonaInfo = ({
           <MapMinus size={16} />
           Borrar
         </button>
-      </div>
-      <div>
-        <h2 className="zona-section-title">Zona: {selectedZona.nombre_zona}</h2>
-        <p className="zona-info-subtitle">ID {selectedZona.id}</p>
       </div>
     </div>
 

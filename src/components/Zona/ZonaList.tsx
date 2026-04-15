@@ -1,4 +1,5 @@
 import type { Zona } from "../../types/zonas/Zona";
+import "../../styles/components/Zona/ZonaList.css";
 
 interface ZonaListProps {
   zonas: Zona[];

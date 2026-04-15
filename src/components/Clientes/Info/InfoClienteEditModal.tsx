@@ -1,5 +1,6 @@
 import type { Cliente } from "../../../types/clientes/Cliente";
 import FormCliente from "../ClienteForm";
+import "../../../styles/components/Clientes/Info/InfoClienteEditModal.css";
 
 interface InfoClienteEditModalProps {
   show: boolean;

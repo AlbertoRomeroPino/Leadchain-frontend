@@ -1,0 +1,96 @@
+.comerciales-form-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 10, 10, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  padding: 24px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.comerciales-form-modal {
+  width: min(560px, 100%);
+  background: #221717;
+  border: 1px solid #dc2626;
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+  padding: 28px;
+  position: relative;
+  z-index: 101;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.comerciales-form-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 8px 12px;
+  border: none;
+  background: #272524;
+  color: #f8fafc;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.comerciales-form-close:hover {
+  background: #3b3333;
+}
+
+.comerciales-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.comerciales-form-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .comerciales-form-overlay {
+    padding: 12px;
+  }
+
+  .comerciales-form-modal {
+    width: 100%;
+    padding: 20px;
+    border-radius: 14px;
+  }
+
+  .comerciales-form-title {
+    font-size: 1.2rem;
+  }
+
+  .comerciales-form-close {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}

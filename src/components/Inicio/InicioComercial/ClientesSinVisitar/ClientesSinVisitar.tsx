@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../../../../styles/components/Inicio/InicioComercial/ClientesSinVisitar/ClientesSinVisitar.css";
 import type { Cliente } from "../../../../types/clientes/Cliente";
 import type { Visita } from "../../../../types/visitas/Visita";
 import type { Edificio } from "../../../../types/edificios/Edificio";

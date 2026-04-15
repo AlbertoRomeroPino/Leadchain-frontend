@@ -2,6 +2,7 @@ import React from "react";
 import type { Zona } from "../../types/zonas/Zona";
 import type { UserVisitas } from "../../types/users/User";
 import ComercialesRow from "./ComercialesRow";
+import "../../styles/components/Comerciales/ComercialesTable.css";
 
 interface ComercialesTableProps {
   comerciales: UserVisitas[];

@@ -1,0 +1,98 @@
+/* ==========================================================
+   LISTA/TABLA - ZONA
+   ========================================================== */
+
+.zona-container {
+  background-color: #161010;
+  border: 1px solid #3f1b1b;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  margin-bottom: 24px;
+  margin-left: clamp(70px, 8vw, 84px);
+  padding: 0;
+}
+
+.zona-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.zona-table thead {
+  background-color: #1f1414;
+  border-bottom: 2px solid #3f1b1b;
+}
+
+.zona-table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fca5a5;
+  letter-spacing: 0.5px;
+}
+
+.zona-table tbody tr {
+  border-bottom: 1px solid #2c1818;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.zona-table tbody tr:hover {
+  background-color: #251818;
+}
+
+.zona-table tbody tr.selected {
+  background-color: #2c1818;
+  border-left: 4px solid #dc2626;
+}
+
+.zona-table td {
+  padding: 14px 20px;
+  font-size: 0.95rem;
+  color: #ffe4e6;
+}
+
+.zona-table td:first-child {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.zona-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.zona-list-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .zona-container {
+    margin-left: 0;
+  }
+
+  .zona-table th,
+  .zona-table td {
+    padding: 12px 16px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .zona-container {
+    margin-left: 0;
+  }
+
+  .zona-table {
+    font-size: 0.8rem;
+  }
+
+  .zona-table th,
+  .zona-table td {
+    padding: 10px 12px;
+    font-size: 0.75rem;
+  }
+}

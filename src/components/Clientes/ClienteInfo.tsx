@@ -5,6 +5,7 @@ import type { ClienteDetalleResponse } from "../../types/clientes/ClienteDetalle
 import type { Edificio } from "../../types/edificios/Edificio";
 import type { Visita } from "../../types/visitas/Visita";
 import "../../styles/InfoCliente.css";
+import "../../styles/components/Clientes/ClienteInfo.css";
 import type { Zona } from "../../types/zonas/Zona";
 import { useAuth } from "../../auth/useAuth";
 import { useInitialize } from "../../hooks/useInitialize";

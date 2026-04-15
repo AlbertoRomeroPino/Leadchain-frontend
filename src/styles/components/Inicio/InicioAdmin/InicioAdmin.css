@@ -1,0 +1,88 @@
+/* ==========================================================
+   CONTENEDOR PRINCIPAL - INICIO ADMIN
+   ========================================================== */
+
+.inicio-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px;
+  background-color: #0f0a0a;
+  margin-left: 80px;
+}
+
+/* Header */
+.admin-header {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.admin-title {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.admin-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #b98989;
+}
+
+/* Comerciales Container */
+.comerciales-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comerciales-empty {
+  padding: 32px;
+  text-align: center;
+  background-color: #1f1414;
+  border-radius: 8px;
+  border: 1px solid #3f1b1b;
+  color: #d6b1b1;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* ==========================================================
+   RESPONSIVE DESIGN
+   ========================================================== */
+
+@media (max-width: 900px) {
+  .inicio-admin {
+    margin-left: 0;
+    padding: 20px 20px 100px 20px;
+    gap: 16px;
+  }
+
+  .admin-title {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  .inicio-admin {
+    margin-left: 0;
+    padding: 12px 8px 100px 8px;
+    gap: 12px;
+  }
+
+  .admin-title {
+    font-size: 18px;
+    margin: 0 0 4px 0;
+  }
+
+  .admin-subtitle {
+    font-size: 12px;
+  }
+
+  .comerciales-empty {
+    padding: 20px;
+    font-size: 12px;
+  }
+}

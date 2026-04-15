@@ -1,0 +1,263 @@
+/* ==========================================================
+   PIN PANEL SOBRE MAPA - INFORMACIÓN DE EDIFICIO
+   ========================================================== */
+
+/* Contenedor overlay - clickeable para cerrar */
+.mapa-edificio-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  z-index: 900;
+  pointer-events: auto;
+  user-select: none;
+}
+
+/* Panel con pin - posicionado en coordenadas del edificio */
+.mapa-edificio-panel {
+  position: fixed;
+  background: linear-gradient(135deg, rgba(22, 16, 16, 0.96) 0%, rgba(15, 10, 10, 0.98) 100%);
+  border: 1.5px solid #3f1b1b;
+  border-radius: 12px;
+  width: 340px;
+  max-height: 55vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9),
+              0 0 50px rgba(220, 38, 38, 0.15);
+  animation: popupPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(10px);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  pointer-events: auto;
+  z-index: 901;
+}
+
+/* Pin/Flecha apuntando hacia abajo (al edificio) */
+.mapa-edificio-panel::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgba(15, 10, 10, 0.98);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  z-index: 1;
+}
+
+/* Header del panel */
+.mapa-edificio-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.mapa-edificio-panel-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #dc2626;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Botón de cerrar */
+.mapa-edificio-panel-close {
+  background: none;
+  border: none;
+  color: #b98989;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.mapa-edificio-panel-close:hover {
+  background-color: rgba(220, 38, 38, 0.2);
+  color: #dc2626;
+}
+
+/* Contenido principal */
+.mapa-edificio-panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 0.85rem;
+}
+
+/* Sección */
+.mapa-edificio-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mapa-edificio-section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #dc2626;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.85;
+}
+
+/* Info del edificio */
+.mapa-edificio-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mapa-edificio-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.mapa-edificio-label {
+  color: #b98989;
+  font-weight: 500;
+  min-width: 65px;
+  font-size: 0.75rem;
+}
+
+.mapa-edificio-value {
+  color: #ffffff;
+  text-align: right;
+  flex: 1;
+}
+
+/* Lista de clientes */
+.mapa-edificio-clientes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mapa-edificio-cliente-item {
+  padding: 10px;
+  background-color: rgba(220, 38, 38, 0.1);
+  border-left: 2.5px solid #dc2626;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  transition: all 0.15s ease;
+}
+
+.mapa-edificio-cliente-item:hover {
+  background-color: rgba(220, 38, 38, 0.15);
+}
+
+.mapa-edificio-cliente-nombre {
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 3px;
+  font-size: 0.85rem;
+}
+
+.mapa-edificio-cliente-meta {
+  color: #b98989;
+  font-size: 0.75rem;
+  margin-bottom: 4px;
+}
+
+.mapa-edificio-cliente-contacto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 0.7rem;
+}
+
+.contacto-telefono,
+.contacto-email {
+  color: #ffe4e6;
+}
+
+/* Estado vacío */
+.mapa-edificio-empty {
+  padding: 10px;
+  text-align: center;
+  color: #b98989;
+  font-size: 0.8rem;
+}
+
+/* Estado de carga */
+.mapa-edificio-loading {
+  padding: 10px;
+  text-align: center;
+  color: #b98989;
+  font-size: 0.8rem;
+}
+
+/* Estado de error */
+.mapa-edificio-error {
+  padding: 10px;
+  text-align: center;
+  color: #dc2626;
+  font-size: 0.8rem;
+}
+
+/* Animación de entrada - como un pop */
+@keyframes popupPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -115%) scale(0.85);
+  }
+  70% {
+    transform: translate(-50%, -125%) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -120%) scale(1);
+  }
+}
+
+/* Scrollbar personalizado */
+.mapa-edificio-panel::-webkit-scrollbar {
+  width: 5px;
+}
+
+.mapa-edificio-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mapa-edificio-panel::-webkit-scrollbar-thumb {
+  background: rgba(220, 38, 38, 0.3);
+  border-radius: 2.5px;
+}
+
+.mapa-edificio-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(220, 38, 38, 0.6);
+}
+
+/* ==========================================================
+   RESPONSIVE DESIGN
+   ========================================================== */
+
+@media (max-width: 768px) {
+  .mapa-edificio-panel {
+    width: 85vw;
+    max-width: 300px;
+    max-height: 50vh;
+  }
+}

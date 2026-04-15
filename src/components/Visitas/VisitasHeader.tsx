@@ -1,4 +1,5 @@
 import { MapPinPlusInside } from "lucide-react";
+import "../../styles/components/Visitas/VisitasHeader.css";
 
 type VisitasHeaderProps = {
   userRole?: string;

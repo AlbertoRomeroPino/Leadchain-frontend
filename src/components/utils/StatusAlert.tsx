@@ -1,4 +1,5 @@
 import { sileo } from "sileo";
+import "../../styles/components/utils/StatusAlert.css";
 
 type SileoType = "success" | "error" | "warning" | "info" | "loading" | "action";
 

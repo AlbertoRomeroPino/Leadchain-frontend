@@ -170,7 +170,7 @@ export function UserValidationIndicator() {
         )}
         {lastValidation && !isValidating && (
           <span className="status success">
-            ✓ Datos actualizados: {lastValidation.toLocaleTimeString()}
+            Datos actualizados: {lastValidation.toLocaleTimeString()}
           </span>
         )}
       </div>
@@ -178,6 +178,7 @@ export function UserValidationIndicator() {
   );
 }
 
+// TODO: comprobar esto para mejorar
 /**
  * USO EN APLICACIÓN PRINCIPAL
  * 

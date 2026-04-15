@@ -1,0 +1,86 @@
+/* Contenedor principal de Comerciales */
+.comerciales-page {
+  min-height: 100vh;
+  background-color: #0f0a0a;
+  color: #ffffff;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.comerciales-main {
+  margin-left: 80px;
+  padding: 32px;
+  width: calc(100% - 80px);
+  overflow-x: hidden;
+}
+
+/* Contenedor de tabla */
+.comerciales-page-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Secciones */
+.comerciales-table-section {
+  margin-top: 20px;
+}
+
+/* Detalles */
+.comerciales-details {
+  display: none;
+}
+
+.comerciales-details ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.comerciales-details li {
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+
+.comerciales-details li:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive: Tablet */
+@media (max-width: 900px) {
+  .comerciales-main {
+    margin-left: 0;
+    padding: 32px 32px 100px 32px;
+    width: 100%;
+  }
+}
+
+/* Responsive: Mobile */
+@media (max-width: 600px) {
+  .comerciales-main {
+    margin-left: 0;
+    padding: 16px 12px 100px 12px;
+    width: 100%;
+  }
+
+  /* Contenedor de tabla con overflow manejado */
+  .comerciales-page-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Tabla compacta en mobile */
+  .comerciales-table {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  /* Ajustar altura de filas */
+  .comerciales-table tbody tr {
+    height: auto;
+  }
+
+  .comerciales-table td {
+    vertical-align: middle;
+  }
+}

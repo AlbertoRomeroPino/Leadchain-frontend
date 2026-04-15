@@ -1,0 +1,51 @@
+/* ==========================================================
+   BOTONES DE NAVEGACIÓN
+   ========================================================== */
+
+.nav-button {
+  width: clamp(40px, 6.4vh, 54px);
+  height: clamp(40px, 6.4vh, 54px);
+  border-radius: clamp(12px, 1.6vh, 16px);
+  border: none;
+  background: transparent;
+  color: #fca5a5;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+/* Estado Hover */
+.nav-button:hover {
+  color: #ffffff;
+  background-color: #7f1d1d;
+}
+
+/* Estado Activo (Seleccionado) */
+.nav-button.active {
+  background-color: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+}
+
+/* ==========================================================
+   RESPONSIVE DESIGN
+   ========================================================== */
+
+@media (max-width: 900px) {
+  .nav-button {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-button {
+    width: 40px;
+    height: 40px;
+  }
+}

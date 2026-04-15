@@ -1,6 +1,7 @@
 import type { Zona } from "../../types/zonas/Zona";
 import type { User } from "../../types/users/User";
 import ComercialesForm from "./ComercialesForm";
+import "../../styles/components/Comerciales/ComercialesFormModal.css";
 
 interface ComercialesFormModalProps {
   showCreateForm: boolean;

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import type { Cliente } from "../../../types/clientes/Cliente";
 import { clientesService } from "../../../services/ClientesService";
 
+import '../../../styles/components/Edificios/FormularioModal/EdificioModalEdificio.css';
+
 interface EdificioModalEdificioProps {
   direccionCompleta: string;
   setDireccionCompleta: (direccion: string) => void;
@@ -16,6 +18,7 @@ interface EdificioModalEdificioProps {
   setClientePlanta: (planta: string) => void;
   clientePuerta: string;
   setClientePuerta: (puerta: string) => void;
+  isEditing?: boolean;
 }
 
 const EdificioModalEdificio = ({
@@ -32,6 +35,7 @@ const EdificioModalEdificio = ({
   setClientePlanta,
   clientePuerta,
   setClientePuerta,
+  isEditing = false,
 }: EdificioModalEdificioProps) => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
 
@@ -47,6 +51,11 @@ const EdificioModalEdificio = ({
 
     fetchClientesSinEdificio();
   }, []);
+
+  const handleFillHouseFields = () => {
+    setClientePlanta("Baja");
+    setClientePuerta("S/N");
+  };
 
   return (
     <>
@@ -77,37 +86,53 @@ const EdificioModalEdificio = ({
           </option>
         ))}
       </select>
-      <select
-        className="form-edificio-input"
-        value={idCliente ?? ""}
-        onChange={(event) =>
-          setIdCliente(event.target.value ? Number(event.target.value) : null)
-        }
-        required
-      >
-        <option value="">Seleccionar cliente</option>
-        {clientes.map((cliente) => (
-          <option key={cliente.id} value={cliente.id}>
-            {cliente.nombre} {cliente.apellidos}
-          </option>
-        ))}
-      </select>
-      <input
-        className="form-edificio-input"
-        type="text"
-        placeholder="Piso/Planta del cliente"
-        value={clientePlanta}
-        onChange={(e) => setClientePlanta(e.target.value)}
-        required
-      />
-      <input
-        className="form-edificio-input"
-        type="text"
-        placeholder="Puerta del cliente"
-        value={clientePuerta}
-        onChange={(e) => setClientePuerta(e.target.value)}
-        required
-      />
+      
+      {/* Solo mostrar campos de Piso, Puerta y Cliente si ESTAMOS CREANDO (no editando) */}
+      {!isEditing && (
+        <>
+          {/* Contenedor para Planta y Puerta con botón de Casa */}
+          <div className="form-edificio-fields-group">
+            <div className="form-edificio-fields-wrapper">
+              <input
+                className="form-edificio-input"
+                type="text"
+                placeholder="Piso/Planta del cliente (opcional)"
+                value={clientePlanta}
+                onChange={(e) => setClientePlanta(e.target.value)}
+              />
+              <input
+                className="form-edificio-input"
+                type="text"
+                placeholder="Puerta del cliente (opcional)"
+                value={clientePuerta}
+                onChange={(e) => setClientePuerta(e.target.value)}
+              />
+            </div>
+            <button
+              type="button"
+              className="form-edificio-house-btn"
+              onClick={handleFillHouseFields}
+              title="Rellenar para una casa (Baja, S/N)"
+            >
+              🏠 Casa
+            </button>
+          </div>
+          <select
+            className="form-edificio-input"
+            value={idCliente ?? ""}
+            onChange={(event) =>
+              setIdCliente(event.target.value ? Number(event.target.value) : null)
+            }
+          >
+            <option value="">Seleccionar cliente (opcional)</option>
+            {clientes.map((cliente) => (
+              <option key={cliente.id} value={cliente.id}>
+                {cliente.nombre} {cliente.apellidos}
+              </option>
+            ))}
+          </select>
+        </>
+      )}
     </>
   );
 };

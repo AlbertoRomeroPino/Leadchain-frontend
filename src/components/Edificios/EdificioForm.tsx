@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../../styles/components/Edificios/EdificioForm.css";
 import type { EdificioInput } from "../../types/edificios/Edificio";
 import type { GeoPoint } from "../../types/shared/GeoPoint";
 

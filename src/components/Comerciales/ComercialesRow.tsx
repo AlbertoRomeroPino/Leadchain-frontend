@@ -1,6 +1,7 @@
 import React from "react";
 import type { Visita } from "../../types/visitas/Visita";
 import type { UserVisitas } from "../../types/users/User";
+import "../../styles/components/Comerciales/ComercialesRow.css";
 
 interface ComercialesRowProps {
   comercial: UserVisitas;

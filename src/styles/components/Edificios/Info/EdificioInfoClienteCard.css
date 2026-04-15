@@ -1,0 +1,127 @@
+/* Tarjeta de Clientes */
+.edificio-clientes-card {
+  grid-column: 2 / 3;
+  display: flex;
+  flex-direction: column;
+  min-height: 520px;
+}
+
+.edificio-clientes-title {
+  color: #fca5a5;
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #2c1818;
+  padding-bottom: 10px;
+  font-weight: 700;
+}
+
+.edificio-clientes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #dc2626 #1f1414;
+}
+
+.edificio-clientes-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.edificio-clientes-list::-webkit-scrollbar-track {
+  background: #1f1414;
+  border-radius: 999px;
+}
+
+.edificio-clientes-list::-webkit-scrollbar-thumb {
+  background: #dc2626;
+  border-radius: 999px;
+  border: 2px solid #1f1414;
+}
+
+.edificio-clientes-list::-webkit-scrollbar-thumb:hover {
+  background: #ef4444;
+}
+
+.edificio-cliente-item {
+  display: flex;
+  width: 100%;
+  background-color: #1f1414;
+  padding: 0;
+  border-radius: 10px;
+  border-left: 4px solid #dc2626;
+}
+
+.cliente-info-wrapper {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.cliente-detail {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px 14px 12px;
+}
+
+.cliente-nombre {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.cliente-meta {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.cliente-contacto {
+  font-size: 0.85rem;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.cliente-remove-btn {
+  width: 60px;
+  min-width: 60px;
+  height: auto;
+  align-self: stretch;
+  padding: 0;
+  appearance: none;
+  border: none;
+  border-radius: 0 10px 10px 0;
+  background-color: #ef4444;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.cliente-remove-btn:hover:not(:disabled) {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.cliente-remove-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1024px) {
+  .edificio-clientes-card {
+    grid-column: 1 / -1;
+    min-height: auto;
+  }
+}

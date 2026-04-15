@@ -1,4 +1,5 @@
 import { LucideUserRoundCog, UserRoundX } from "lucide-react";
+import "../../../styles/components/Clientes/Info/InfoClienteToolbar.css";
 
 interface InfoClienteToolbarProps {
   canManageCliente: boolean;

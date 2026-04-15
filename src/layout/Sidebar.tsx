@@ -1,5 +1,5 @@
 import { House, Map, User, MapPin, BookUser, LogOut, Building, Scan} from "lucide-react";
-import "../styles/Sidebar.css";
+import "../styles/components/sidebar/Sidebar.css";
 import { MenuButtons } from "../components/sidebar/MenuButtons";
 import { useAuth } from "../auth/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";

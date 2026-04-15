@@ -1,0 +1,44 @@
+/* Contenedor principal de ClienteInfo */
+.info-cliente {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: 1fr 1fr;
+}
+
+.info-cliente-loading {
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #3f1b1b;
+  background-color: #161010;
+  color: #fca5a5;
+  font-weight: 600;
+}
+
+.info-cliente-top {
+  display: contents;
+}
+
+.info-cliente-top > :first-child {
+  grid-column: 1 / 2;
+}
+
+.info-cliente-top > :last-child {
+  grid-column: 2 / 3;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .info-cliente {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr;
+    margin-left: 0;
+  }
+
+  .info-cliente-top > :first-child,
+  .info-cliente-top > :last-child {
+    grid-column: auto;
+  }
+}

@@ -1,3 +1,4 @@
+import "../../../../styles/components/Inicio/InicioAdmin/ComercialCard/ComercialCardIndividual.css";
 import type { User } from "../../../../types/users/User";
 import type { ComercialStats } from "./ComercialCard";
 import ComercialStatsBars from "./ComercialStatsBars";

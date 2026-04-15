@@ -1,5 +1,6 @@
 import type { UserVisitas } from '../../types/users/User';
 import { Trash, UserPlus2, UserRoundCog } from 'lucide-react';
+import '../../styles/components/Comerciales/ComercialesHeader.css';
 
 interface ComercialesHeaderProps {
   selectedComercialIds: Set<number>;

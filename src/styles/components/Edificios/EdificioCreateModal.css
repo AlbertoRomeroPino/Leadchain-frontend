@@ -1,0 +1,313 @@
+/* Modal Overlay */
+.edificios-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.edificios-modal {
+  background-color: #161010;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid #3f1b1b;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  padding: 24px;
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Pestañas */
+.edificio-create-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #2c1818;
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 8px 8px 0 0;
+}
+
+.tab-btn:hover {
+  color: #ffffff;
+  background-color: #1f1414;
+}
+
+.tab-btn.active {
+  color: #dc2626;
+  border-bottom: 2px solid #dc2626;
+  background-color: #1f1414;
+}
+
+/* Formulario */
+.form-edificios {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-edificio-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fca5a5;
+  margin-bottom: 8px;
+}
+
+.form-edificio-input,
+.form-edificio-select {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #0f0a0a;
+  border: 1px solid #3f1b1b;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-edificio-input:focus,
+.form-edificio-select:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+}
+
+.form-edificio-input::placeholder {
+  color: #b98989;
+}
+
+/* Contenedor para campos de grupo (Planta y Puerta con botón) */
+.form-edificio-fields-group {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.form-edificio-fields-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-edificio-house-btn {
+  padding: 12px 14px;
+  background-color: #2c1818;
+  border: 1.5px solid #3f1b1b;
+  border-radius: 10px;
+  color: #fca5a5;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-edificio-house-btn:hover {
+  background-color: #3f2726;
+  border-color: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+}
+
+.form-edificio-house-btn:active {
+  background-color: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+/* Select styling */
+select.form-edificio-input {
+  min-height: 44px;
+  padding: 10px 12px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+select.form-edificio-input option {
+  background-color: #161010;
+  color: #ffffff;
+  padding: 8px 12px;
+  line-height: 1.5;
+}
+
+.form-edificios label {
+  display: block;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+/* Mapa en el modal */
+.edificio-create-map {
+  display: block !important;
+  width: 100% !important;
+  height: 450px !important;
+  min-height: 300px;
+  background-color: #0f0a0a;
+  border: 1px solid #3f1b1b;
+  border-radius: 12px;
+  margin: 10px 0;
+  position: relative;
+  z-index: 10;
+}
+
+.edificio-create-map .leaflet-container {
+  height: 100% !important;
+  width: 100% !important;
+  border-radius: 10px;
+}
+
+/* Botones de acción */
+.form-edificio-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #2c1818;
+}
+
+.form-edificio-cancel,
+.form-edificio-submit {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.form-edificio-cancel {
+  background-color: #1f2937;
+  color: #ffffff;
+}
+
+.form-edificio-cancel:hover {
+  background-color: #374151;
+}
+
+.form-edificio-submit {
+  padding: 10px 24px;
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.form-edificio-submit:hover {
+  background-color: #b91c1c;
+}
+
+.form-edificio-submit:active {
+  transform: scale(0.98);
+}
+
+.form-edificio-cancel:disabled,
+.form-edificio-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Selector de Modo para Cliente */
+.form-edificio-mode-selector {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 10px 14px;
+  background-color: #261414;
+  border: 1px solid #3f1b1b;
+  border-radius: 6px;
+  color: #ffe4e6;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.mode-btn:hover {
+  border-color: #dc2626;
+  background-color: #2c1818;
+}
+
+.mode-btn.active {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .edificios-modal {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .form-edificio-actions {
+    flex-direction: column;
+  }
+
+  .form-edificio-submit,
+  .form-edificio-cancel {
+    width: 100%;
+  }
+
+  .edificio-create-tabs {
+    gap: 4px;
+  }
+
+  .tab-btn {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+}

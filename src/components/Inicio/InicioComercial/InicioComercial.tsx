@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "../../../styles/components/Inicio/InicioComercial/InicioComercial.css";
 import { useAuth } from "../../../auth/useAuth";
 import { InicioService } from "../../../services/InicioService";
 import showStatusAlert from "../../../components/utils/StatusAlert";

@@ -3,9 +3,7 @@ import { useAuth } from "../auth/useAuth";
 import Sidebar from "../layout/Sidebar";
 import InicioComercial from "../components/Inicio/InicioComercial/InicioComercial";
 import InicioAdmin from "../components/Inicio/InicioAdmin/InicioAdmin";
-import "../styles/InicioPage.css";
-import "../styles/InicioComercial.css";
-import "../styles/InicioAdmin.css";
+import "../styles/Inicio.css";
 
 const InicioPage = () => {
   const { user } = useAuth();

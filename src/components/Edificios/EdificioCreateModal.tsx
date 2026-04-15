@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { EdificioInput, Edificio } from "../../types/edificios/Edificio";
 import type { Zona } from "../../types/zonas/Zona";
 import type { Cliente } from "../../types/clientes/Cliente";
-import "../../styles/EdificioCreateModal.css";
+import "../../styles/components/Edificios/EdificioCreateModal.css";
 import EdificioModalPestaña from "./FormularioModal/EdificioModalPestaña";
 import EdificioModalEdificio from "./FormularioModal/EdificioModalEdificio";
 import EdificioModalMapa from "./FormularioModal/EdificioModalMapa";
@@ -211,16 +211,6 @@ const EdificioCreateModal = ({
         return;
       }
 
-      if (idCliente === null || idCliente <= 0) {
-        alert("Selecciona un cliente.");
-        return;
-      }
-
-      if (!clientePlanta.trim() || !clientePuerta.trim()) {
-        alert("Completa piso y puerta del cliente");
-        return;
-      }
-
       if (lat == null || lng == null) {
         alert("Selecciona una ubicación en el mapa dentro de la zona.");
         return;
@@ -240,17 +230,19 @@ const EdificioCreateModal = ({
           // NO pasar id_cliente aquí - será adjuntado después en la pivote
         });
 
-        // Adjuntar cliente con planta y puerta
-        await onAppendToExisting(
-          nuevoEdificio.id,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          idCliente,
-          clientePlanta.trim(),
-          clientePuerta.trim()
-        );
+        // Adjuntar cliente con planta y puerta (si están completos)
+        if (idCliente && idCliente > 0) {
+          await onAppendToExisting(
+            nuevoEdificio.id,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            idCliente,
+            clientePlanta.trim(),
+            clientePuerta.trim()
+          );
+        }
 
         alert("Edificio creado correctamente");
       } catch (createError) {
@@ -371,6 +363,7 @@ const EdificioCreateModal = ({
                 setClientePlanta={setClientePlanta}
                 clientePuerta={clientePuerta}
                 setClientePuerta={setClientePuerta}
+                isEditing={!!edificioAEditar}
               />
 
               <EdificioModalMapa

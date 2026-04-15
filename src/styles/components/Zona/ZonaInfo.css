@@ -1,0 +1,192 @@
+/* ==========================================================
+   INFO PANEL - ZONA
+   ========================================================== */
+
+.zona-info-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.zona-info-empty {
+  background: #161010;
+  border: 1px solid #3f1b1b;
+  border-radius: 16px;
+  padding: 28px;
+  color: #f4f4f5;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.zona-info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.zona-details-section {
+  background: #161010;
+  border: 1px solid #3f1b1b;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.zona-section-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.zona-details-content {
+  display: grid;
+  gap: 14px;
+}
+
+.zona-detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  background: #1f1414;
+  border: 1px solid #2c1818;
+  border-radius: 12px;
+  color: #e5e7eb;
+}
+
+.zona-detail-row span {
+  color: #fca5a5;
+}
+
+/* Info Actions */
+.zona-info-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+}
+
+.zona-info-back-button {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 18px;
+  background-color: #1f2937;
+  color: #ffffff;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: center;
+  box-sizing: border-box;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.zona-info-back-button:hover {
+  background-color: #374151;
+}
+
+.zona-action-buttons {
+  display: contents;
+}
+
+.zona-action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 19px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-sizing: border-box;
+  width: 100%;
+  transition: opacity 0.2s ease;
+}
+
+.zona-action-button--edit {
+  background-color: #1e293b;
+  color: #38bdf8;
+}
+
+.zona-action-button--edit:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+.zona-action-button--delete {
+  background-color: #450a0a;
+  color: #f87171;
+}
+
+.zona-action-button--delete:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+.zona-action-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .zona-info-back-button {
+    min-height: 40px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+
+  .zona-action-button {
+    min-height: 40px;
+    padding: 14px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .zona-info-back-button {
+    min-height: 38px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .zona-action-button {
+    min-height: 38px;
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .zona-section-title {
+    font-size: 1rem;
+  }
+
+  .zona-info-back-button {
+    min-height: 36px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .zona-action-button {
+    min-height: 36px;
+    padding: 8px;
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+
+  .zona-action-button svg {
+    width: 18px;
+    height: 18px;
+  }
+}

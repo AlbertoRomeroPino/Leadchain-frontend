@@ -1,4 +1,5 @@
 import { LucideUserRoundCog, UserRoundX } from 'lucide-react';
+import '../../../styles/components/Edificios/Info/EdificioInfoToolbar.css';
 
 interface EditorToolbarProps {
   canManageEdificio: boolean;

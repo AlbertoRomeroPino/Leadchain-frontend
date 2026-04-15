@@ -11,7 +11,7 @@ import VisitaFormularioModal from "../components/Visitas/FormularioModal/VisitaF
 import VisitasHeader from "../components/Visitas/VisitasHeader";
 import VisitasAdminGrid from "../components/Visitas/Admin/VisitasAdminGrid";
 import VisitasComercialGrid from "../components/Visitas/Comercial/VisitasComercialGrid";
-import "../styles/VisitasPage.css";
+import "../styles/Visitas.css";
 
 const Visitas = () => {
   const { user } = useAuth();

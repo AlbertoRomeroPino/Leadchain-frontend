@@ -1,4 +1,5 @@
 import type { UserVisitas } from "../../types/users/User";
+import "../../styles/components/Comerciales/ComercialesStatus.css";
 
 interface ComercialesStatusProps {
   isLoading: boolean;

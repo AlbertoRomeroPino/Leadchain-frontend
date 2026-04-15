@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { Cliente } from "../../types/clientes/Cliente";
 import type { Zona } from "../../types/zonas/Zona";
 import { InicioService } from "../../services/InicioService";
 import { useInitialize } from "../../hooks/useInitialize";
 import type { Edificio } from "../../types/edificios/Edificio";
-import "../../styles/MapaEdificioPanel.css";
+import "../../styles/components/utils/MapaEdificioPanel.css";
 
 interface MapaEdificioPanelProps {
   edificio: Edificio;
   isOpen: boolean;
   onClose: () => void;
+  pixelCoords?: { x: number; y: number } | null;
   userRole?: string;
 }
 
@@ -19,16 +20,24 @@ interface ClienteEnEdificio {
   puerta: string | null;
 }
 
+interface MousePosition {
+  x: number;
+  y: number;
+}
+
 const MapaEdificioPanel = ({
   edificio,
   isOpen,
   onClose,
+  pixelCoords,
   userRole = "admin",
 }: MapaEdificioPanelProps) => {
   const [clientesBloque, setClientesBloque] = useState<ClienteEnEdificio[]>([]);
   const [zona, setZona] = useState<Zona | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartPos = useRef<MousePosition>({ x: 0, y: 0 });
 
   useInitialize(async () => {
     if (!isOpen || !edificio) {
@@ -65,12 +74,43 @@ const MapaEdificioPanel = ({
     }
   }, [isOpen, edificio?.id]);
 
+  const handleOverlayMouseDown = (e: React.MouseEvent) => {
+    dragStartPos.current = { x: e.clientX, y: e.clientY };
+    setIsDragging(false);
+  };
+
+  const handleOverlayMouseUp = (e: React.MouseEvent) => {
+    const dragDistance = Math.sqrt(
+      Math.pow(e.clientX - dragStartPos.current.x, 2) +
+        Math.pow(e.clientY - dragStartPos.current.y, 2)
+    );
+
+    // Solo cerrar si no fue un drag (menos de 5px de movimiento)
+    if (dragDistance < 5 && e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   if (!isOpen) return null;
 
+  const panelStyle: React.CSSProperties = pixelCoords
+    ? {
+        position: 'fixed',
+        left: `${pixelCoords.x}px`,
+        top: `${pixelCoords.y - 10}px`,
+        transform: 'translate(-50%, -100%)',
+      }
+    : {};
+
   return (
-    <div className="mapa-edificio-panel-overlay" onClick={onClose}>
+    <div 
+      className="mapa-edificio-panel-overlay"
+      onMouseDown={handleOverlayMouseDown}
+      onMouseUp={handleOverlayMouseUp}
+    >
       <div
         className="mapa-edificio-panel"
+        style={panelStyle}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
