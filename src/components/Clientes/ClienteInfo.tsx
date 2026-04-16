@@ -9,6 +9,7 @@ import "../../styles/components/Clientes/ClienteInfo.css";
 import type { Zona } from "../../types/zonas/Zona";
 import { useAuth } from "../../auth/useAuth";
 import { useInitialize } from "../../hooks/useInitialize";
+import { showErrorAlert } from "../utils/errorHandler";
 import InfoClienteToolbar from "./Info/InfoClienteToolbar";
 import InfoClienteDatosCard from "./Info/InfoClienteDatosCard";
 import InfoClienteEdificioCard from "./Info/InfoClienteEdificioCard";
@@ -127,8 +128,7 @@ const InfoCliente = ({
       onClienteUpdated?.(updatedCliente);
       setShowEditForm(false);
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Error al actualizar cliente";
+      showErrorAlert(err, "Actualizar");
     } finally {
       setSavingCliente(false);
     }
@@ -147,6 +147,7 @@ const InfoCliente = ({
       onClienteDeleted?.(clienteInfo.id);
       setShowEditForm(false);
     } catch (err) {
+      showErrorAlert(err, "Eliminar");
       const message =
         err instanceof Error ? err.message : "Error al eliminar cliente";
 

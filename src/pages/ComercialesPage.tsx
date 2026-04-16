@@ -5,7 +5,11 @@ import type { User, UserVisitas } from "../types/users/User";
 import type { Zona } from "../types/zonas/Zona";
 import "../styles/Comerciales.css";
 import { useInitialize } from "../hooks/useInitialize";
-import showStatusAlert from "../components/utils/StatusAlert";
+import {
+  showErrorAlert,
+  showSuccessAlert,
+  showLoadingAlert,
+} from "../components/utils/errorHandler";
 import ComercialesHeader from "../components/Comerciales/ComercialesHeader";
 import ComercialesStatus from "../components/Comerciales/ComercialesStatus";
 import ComercialesTable from "../components/Comerciales/ComercialesTable";
@@ -23,7 +27,7 @@ const Comerciales = () => {
   const [zonas, setZonas] = useState<Zona[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const error: string | null = null;  // No longer tracking errors individually
 
   const toggleComercialVisitas = (id: number) => {
     setExpandedComercialId((prev) => (prev === id ? null : id));
@@ -63,13 +67,7 @@ const Comerciales = () => {
       );
       setSelectedComercialIds(new Set());
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Error desconocido";
-      setError(message);
-      showStatusAlert({
-        type: "error",
-        title: "Error",
-        duration: 4000,
-      });
+      showErrorAlert(err, "Eliminar Comerciales");
     } finally {
       setIsLoading(false);
     }
@@ -77,11 +75,7 @@ const Comerciales = () => {
 
   useInitialize(async () => {
     try {
-      showStatusAlert({
-        type: "loading",
-        title: "Cargando comerciales...",
-        duration: null,
-      });
+      showLoadingAlert("Cargando comerciales...");
 
       // Una sola petición consolida comerciales con visitas anidadas y zonas
       const data = await UserService.getComercialesAMiCargo();
@@ -93,20 +87,9 @@ const Comerciales = () => {
       setZonas(data.zonas);
       setComerciales(comercialesConVisitas);
 
-      showStatusAlert({
-        type: "success",
-        title: "Información cargada",
-        duration: 2000,
-      });
+      showSuccessAlert("Información cargada");
     } catch (err) {
-      showStatusAlert({
-        type: "error",
-        title: "Error",
-        duration: 4000,
-      });
-      setError(
-        err instanceof Error ? err.message : "Error cargando comerciales",
-      );
+      showErrorAlert(err, "Cargar Comerciales");
     } finally {
       setIsLoading(false);
     }

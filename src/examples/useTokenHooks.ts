@@ -45,7 +45,6 @@ export function useTokenRefreshNotification(onRefreshed?: () => void) {
   useEffect(() => {
     if (initialToken && prevToken && initialToken !== prevToken) {
       // Token cambió = fue renovado automáticamente
-      console.log('✓ Token renovado automáticamente');
       onRefreshed?.();
     }
   }, [initialToken, prevToken, onRefreshed]);

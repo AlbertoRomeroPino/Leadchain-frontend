@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "../../../styles/components/Inicio/InicioComercial/InicioComercial.css";
 import { useAuth } from "../../../auth/useAuth";
 import { InicioService } from "../../../services/InicioService";
-import showStatusAlert from "../../../components/utils/StatusAlert";
+import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../../../components/utils/errorHandler";
 import type { Cliente } from "../../../types/clientes/Cliente";
 import type { Visita } from "../../../types/visitas/Visita";
 import ClientesSinVisitar from "./ClientesSinVisitar/ClientesSinVisitar";
@@ -16,28 +16,16 @@ interface ClienteSinVisita {
 const InicioComercial = () => {
   const { user } = useAuth();
   const [clientes, setClientes] = useState<ClienteSinVisita[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     if (!user || user.rol !== "comercial" || !user.id_zona) {
-      setLoading(false);
-      setError("Usuario no autorizado");
       return;
     }
 
     const cargarDatos = async () => {
       try {
-        showStatusAlert({
-          type: "loading",
-          title: "Cargando inicio...",
-          description: "Obteniendo datos de clientes y visitas",
-          duration: null,
-        });
-
-        setLoading(true);
-        setError(null);
+        showLoadingAlert("Cargando inicio...");
 
         // Una sola petición consolida todos los datos necesarios
         const inicioData = await InicioService.getComercialInicio();
@@ -66,23 +54,10 @@ const InicioComercial = () => {
         }));
 
         setClientes(clientesConVisita);
-        showStatusAlert({
-          type: "success",
-          title: "Información cargada",
-          duration: 2000,
-        });
+        showSuccessAlert("Información cargada");
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Error desconocido";
-        setError(errorMessage);
-        showStatusAlert({
-          type: "error",
-          title: "Error",
-          duration: 4000,
-        });
+        showErrorAlert(err, "Cargar Datos");
         console.error("Error al cargar datos:", err);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -101,10 +76,8 @@ const InicioComercial = () => {
     <div className="inicio-comercial">
       <ClientesSinVisitar
         clientes={clientes}
-        loading={loading}
         onVisitaCreada={handleVisitaCreada}
       />
-      {error && <div className="error-message">{error}</div>}
     </div>
   );
 };

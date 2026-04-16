@@ -9,6 +9,7 @@ import { VisitasService } from "../../../../services/VisitasService";
 import { EstadoVisitaService } from "../../../../services/EstadoVisitaService";
 import { EdificiosService } from "../../../../services/EdificiosService";
 import { useInitialize } from "../../../../hooks/useInitialize";
+import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../../../../components/utils/errorHandler";
 import VisitaFormularioModal from "../../../Visitas/FormularioModal/VisitaFormularioModal";
 import type { VisitaFormValues } from "../../../Visitas/FormularioModal/VisitaFormularioModal";
 import ClientesStats from "./ClientesStats";
@@ -24,13 +25,11 @@ export interface ClienteSinVisita {
 
 interface ClientesSinVisitarProps {
   clientes: ClienteSinVisita[];
-  loading: boolean;
   onVisitaCreada: () => void;
 }
 
 const ClientesSinVisitar = ({
   clientes: clientesData,
-  loading,
   onVisitaCreada,
 }: ClientesSinVisitarProps) => {
   const { user } = useAuth();
@@ -83,29 +82,23 @@ const ClientesSinVisitar = ({
 
   const handleSubmitVisita = async (values: VisitaFormValues) => {
     try {
+      showLoadingAlert("Guardando visita...");
       await VisitasService.createVisita({
         ...values,
         id_usuario: user?.id ?? 0,
       });
+      showSuccessAlert("Visita creada");
       handleCloseModal();
       onVisitaCreada();
     } catch (error) {
+      showErrorAlert(error, "Crear Visita");
       console.error("Error al crear visita:", error);
-      throw error;
     }
   };
 
   const clienteSeleccionadoCompleto = clientes.find(
     (c) => c.cliente.id === clienteSeleccionado,
   )?.cliente ?? null;
-
-  if (loading) {
-    return (
-      <div className="clientes-sin-visitar-container">
-        <div className="clientes-loading">Cargando clientes...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="clientes-sin-visitar-container">

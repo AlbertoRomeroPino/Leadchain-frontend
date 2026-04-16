@@ -55,10 +55,26 @@ const VisitaFormularioModal = ({
     fecha_hora: initialValues
       ? formatDateForInput(initialValues.fecha_hora)
       : new Date().toISOString().slice(0, 16),
-    id_estado: initialValues?.id_estado ?? estados[0]?.id ?? 0,
+    id_estado: initialValues?.id_estado ?? 0, // Por defecto 0 = sin seleccionar
     observaciones: initialValues?.observaciones ?? "",
   });
-  const [clientQuery, setClientQuery] = useState(defaultClientName);
+  const [clientQuery, setClientQuery] = useState(isEditMode ? defaultClientName : "");
+
+  // Resetear formulario cuando el modal se abre en modo create
+  useEffect(() => {
+    if (!open) return;
+    
+    if (mode === "create") {
+      // Limpiar formulario para nueva visita
+      setValues({
+        id_cliente: clientId,
+        fecha_hora: new Date().toISOString().slice(0, 16),
+        id_estado: 0, // Resetear estado a sin seleccionar
+        observaciones: "",
+      });
+      setClientQuery("");
+    }
+  }, [open, mode, clientId]);
 
   useEffect(() => {
     if (!isEditMode || clientId <= 0 || defaultClientName) return;
@@ -80,6 +96,18 @@ const VisitaFormularioModal = ({
       cancelled = true;
     };
   }, [clientId, defaultClientName, isEditMode]);
+
+  // Sincronizar selectedClient con values.id_cliente en modo create
+  useEffect(() => {
+    if (isEditMode || !selectedClient) return;
+    // Usar callback asincrónico para evitar setState sincrónico
+    Promise.resolve().then(() => {
+      setValues((prev) => ({
+        ...prev,
+        id_cliente: selectedClient.id,
+      }));
+    });
+  }, [selectedClient, isEditMode]);
 
   const editClient = initialValues
     ? clientes.find((cliente) => cliente.id === initialValues.id_cliente)
@@ -114,8 +142,8 @@ const VisitaFormularioModal = ({
     return label === clientQuery.trim().toLowerCase();
   });
 
-  const showClientSuggestions = !isEditMode && clientQuery.trim().length > 0 && !exactMatchClient && filteredClients.length > 0;
-  const canSubmit = values.id_cliente > 0;
+  const showClientSuggestions = !isEditMode && !selectedClient && clientQuery.trim().length > 0 && !exactMatchClient && filteredClients.length > 0;
+  const canSubmit = values.id_cliente > 0 && values.id_estado > 0;
 
   const getCurrentLocalDateTime = () => {
     const date = new Date();
@@ -152,11 +180,17 @@ const VisitaFormularioModal = ({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!canSubmit) {
+    // Sincronizar id_cliente con selectedClient si está disponible en modo create
+    const finalValues: VisitaFormValues = {
+      ...values,
+      id_cliente: !isEditMode && selectedClient?.id ? selectedClient.id : values.id_cliente,
+    };
+
+    if (!finalValues.id_cliente || finalValues.id_cliente <= 0) {
       return;
     }
 
-    await onSubmit(values);
+    await onSubmit(finalValues);
   };
 
   return (
@@ -174,7 +208,13 @@ const VisitaFormularioModal = ({
           <input
             id="cliente-search"
             type="text"
-            value={isEditMode ? selectedClientName : clientQuery}
+            value={
+              isEditMode 
+                ? selectedClientName 
+                : selectedClient 
+                  ? `${selectedClient.nombre} ${selectedClient.apellidos}`
+                  : clientQuery
+            }
             onChange={(event) => {
               if (!isEditMode) {
                 handleClientQueryChange(event.target.value);
@@ -183,7 +223,7 @@ const VisitaFormularioModal = ({
             className="visita-search-input"
             placeholder={clientPlaceholder}
             autoComplete="off"
-            disabled={isEditMode}
+            disabled={isEditMode || !!selectedClient}
           />
           {showClientSuggestions && (
             <ul className="visita-client-list">
@@ -226,6 +266,7 @@ const VisitaFormularioModal = ({
             value={values.id_estado}
             onChange={(event) => handleChange("id_estado", event.target.value)}
           >
+            <option value="">-- Seleccionar estado --</option>
             {estados.map((estado) => (
               <option key={estado.id} value={estado.id}>
                 {estado.etiqueta}
@@ -243,7 +284,7 @@ const VisitaFormularioModal = ({
 
           {!canSubmit && (
             <div className="visita-client-warning">
-              Selecciona un cliente válido de tu zona antes de guardar.
+              {values.id_cliente === 0 ? "Selecciona un cliente" : "Selecciona un estado"} antes de guardar.
             </div>
           )}
 

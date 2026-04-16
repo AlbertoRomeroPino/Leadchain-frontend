@@ -51,7 +51,7 @@ const EdificioInfoMapCard = ({ ubicacion, direccion, zonaArea }: EdificioInfoMap
       map.fitBounds(bounds, { padding: [20, 20] })
       const minZoom = map.getBoundsZoom(bounds, false)
       map.setMinZoom(minZoom)
-      map.setMaxZoom(50)
+      map.setMaxZoom(18)
 
       const ensureInPolygon = () => {
         const center = map.getCenter()

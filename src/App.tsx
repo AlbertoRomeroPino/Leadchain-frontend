@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { lazy } from "react";
 import "./index.css";
 import "./App.css";
 import LoginPage from "./pages/LoginPage";
@@ -11,7 +12,7 @@ import EdificiosPage from "./pages/EdificiosPage";
 import NotFoundBSODPage from "./pages/NotFoundBSODPage";
 import { GuestRoute, ProtectedRoute } from "./guards/ProtectedRoute";
 import { IsAdmin } from "./guards/RolRoutes";
-import ZonaPage from "./pages/ZonaPage";
+const ZonaPage = lazy(() => import("./pages/ZonaPage"));
 
 function App() {
   return (

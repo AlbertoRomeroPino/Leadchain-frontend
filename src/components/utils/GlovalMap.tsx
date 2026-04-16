@@ -1,7 +1,8 @@
-import { MapContainer, Polygon, Rectangle, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, Polygon, Rectangle, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../../styles/components/utils/GlovalMap.css";
-import {
+import MapView from "../MapSetup/MapView";
+import EdificioMarker from "../MapViews/EdificioMarker";import ZoomCalculator from "../MapSetup/ZoomCalculator";import {
   CORDOBA_BOUNDS,
   CORDOBA_CENTER,
   CORDOBA_MAP_CONFIG,
@@ -10,10 +11,9 @@ import {
 } from "./cordobaMapConfig";
 import type { Zona } from "../../types/zonas/Zona";
 import type { Edificio } from "../../types/edificios/Edificio";
-import type { Cliente } from "../../types/clientes/Cliente";
 import type { GeoPoint } from "../../types/shared/GeoPoint";
 import type { LatLngExpression, LatLngBoundsExpression } from "leaflet";
-import { useMemo, memo } from "react";
+import { useMemo } from "react";
 import L from "leaflet";
 
 interface GlovalMapProps {
@@ -26,83 +26,13 @@ interface GlovalMapProps {
   zoomLevel?: number;
   minZoomLevel?: number;
   customMaxBounds?: LatLngBoundsExpression;
+  enableMapBoundsSetup?: boolean;
+  mapPaddingPixels?: number;
+  mapExpansionFactor?: number;
+  enableZoomCalculator?: boolean;
+  onZoomCalculated?: (zoom: { minZoom: number; initialZoom: number }) => void;
+  onEdificioClick?: (edificio: Edificio) => void;
 }
-
-// Componente memoizado para cada marcador de edificio
-// Esto evita que se re-rendericen todos los edificios cuando cambia algo
-interface EdificioMarkerProps {
-  edificio: Edificio;
-  icon: L.DivIcon;
-}
-
-const EdificioMarker = memo(({ edificio, icon }: EdificioMarkerProps) => {
-  if (!edificio.ubicacion) return null;
-
-  // Obtener el conteo de clientes - puede ser array u objeto con count
-  let clientesCount = 0;
-  let clientesArray: (Cliente & { planta?: string | null; puerta?: string | null })[] = [];
-  
-  if (Array.isArray(edificio.clientes)) {
-    clientesCount = edificio.clientes.length;
-    clientesArray = edificio.clientes;
-  } else if (edificio.clientes && typeof edificio.clientes === 'object' && 'count' in edificio.clientes) {
-    clientesCount = (edificio.clientes as { count: number }).count;
-  }
-
-  const clientesConEdificio = Array.isArray(edificio.clientes)
-    ? edificio.clientes.map((cliente: Cliente & { planta?: string | null; puerta?: string | null }) => ({
-        cliente,
-        edificio,
-      }))
-    : [];
-
-  return (
-    <Marker
-      key={`edificio-${edificio.id}`}
-      position={[edificio.ubicacion.lat, edificio.ubicacion.lng]}
-      icon={icon}
-    >
-      <Popup className="custom-popup">
-        <div className="popup-content">
-          <p className="popup-address">
-            {edificio.direccion_completa ?? "Dirección no disponible"}
-          </p>
-          <p className="popup-info">
-            {clientesCount > 0
-              ? `${clientesCount} cliente${clientesCount !== 1 ? "s" : ""} en esta ubicación`
-              : "Sin clientes asignados"}
-          </p>
-          <div className="popup-list">
-            {clientesConEdificio.slice(0, 15).map((item, idx) => (
-              <div
-                key={`${item.cliente.id}-${item.edificio.id}-${idx}`}
-                className="popup-item"
-              >
-                <div>
-                  <p className="popup-client-name">
-                    {item.cliente.nombre} {item.cliente.apellidos}
-                  </p>
-                  <p className="popup-client-details">
-                    Piso: {item.cliente.planta ?? "N/A"} • Puerta: {item.cliente.puerta ?? "N/A"}
-                    <br />
-                    Tel: {item.cliente.telefono ?? "N/A"}
-                  </p>
-                </div>
-              </div>
-            ))}
-            {clientesConEdificio.length > 15 && (
-              <p className="popup-footer">
-                Mostrando 15 de {clientesConEdificio.length} clientes
-              </p>
-            )}
-          </div>
-        </div>
-      </Popup>
-    </Marker>
-  );
-});
-
-EdificioMarker.displayName = "EdificioMarker";
 
 const GlovalMap = ({
   zonas = [],
@@ -114,7 +44,11 @@ const GlovalMap = ({
   zoomLevel = CORDOBA_MAP_CONFIG.zoom,
   minZoomLevel = CORDOBA_MAP_CONFIG.minZoom,
   customMaxBounds = CORDOBA_MAP_CONFIG.maxBounds,
-  onEdificioClick,
+  enableMapBoundsSetup = false,
+  mapPaddingPixels = 50,
+  mapExpansionFactor = 1.2,
+  enableZoomCalculator = false,
+  onZoomCalculated,
 }: GlovalMapProps) => {
   // Filtrar zonas según el rol del usuario
   const zonasAMostrar = useMemo(() => {
@@ -176,6 +110,15 @@ const GlovalMap = ({
     return area.map((punto) => [punto.lat, punto.lng]);
   };
 
+  // Obtener el área de la zona del comercial si aplica
+  const comercialZoneArea = useMemo(() => {
+    if (userRole === "comercial" && userZonaId && zonas.length > 0) {
+      const userZona = zonas.find((z) => z.id === userZonaId);
+      return userZona?.area ?? null;
+    }
+    return null;
+  }, [userRole, userZonaId, zonas]);
+
   // Calcular conteo de edificios y clientes por zona
   const zonasConConteo = useMemo(() => {
     return zonasAMostrar.map((zona) => {
@@ -222,13 +165,36 @@ const GlovalMap = ({
         <MapContainer
           center={centerCoords}
           zoom={zoomLevel}
-          zoomControl={CORDOBA_MAP_CONFIG.zoomControl}
+          scrollWheelZoom={true}
+          zoomControl={false}
           attributionControl={CORDOBA_MAP_CONFIG.attributionControl}
           maxBounds={customMaxBounds}
-          maxBoundsViscosity={CORDOBA_MAP_CONFIG.maxBoundsViscosity}
+          maxBoundsViscosity={userRole === "comercial" ? 0.5 : CORDOBA_MAP_CONFIG.maxBoundsViscosity}
           minZoom={minZoomLevel}
+          dragging={true}
+          touchZoom={true}
+          doubleClickZoom={true}
+          boxZoom={true}
           className="gloval-map-canvas"
         >
+          {/* Configurar vista y restricciones de navegación según el rol */}
+          {enableMapBoundsSetup && (
+            <MapView
+              userRole={userRole}
+              zoneArea={comercialZoneArea}
+              paddingPixels={mapPaddingPixels}
+              expansionFactor={mapExpansionFactor}
+            />
+          )}
+
+          {/* Calcular zoom automáticamente basado en los bounds de la zona */}
+          {enableZoomCalculator && (
+            <ZoomCalculator
+              zoneArea={comercialZoneArea}
+              onZoomCalculated={onZoomCalculated}
+            />
+          )}
+
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
           {/* Mostrar borde y oscurecimiento de Córdoba solo para admins */}
@@ -259,7 +225,7 @@ const GlovalMap = ({
           )}
 
           {/* Renderizar zonas */}
-          {zonasConConteo.map(({ zona, edificiosCount, clientesCount }, index) => {
+          {zonasConConteo.map(({ zona }, index) => {
             if (!zona.area || zona.area.length === 0) return null;
 
             const poligono = convertirAreaAPoligono(zona.area);

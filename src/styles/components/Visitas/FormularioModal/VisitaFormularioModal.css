@@ -81,6 +81,17 @@
   outline: none;
 }
 
+/* Disabled inputs */
+.visita-form input:disabled,
+.visita-form select:disabled,
+.visita-form textarea:disabled {
+  background-color: rgba(15, 10, 10, 0.6);
+  color: #cbd5e1;
+  cursor: not-allowed;
+  border-color: #dc2626;
+  opacity: 1;
+}
+
 /* Date inputs */
 .visita-form input[type="datetime-local"],
 .visita-form input[type="date"],

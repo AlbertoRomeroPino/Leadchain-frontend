@@ -3,7 +3,11 @@ import type { Zona } from "../../types/zonas/Zona";
 import type { UserInput, User, UserUpdateInput } from "../../types/users/User";
 import { UserService } from "../../services/User";
 import { authStorage } from "../../auth/authStorage";
-import showStatusAlert from "../utils/StatusAlert";
+import {
+  showErrorAlert,
+  showSuccessAlert,
+  showValidationError,
+} from "../utils/errorHandler";
 import "../../styles/components/Comerciales/ComercialesForm.css";
 
 interface ComercialesFormProps {
@@ -42,12 +46,7 @@ const ComercialesForm = ({ zonas, comercialAEditar = null, onSuccess }: Comercia
     }
 
     if (errors.length > 0) {
-      showStatusAlert({
-        type: "info",
-        title: "Información faltante",
-        description: errors.join(", "),
-        duration: 4000,
-      });
+      showValidationError(errors.join(", "));
     }
 
     return errors.length === 0;
@@ -109,14 +108,9 @@ const ComercialesForm = ({ zonas, comercialAEditar = null, onSuccess }: Comercia
       if (onSuccess) {
         onSuccess(comercialResultado);
       }
+      showSuccessAlert(esEdicion ? "Comercial actualizado" : "Comercial creado");
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Error desconocido";
-      showStatusAlert({
-        type: "error",
-        title: "Error",
-        description: message,
-        duration: 4000,
-      });
+      showErrorAlert(err, esEdicion ? "Actualizar Comercial" : "Crear Comercial");
     } finally {
       setIsLoading(false);
     }

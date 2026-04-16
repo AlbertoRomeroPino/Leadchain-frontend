@@ -3,7 +3,11 @@ import type { Cliente } from "../types/clientes/Cliente";
 import { useState } from "react";
 import { clientesService } from "../services/ClientesService";
 import { useAuth } from "../auth/useAuth";
-import showStatusAlert from "../components/utils/StatusAlert";
+import {
+  showErrorAlert,
+  showSuccessAlert,
+  showLoadingAlert,
+} from "../components/utils/errorHandler";
 
 import Sidebar from "../layout/Sidebar";
 import InfoCliente from "../components/Clientes/ClienteInfo";
@@ -29,11 +33,7 @@ const Clientes = () => {
     if (!user) return;
 
     try {
-      showStatusAlert({
-        type: "loading",
-        title: "Cargando clientes...",
-        duration: null,
-      });
+      showLoadingAlert("Cargando clientes...");
 
       const [clientesConEdificio, sinEdificio] = await Promise.all([
         clientesService.getClientes(),
@@ -45,20 +45,9 @@ const Clientes = () => {
       setClientes(clientesConEdificio);
       setClientesSinEdificio(sinEdificio);
 
-      showStatusAlert({
-        type: "success",
-        title: "Información cargada",
-        duration: 2000,
-      });
+      showSuccessAlert("Información cargada");
     } catch (err) {
-      showStatusAlert({
-        type: "error",
-        title: "Error",
-        duration: 4000,
-      });
-      const message =
-        err instanceof Error ? err.message : "Error al cargar clientes";
-      console.error(message);
+      showErrorAlert(err, "Cargar Clientes");
     }
   }, [user]);
 
@@ -90,9 +79,9 @@ const Clientes = () => {
         return [...prev, nuevoCliente];
       });
       setShowCreateForm(false);
+      showSuccessAlert("Cliente creado");
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Error al crear cliente";
+      showErrorAlert(err, "Crear Cliente");
     } finally {
       setCreatingCliente(false);
     }

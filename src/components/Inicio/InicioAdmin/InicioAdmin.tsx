@@ -4,7 +4,7 @@ import { useAuth } from "../../../auth/useAuth";
 import { useInitialize } from "../../../hooks/useInitialize";
 import ComercialCard from "./ComercialCard/ComercialCard";
 import { InicioService } from "../../../services/InicioService";
-import showStatusAlert from "../../utils/StatusAlert";
+import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../../utils/errorHandler";
 import type { User } from "../../../types/users/User";
 import type { Visita } from "../../../types/visitas/Visita";
 import type { Cliente } from "../../../types/clientes/Cliente";
@@ -19,7 +19,6 @@ interface AdminDashboardState {
 
 const InicioAdmin = () => {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
   const [data, setData] = useState<AdminDashboardState>({
     comerciales: [],
     visitas: [],
@@ -29,18 +28,11 @@ const InicioAdmin = () => {
 
   useInitialize(async () => {
     if (!user || user.rol !== "admin") {
-      setLoading(false);
       return;
     }
 
     try {
-      setLoading(true);
-      showStatusAlert({
-        type: "loading",
-        title: "Cargando tablero...",
-        description: "Obteniendo datos de comerciales, clientes y visitas",
-        duration: null,
-      });
+      showLoadingAlert("Cargando tablero...");
 
       const inicioData = await InicioService.getAdminInicio();
 
@@ -56,26 +48,12 @@ const InicioAdmin = () => {
         clientes: inicioData.clientes,
         edificios: inicioData.edificios,
       });
-      showStatusAlert({
-        type: "success",
-        title: "Información cargada",
-        duration: 2000,
-      });
+      showSuccessAlert("Información cargada");
     } catch (error) {
-      showStatusAlert({
-        type: "error",
-        title: "No encontrado",
-        duration: 4000,
-      });
+      showErrorAlert(error, "Cargar Tablero");
       console.error("Error al cargar dashboard admin:", error);
-    } finally {
-      setLoading(false);
     }
   }, [user?.id]);
-
-  if (loading) {
-    return <div className="loading"></div>;
-  }
 
   return (
     <div className="inicio-admin">

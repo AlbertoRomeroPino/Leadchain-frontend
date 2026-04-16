@@ -7,18 +7,10 @@ const NotFoundBSOD = () => {
   const { isAuthenticated, logout } = useAuth();
 
   const handleLogout = () => {
-    showStatusAlert({
-      type: "action",
-      title: "Cerrar sesión",
-      description: "¿Deseas cerrar la sesión y volver al login?",
-      actionLabel: "Cerrar sesión",
-      onAction: () => {
-        if (isAuthenticated) {
-          logout();
-        }
-        navigate("/Login", { replace: true });
-      },
-    });
+    if (isAuthenticated) {
+      logout();
+    }
+    navigate("/Login", { replace: true });
   };
 
   return (

@@ -29,21 +29,17 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  cursor: grab !important;
   touch-action: none !important;
 }
 
 .edificio-map-leaflet.leaflet-dragging {
-  cursor: grabbing !important;
 }
 
 .edificio-map-leaflet * {
-  cursor: grab !important;
   user-select: none !important;
 }
 
 .edificio-map-leaflet.leaflet-dragging * {
-  cursor: grabbing !important;
 }
 
 .leaflet-container {

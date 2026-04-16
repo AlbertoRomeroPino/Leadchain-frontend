@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import type { Cliente } from '../../../types/clientes/Cliente'
 import { EdificiosService } from '../../../services/EdificiosService'
+import { showErrorAlert, showSuccessAlert } from '../../utils/errorHandler';
 
 interface ClienteInfo {
   cliente: Cliente
@@ -35,9 +36,9 @@ const EdificioInfoClienteCard = ({
     try {
       await EdificiosService.detachCliente(edificioId, clienteId);
       onClienteRemoved?.(clienteId);
+      showSuccessAlert("Cliente removido");
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Error al quitar cliente';
-      alert(message);
+      showErrorAlert(err, "Quitar Cliente");
     } finally {
       setRemovingClienteId(null);
     }

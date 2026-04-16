@@ -3,7 +3,7 @@ import { useAuth } from "../auth/useAuth";
 import Sidebar from "../layout/Sidebar";
 import { VisitasService } from "../services/VisitasService";
 import { useInitialize } from "../hooks/useInitialize";
-import showStatusAlert from "../components/utils/StatusAlert";
+import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../components/utils/errorHandler";
 import type { Visita } from "../types/visitas/Visita";
 import type { Cliente } from "../types/clientes/Cliente";
 import type { EstadoVisita } from "../types/visitas/EstadoVisita";
@@ -26,11 +26,7 @@ const Visitas = () => {
 
   useInitialize(async () => {
     try {
-      showStatusAlert({
-        type: "loading",
-        title: "Cargando visitas...",
-        duration: null,
-      });
+      showLoadingAlert("Cargando visitas...");
 
       // Una sola petición consolida visitas, clientes y estados
       const data = await VisitasService.getVisitasPaginaDatos();
@@ -39,27 +35,14 @@ const Visitas = () => {
       setClientes(data.clientes);
       setEstados(data.estados);
 
-      showStatusAlert({
-        type: "success",
-        title: "Información cargada",
-        duration: 2000,
-      });
+      showSuccessAlert("Información cargada");
     } catch (error) {
-      showStatusAlert({
-        type: "error",
-        title: "Error",
-        duration: 4000,
-      });
+      showErrorAlert(error, "Cargar Visitas");
       console.error(error);
     }
   });
 
   const availableClients = clientes;
-
-  const openCreateModal = () => {
-    setSelectedVisita(null);
-    setIsModalOpen(true);
-  };
 
   const openEditModal = (visita: Visita) => {
     setSelectedVisita(visita);
@@ -108,8 +91,9 @@ const Visitas = () => {
       }
       await refreshVisitas();
       closeModal();
+      showSuccessAlert("Visita guardada");
     } catch (error) {
-      alert(`No se pudo guardar la visita.${user?.id} Comprueba los datos e inténtalo de nuevo.`);
+      showErrorAlert(error, "Guardar Visita");
       console.error(error);
     }
   };
@@ -122,8 +106,9 @@ const Visitas = () => {
     try {
       await VisitasService.deleteVisita(visita.id);
       await refreshVisitas();
+      showSuccessAlert("Visita eliminada");
     } catch (error) {
-      alert("No se pudo eliminar la visita. Inténtalo de nuevo más tarde.");
+      showErrorAlert(error, "Eliminar Visita");
       console.error(error);
     }
   };
@@ -187,7 +172,6 @@ const Visitas = () => {
           statusOptions={statusOptions}
           onSearchChange={setSearch}
           onStatusChange={setStatusFilter}
-          onCreateClick={openCreateModal}
         />
 
         {visitas ? (

@@ -3,6 +3,7 @@ import type { Cliente } from "../../types/clientes/Cliente";
 import type { Zona } from "../../types/zonas/Zona";
 import { InicioService } from "../../services/InicioService";
 import { useInitialize } from "../../hooks/useInitialize";
+import { showLoadingAlert, showErrorAlert } from "./errorHandler";
 import type { Edificio } from "../../types/edificios/Edificio";
 import "../../styles/components/utils/MapaEdificioPanel.css";
 
@@ -34,9 +35,6 @@ const MapaEdificioPanel = ({
 }: MapaEdificioPanelProps) => {
   const [clientesBloque, setClientesBloque] = useState<ClienteEnEdificio[]>([]);
   const [zona, setZona] = useState<Zona | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
   const dragStartPos = useRef<MousePosition>({ x: 0, y: 0 });
 
   useInitialize(async () => {
@@ -47,8 +45,7 @@ const MapaEdificioPanel = ({
     }
 
     try {
-      setLoading(true);
-      setError(null);
+      showLoadingAlert("Cargando datos del edificio...");
 
       // Panel ligero: solo zona y clientes
       const panelData = await InicioService.getDetalleEdificio(edificio.id);
@@ -65,18 +62,13 @@ const MapaEdificioPanel = ({
 
       setClientesBloque(clientesFormateados);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Error desconocido";
-      setError(errorMessage);
+      showErrorAlert(err, "Cargar Edificio");
       console.error("Error al cargar datos:", err);
-    } finally {
-      setLoading(false);
     }
   }, [isOpen, edificio?.id]);
 
   const handleOverlayMouseDown = (e: React.MouseEvent) => {
     dragStartPos.current = { x: e.clientX, y: e.clientY };
-    setIsDragging(false);
   };
 
   const handleOverlayMouseUp = (e: React.MouseEvent) => {
@@ -152,11 +144,7 @@ const MapaEdificioPanel = ({
               Clientes ({clientesBloque.length})
             </h3>
 
-            {loading ? (
-              <div className="mapa-edificio-loading">Cargando clientes...</div>
-            ) : error ? (
-              <div className="mapa-edificio-error">Error: {error}</div>
-            ) : clientesBloque.length === 0 ? (
+            {clientesBloque.length === 0 ? (
               <div className="mapa-edificio-empty">No hay clientes</div>
             ) : (
               <ul className="mapa-edificio-clientes-list">

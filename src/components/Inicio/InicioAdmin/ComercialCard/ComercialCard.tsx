@@ -25,17 +25,14 @@ export interface ComercialStats {
 
 const ComercialCard = ({ comerciales, visitas, clientes, edificios }: ComercialCardProps) => {
   const [stats, setStats] = useState<Map<number, ComercialStats>>(new Map());
-  const [loading, setLoading] = useState(true);
 
   useInitialize(
     async () => {
       if (comerciales.length === 0) {
-        setLoading(false);
         return;
       }
 
       try {
-        setLoading(true);
 
         const categoriasEstados: Record<string, { etiquetas: string[] }> = {
           exitoso: {
@@ -123,16 +120,10 @@ const ComercialCard = ({ comerciales, visitas, clientes, edificios }: ComercialC
         setStats(statsMap);
       } catch (error) {
         console.error("Error al calcular estadísticas de comerciales:", error);
-      } finally {
-        setLoading(false);
       }
     },
     [comerciales, visitas, clientes, edificios],
   );
-
-  if (loading) {
-    return <div className="loading" />;
-  }
 
   return (
     <div className="comerciales-container">

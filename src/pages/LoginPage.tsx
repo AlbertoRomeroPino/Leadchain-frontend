@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import type { LoginCredentials } from "../types/users/User";
+import type { AxiosError } from "axios";
 import { useAuth } from "../auth/useAuth";
 import { authService } from "../services/authService";
+import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../components/utils/errorHandler";
 import "../styles/Login.css";
 
 const Login = () => {
@@ -11,8 +13,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (isAuthenticated) {
     return <Navigate to="/Inicio" replace />;
@@ -20,16 +21,22 @@ const Login = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
 
     const missingFields: string[] = [];
     if (!email.trim()) missingFields.push("email");
     if (!password.trim()) missingFields.push("contraseña");
 
     if (missingFields.length > 0) {
-      const alertType = missingFields.length > 1 ? "warning" : "info";
-      const description = `Faltan: ${missingFields.join(", ")}.`;
-      setError(description);
+      showErrorAlert(new Error(`Faltan: ${missingFields.join(", ")}.`), "Campos Vacíos");
+      return;
+    }
+
+    // Validar que la contraseña tenga al menos 8 caracteres
+    if (password.length < 8) {
+      showErrorAlert(
+        new Error("La contraseña debe tener al menos 8 caracteres"),
+        "Contraseña Corta"
+      );
       return;
     }
 
@@ -39,32 +46,33 @@ const Login = () => {
     };
 
     try {
-      setLoading(true);
-
+      setIsSubmitting(true);
+      showLoadingAlert("Iniciando sesión...");
       const session = await authService.login(credentials);
       login(session);
-      const nombre = session.user?.nombre ?? "usuario";
-
+      showSuccessAlert("¡Sesión iniciada!");
       navigate("/Inicio", { replace: true });
     } catch (error) {
-      let message = "No se pudo iniciar sesión. Revisa tus credenciales.";
-
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error &&
-        typeof (error as { response?: unknown }).response === "object" &&
-        (error as { response?: { data?: unknown } }).response?.data &&
-        typeof (error as { response?: { data?: { message?: unknown } } })
-          .response?.data?.message === "string"
-      ) {
-        message = (error as { response: { data: { message: string } } })
-          .response.data.message;
+      // Detectar tipo de error por status HTTP
+      let title = "Credenciales";
+      const axiosError = error as AxiosError;
+      
+      if (axiosError?.response?.status) {
+        const status = axiosError.response.status;
+        
+        // Status 500+ = problemas de servidor/conexión
+        if (status >= 500) {
+          title = "Conexión";
+        }
+        // Status 401 = credenciales inválidas
+        else if (status === 401) {
+          title = "Credenciales";
+        }
       }
-
-      setError(message);
+      
+      showErrorAlert(error, title);
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -99,12 +107,10 @@ const Login = () => {
             />
           </div>
 
-          <button className="login-button" type="submit" disabled={loading}>
-            {loading ? "Entrando..." : "Entrar"}
+          <button className="login-button" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Entrando..." : "Entrar"}
           </button>
         </form>
-
-        {error && <p className="login-error">{error}</p>}
       </section>
     </main>
   );

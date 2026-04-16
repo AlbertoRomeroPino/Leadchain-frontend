@@ -1,4 +1,3 @@
-import { MapPinPlusInside } from "lucide-react";
 import "../../styles/components/Visitas/VisitasHeader.css";
 
 type VisitasHeaderProps = {
@@ -8,7 +7,6 @@ type VisitasHeaderProps = {
   statusOptions: string[];
   onSearchChange: (value: string) => void;
   onStatusChange: (value: string) => void;
-  onCreateClick: () => void;
 };
 
 const VisitasHeader = ({
@@ -18,21 +16,11 @@ const VisitasHeader = ({
   statusOptions,
   onSearchChange,
   onStatusChange,
-  onCreateClick,
 }: VisitasHeaderProps) => (
   <div className="visitas-page-header">
     <div>
       <h1>Visitas</h1>
       <div className="visitas-actions">
-        {userRole === "comercial" && (
-          <button
-            type="button"
-            onClick={onCreateClick}
-            className="visitas-action-button"
-          >
-            <MapPinPlusInside />
-          </button>
-        )}
       </div>
     </div>
 
@@ -50,8 +38,8 @@ const VisitasHeader = ({
             className="visitas-search-input"
             placeholder={
               userRole === "admin"
-                ? "Nombre o apellidos del usuario"
-                : "Nombre o apellidos del cliente"
+                ? "Nombre/Apellido comercial"
+                : "Nombre/Apellido cliente"
             }
           />
         </div>
