@@ -8,9 +8,10 @@ type VisitaCardComercialProps = {
   buildingLabel: string;
   style: CSSProperties;
   onEdit: (visita: Visita) => void;
+  isLoading?: boolean;
 };
 
-const VisitaCardComercial = ({ visita, buildingLabel, style, onEdit }: VisitaCardComercialProps) => (
+const VisitaCardComercial = ({ visita, buildingLabel, style, onEdit, isLoading = false }: VisitaCardComercialProps) => (
   <article key={visita.id} className="visita-postit" style={style}>
     <div className="visita-postit-header">
       <div>
@@ -27,6 +28,7 @@ const VisitaCardComercial = ({ visita, buildingLabel, style, onEdit }: VisitaCar
         className="visita-card-action-button"
         onClick={() => onEdit(visita)}
         title="Editar visita"
+        disabled={isLoading}
       >
         <MapPinPen size={18} />
       </button>

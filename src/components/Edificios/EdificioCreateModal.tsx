@@ -9,6 +9,18 @@ import EdificioModalMapa from "./FormularioModal/EdificioModalMapa";
 import EdificioModalCliente from "./FormularioModal/EdificioModalCliente";
 import { clientesService } from "../../services/ClientesService";
 
+interface ClienteBlock {
+  id: string;
+  mode: "crear" | "seleccionar";
+  nombre: string;
+  apellidos: string;
+  email: string;
+  telefono: string;
+  clienteSinEdificioId: number | null;
+  planta: string;
+  puerta: string;
+}
+
 interface EdificioCreateModalProps {
   show: boolean;
   loading: boolean;
@@ -16,16 +28,7 @@ interface EdificioCreateModalProps {
   edificios: Edificio[];
   onClose: () => void;
   onCreateEdificio: (payload: EdificioInput) => Promise<Edificio>;
-  onAppendToExisting: (
-    edificioId: number,
-    clienteNombre?: string,
-    clienteApellidos?: string,
-    clienteEmail?: string,
-    clienteTelefono?: string,
-    clienteExistenteId?: number,
-    clientePlanta?: string,
-    clientePuerta?: string,
-  ) => Promise<void>;
+  onAppendMultipleClientes: (edificioId: number, clientes: ClienteBlock[]) => Promise<void>;
   edificioAEditar?: Edificio;
   onUpdateEdificio?: (id: number, payload: EdificioInput) => Promise<void>;
 }
@@ -37,7 +40,7 @@ const EdificioCreateModal = ({
   edificios,
   onClose,
   onCreateEdificio,
-  onAppendToExisting,
+  onAppendMultipleClientes,
   edificioAEditar,
   onUpdateEdificio,
 }: EdificioCreateModalProps) => {
@@ -56,18 +59,11 @@ const EdificioCreateModal = ({
     setIdCliente(null);
   };
 
-  const [existingEdificioId, setExistingEdificioId] = useState<number>(
-    edificios?.[0]?.id ?? 0,
+  const [existingEdificioId, setExistingEdificioId] = useState<number | "">(
+    "",
   );
-  const [clienteNombre, setClienteNombre] = useState("");
-  const [clienteApellidos, setClienteApellidos] = useState("");
-  const [clienteTelefono, setClienteTelefono] = useState("");
-  const [clienteEmail, setClienteEmail] = useState("");
-  const [clienteMode, setClienteMode] = useState<"crear" | "seleccionar">("crear");
-  const [clienteSinEdificioId, setClienteSinEdificioId] = useState<number | null>(null);
+  const [clientes, setClientes] = useState<ClienteBlock[]>([]);
   const [clientesSinEdificio, setClientesSinEdificio] = useState<Cliente[]>([]);
-  const [clientePlanta, setClientePlanta] = useState<string>("");
-  const [clientePuerta, setClientePuerta] = useState<string>("");
   // const [loadingClientes, setLoadingClientes] = useState(false);
 
   useEffect(() => {
@@ -85,15 +81,8 @@ const EdificioCreateModal = ({
           setLng(edificioAEditar.ubicacion.lng);
         }
         setIdCliente(edificioAEditar.id_cliente);
-        setExistingEdificioId(edificios?.[0]?.id ?? 0);
-        setClienteNombre("");
-        setClienteApellidos("");
-        setClienteEmail("");
-        setClienteTelefono("");
-        setClienteMode("crear");
-        setClienteSinEdificioId(null);
-        setClientePlanta("");
-        setClientePuerta("");
+        setExistingEdificioId("");
+        setClientes([]);
       } else {
         // Modo crear
         setMode("new");
@@ -103,15 +92,8 @@ const EdificioCreateModal = ({
         setLat(null);
         setLng(null);
         setIdCliente(null);
-        setExistingEdificioId(edificios?.[0]?.id ?? 0);
-        setClienteNombre("");
-        setClienteApellidos("");
-        setClienteEmail("");
-        setClienteTelefono("");
-        setClienteMode("crear");
-        setClienteSinEdificioId(null);
-        setClientePlanta("");
-        setClientePuerta("");
+        setExistingEdificioId("");
+        setClientes([]);
       }
     });
   }, [show, zonas, edificios, edificioAEditar]);
@@ -119,6 +101,9 @@ const EdificioCreateModal = ({
   // Cargar clientes sin edificio cuando el modo es "existing"
   useEffect(() => {
     if (!show || mode !== "existing") return;
+
+    // Resetear clientes al cambiar a modo "existing"
+    setClientes([]);
 
     const cargarClientesSinEdificio = async () => {
       // setLoadingClientes(true);
@@ -232,16 +217,19 @@ const EdificioCreateModal = ({
 
         // Adjuntar cliente con planta y puerta (si están completos)
         if (idCliente && idCliente > 0) {
-          await onAppendToExisting(
-            nuevoEdificio.id,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            idCliente,
-            clientePlanta.trim(),
-            clientePuerta.trim()
-          );
+          await onAppendMultipleClientes(nuevoEdificio.id, [
+            {
+              id: Math.random().toString(36).substr(2, 9),
+              mode: "seleccionar",
+              nombre: "",
+              apellidos: "",
+              email: "",
+              telefono: "",
+              clienteSinEdificioId: idCliente,
+              planta: clientePlanta.trim(),
+              puerta: clientePuerta.trim(),
+            },
+          ]);
         }
 
         alert("Edificio creado correctamente");
@@ -260,72 +248,48 @@ const EdificioCreateModal = ({
     }
 
     if (mode === "existing") {
-      if (!existingEdificioId) {
+      if (existingEdificioId === "") {
         alert("Selecciona un edificio válido");
         return;
       }
 
-      if (!clientePlanta.trim() || !clientePuerta.trim()) {
-        alert("Completa piso y puerta del cliente");
+      if (clientes.length === 0) {
+        alert("Agrega al menos un cliente");
         return;
       }
 
-      if (clienteMode === "crear") {
-        // Crear nuevo cliente
-        if (!clienteNombre.trim() || !clienteApellidos.trim()) {
-          alert("Completa nombre y apellidos del cliente");
+      // Validar todos los clientes
+      for (const cliente of clientes) {
+        if (!cliente.planta.trim() || !cliente.puerta.trim()) {
+          alert("Completa piso y puerta para todos los clientes");
           return;
         }
 
-        try {
-          await onAppendToExisting(
-            existingEdificioId,
-            clienteNombre.trim(),
-            clienteApellidos.trim(),
-            clienteEmail.trim() || undefined,
-            clienteTelefono.trim() || undefined,
-            undefined,
-            clientePlanta.trim(),
-            clientePuerta.trim()
-          );
-          alert("Cliente creado y adjuntado al edificio");
-        } catch (appendError) {
-          const message =
-            appendError instanceof Error
-              ? appendError.message
-              : "Error al crear cliente";
-          console.error("appendToExisting error:", appendError);
-          alert(message);
-          return;
+        if (cliente.mode === "crear") {
+          if (!cliente.nombre.trim() || !cliente.apellidos.trim()) {
+            alert("Completa nombre y apellidos para todos los clientes a crear");
+            return;
+          }
+        } else {
+          if (!cliente.clienteSinEdificioId) {
+            alert("Selecciona un cliente para todos los bloques");
+            return;
+          }
         }
-      } else {
-        // Seleccionar cliente existente
-        if (!clienteSinEdificioId) {
-          alert("Selecciona un cliente");
-          return;
-        }
+      }
 
-        try {
-          await onAppendToExisting(
-            existingEdificioId,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            clienteSinEdificioId,
-            clientePlanta.trim(),
-            clientePuerta.trim()
-          );
-          alert("Cliente adjuntado al edificio");
-        } catch (appendError) {
-          const message =
-            appendError instanceof Error
-              ? appendError.message
-              : "Error al adjuntar cliente";
-          console.error("appendToExisting error:", appendError);
-          alert(message);
-          return;
-        }
+      // Procesar todos los clientes en una sola solicitud al backend
+      try {
+        await onAppendMultipleClientes(existingEdificioId, clientes);
+        onClose();
+      } catch (appendError) {
+        const message =
+          appendError instanceof Error
+            ? appendError.message
+            : "Error al agregar clientes";
+        console.error("appendMultipleClientes error:", appendError);
+        alert(message);
+        return;
       }
 
       onClose();
@@ -359,10 +323,10 @@ const EdificioCreateModal = ({
                 idCliente={idCliente}
                 setIdCliente={setIdCliente}
                 zonas={zonas}
-                clientePlanta={clientePlanta}
-                setClientePlanta={setClientePlanta}
-                clientePuerta={clientePuerta}
-                setClientePuerta={setClientePuerta}
+                clientePlanta=""
+                setClientePlanta={() => {}}
+                clientePuerta=""
+                setClientePuerta={() => {}}
                 isEditing={!!edificioAEditar}
               />
 
@@ -381,24 +345,10 @@ const EdificioCreateModal = ({
               <EdificioModalCliente
                 existingEdificioId={existingEdificioId}
                 setExistingEdificioId={setExistingEdificioId}
-                clienteMode={clienteMode}
-                setClienteMode={setClienteMode}
-                clienteNombre={clienteNombre}
-                setClienteNombre={setClienteNombre}
-                clienteApellidos={clienteApellidos}
-                setClienteApellidos={setClienteApellidos}
-                clienteTelefono={clienteTelefono}
-                setClienteTelefono={setClienteTelefono}
-                clienteEmail={clienteEmail}
-                setClienteEmail={setClienteEmail}
-                clienteSinEdificioId={clienteSinEdificioId}
-                setClienteSinEdificioId={setClienteSinEdificioId}
                 clientesSinEdificio={clientesSinEdificio}
                 edificios={edificios}
-                clientePlanta={clientePlanta}
-                setClientePlanta={setClientePlanta}
-                clientePuerta={clientePuerta}
-                setClientePuerta={setClientePuerta}
+                clientes={clientes}
+                setClientes={setClientes}
               />
             </>
           )}

@@ -50,7 +50,7 @@ const ComercialesTable = ({
                   isExpanded={expandedComercialId === comercialItem.id}
                   zonaNombre={
                     zonas.find((z) => z.id === comercialItem.id_zona)
-                      ?.nombre_zona || ""
+                      ?.nombre || ""
                   }
                   isSelected={selectedComercialIds.has(comercialItem.id)}
                   onToggleSelect={(e) => {

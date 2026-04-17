@@ -8,6 +8,7 @@ type VisitasComercialGridProps = {
   getBuildingLabel: (visita: Visita) => string;
   getCardStyle: (colorHex?: string) => CSSProperties;
   onEdit: (visita: Visita) => void;
+  isLoading?: boolean;
 };
 
 const VisitasComercialGrid = ({
@@ -15,6 +16,7 @@ const VisitasComercialGrid = ({
   getBuildingLabel,
   getCardStyle,
   onEdit,
+  isLoading = false,
 }: VisitasComercialGridProps) => (
   <div className="visitas-grid comercial-visitas-grid">
     {visitas.map((visita) => (
@@ -24,6 +26,7 @@ const VisitasComercialGrid = ({
         buildingLabel={getBuildingLabel(visita)}
         style={getCardStyle(visita.estado?.color_hex)}
         onEdit={onEdit}
+        isLoading={isLoading}
       />
     ))}
   </div>

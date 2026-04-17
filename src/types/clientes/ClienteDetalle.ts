@@ -25,7 +25,7 @@ export type ClienteDetalleResponse = {
   edificio: (Edificio & {
     zona?: {
       id: number;
-      nombre_zona: string;
+      nombre: string;
     } | null;
   }) | null;
   visitas: {

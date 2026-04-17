@@ -5,6 +5,7 @@ interface ComercialStatsBarsProps {
   rechazados: number;
   enProceso: number;
   totalVisitas: number;
+  totalClientes: number;
 }
 
 const ComercialStatsBars: React.FC<ComercialStatsBarsProps> = ({
@@ -12,25 +13,69 @@ const ComercialStatsBars: React.FC<ComercialStatsBarsProps> = ({
   rechazados,
   enProceso,
   totalVisitas,
+  totalClientes,
 }) => {
+  // Calcular clientes sin visita
+  const sinVisita = totalClientes - totalVisitas;
+
+  // Función para distribuir porcentajes correctamente (siempre suma 100%)
+  const distribuirPorcentajes = (
+    values: number[],
+    total: number
+  ): number[] => {
+    if (total === 0) return values.map(() => 0);
+
+    // Calcular porcentajes sin redondear
+    const porcentajesSinRedondear = values.map((v) => (v / total) * 100);
+
+    // Calcular partes enteras y decimales
+    const enteros = porcentajesSinRedondear.map((p) => Math.floor(p));
+    const decimales = porcentajesSinRedondear.map((p, i) => p - enteros[i]);
+
+    // Sumar los enteros
+    const sumaEnteros = enteros.reduce((a, b) => a + b, 0);
+    const diferencia = 100 - sumaEnteros;
+
+    // Distribuir los puntos faltantes a los que tienen mayor decimal
+    const indices = Array.from({ length: values.length }, (_, i) => i);
+    indices.sort((a, b) => decimales[b] - decimales[a]);
+
+    for (let i = 0; i < diferencia; i++) {
+      enteros[indices[i]]++;
+    }
+
+    return enteros;
+  };
+
+  const porcentajes = distribuirPorcentajes(
+    [exitosos, enProceso, rechazados, sinVisita],
+    totalClientes
+  );
+
   const categories = [
     {
       nombre: "Exitoso",
       cantidad: exitosos,
       color: "#10b981",
-      porcentaje: totalVisitas > 0 ? Math.round((exitosos / totalVisitas) * 100) : 0,
+      porcentaje: porcentajes[0],
     },
     {
       nombre: "En Proceso",
       cantidad: enProceso,
       color: "#f59e0b",
-      porcentaje: totalVisitas > 0 ? Math.round((enProceso / totalVisitas) * 100) : 0,
+      porcentaje: porcentajes[1],
     },
     {
       nombre: "Rechazado",
       cantidad: rechazados,
       color: "#ef4444",
-      porcentaje: totalVisitas > 0 ? Math.round((rechazados / totalVisitas) * 100) : 0,
+      porcentaje: porcentajes[2],
+    },
+    {
+      nombre: "Sin visita",
+      cantidad: sinVisita,
+      color: "#6b7280",
+      porcentaje: porcentajes[3],
     },
   ];
 

@@ -15,6 +15,28 @@ body {
 
 * {
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #dc2626 #1f1414;
+}
+
+/* Estilos de scrollbar para navegadores Webkit (Chrome, Safari, Edge) */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #1f1414;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #dc2626;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #ef4444;
 }
 
 /* Contenedor de la Descripción (El cuerpo de abajo) */

@@ -37,7 +37,7 @@ interface EdificioModalMapaProps {
   idZona: number;
   zonas: {
     id: number;
-    nombre_zona: string;
+    nombre: string;
     area: { lat: number; lng: number }[] | null;
   }[];
   lat: number | null;
@@ -76,7 +76,7 @@ const EdificioModalMapa = ({
       map.fitBounds(zonaBounds, { padding: [20, 20] });
       const minZoom = map.getBoundsZoom(zonaBounds, false);
       map.setMinZoom(minZoom);
-      map.setMaxZoom(minZoom + 2);
+      map.setMaxZoom(minZoom + 4);
 
       const validateCenter = () => {
         const center = map.getCenter();

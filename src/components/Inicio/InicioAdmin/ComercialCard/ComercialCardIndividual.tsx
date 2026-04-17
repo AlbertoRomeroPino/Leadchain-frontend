@@ -1,16 +1,19 @@
 import "../../../../styles/components/Inicio/InicioAdmin/ComercialCard/ComercialCardIndividual.css";
 import type { User } from "../../../../types/users/User";
+import type { Zona } from "../../../../types/zonas/Zona";
 import type { ComercialStats } from "./ComercialCard";
 import ComercialStatsBars from "./ComercialStatsBars";
 
 interface ComercialCardIndividualProps {
   comercial: User;
   stats: ComercialStats | null;
+  zona: Zona | null;
 }
 
 const ComercialCardIndividual: React.FC<ComercialCardIndividualProps> = ({
   comercial,
   stats,
+  zona,
 }) => {
   const totalClientes = stats?.totalClientes ?? 0;
   const totalVisitas = stats?.totalVisitas ?? 0;
@@ -20,10 +23,13 @@ const ComercialCardIndividual: React.FC<ComercialCardIndividualProps> = ({
   return (
     <div className="comercial-card-individual">
       <div className="comercial-card-header">
-        <h4 className="comercial-card-name">
-          {comercial.nombre} {comercial.apellidos}
-        </h4>
-        <p className="comercial-card-email">{comercial.email || "Email: N/A"}</p>
+        <div className="comercial-card-left">
+          <h4 className="comercial-card-name">
+            {comercial.nombre} {comercial.apellidos}
+          </h4>
+          <p className="comercial-card-email">{comercial.email || "Email: N/A"}</p>
+        </div>
+        {zona && <span className="comercial-card-zone">{zona.nombre}</span>}
       </div>
 
       <div className="comercial-card-body">
@@ -47,6 +53,7 @@ const ComercialCardIndividual: React.FC<ComercialCardIndividualProps> = ({
           rechazados={stats?.rechazados ?? 0}
           enProceso={stats?.enProceso ?? 0}
           totalVisitas={totalVisitas}
+          totalClientes={totalClientes}
         />
       </div>
     </div>

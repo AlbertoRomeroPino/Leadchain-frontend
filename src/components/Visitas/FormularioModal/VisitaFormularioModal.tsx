@@ -31,6 +31,22 @@ const formatDateForInput = (value: string) => {
   return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
 };
 
+const splitDatetime = (datetime: string) => {
+  const date = datetime.slice(0, 10); // YYYY-MM-DD
+  const time = datetime.slice(11, 16); // HH:MM
+  return { date, time };
+};
+
+const combineDatetime = (date: string, time: string) => {
+  return `${date}T${time}`;
+};
+
+const getCurrentLocalDateTime = () => {
+  const date = new Date();
+  const tzOffset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
+};
+
 const VisitaFormularioModal = ({
   open,
   onClose,
@@ -60,6 +76,12 @@ const VisitaFormularioModal = ({
   });
   const [clientQuery, setClientQuery] = useState(isEditMode ? defaultClientName : "");
 
+  // Estados separados para fecha y hora
+  const { date: initialDate, time: initialTime } = splitDatetime(values.fecha_hora);
+  const [selectedDate, setSelectedDate] = useState(initialDate);
+  const [selectedTime, setSelectedTime] = useState(initialTime);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Resetear formulario cuando el modal se abre en modo create
   useEffect(() => {
     if (!open) return;
@@ -75,6 +97,14 @@ const VisitaFormularioModal = ({
       setClientQuery("");
     }
   }, [open, mode, clientId]);
+
+  // Sincronizar fecha/hora con el estado general
+  useEffect(() => {
+    setValues((prev) => ({
+      ...prev,
+      fecha_hora: combineDatetime(selectedDate, selectedTime),
+    }));
+  }, [selectedDate, selectedTime]);
 
   useEffect(() => {
     if (!isEditMode || clientId <= 0 || defaultClientName) return;
@@ -145,11 +175,6 @@ const VisitaFormularioModal = ({
   const showClientSuggestions = !isEditMode && !selectedClient && clientQuery.trim().length > 0 && !exactMatchClient && filteredClients.length > 0;
   const canSubmit = values.id_cliente > 0 && values.id_estado > 0;
 
-  const getCurrentLocalDateTime = () => {
-    const date = new Date();
-    const tzOffset = date.getTimezoneOffset() * 60000;
-    return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
-  };
 
   const handleClientQueryChange = (value: string) => {
     setClientQuery(value);
@@ -166,10 +191,10 @@ const VisitaFormularioModal = ({
   };
 
   const handleSetCurrentTime = () => {
-    setValues((prev) => ({
-      ...prev,
-      fecha_hora: getCurrentLocalDateTime(),
-    }));
+    const now = getCurrentLocalDateTime();
+    const { date, time } = splitDatetime(now);
+    setSelectedDate(date);
+    setSelectedTime(time);
   };
 
   const handleSelectClient = (cliente: Cliente) => {
@@ -190,7 +215,12 @@ const VisitaFormularioModal = ({
       return;
     }
 
-    await onSubmit(finalValues);
+    setIsSubmitting(true);
+    try {
+      await onSubmit(finalValues);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -198,7 +228,12 @@ const VisitaFormularioModal = ({
       <div className="visita-modal" onClick={(event) => event.stopPropagation()}>
         <div className="visita-modal-header">
           <h2>{mode === "create" ? "Crear visita" : "Editar visita"}</h2>
-          <button type="button" className="visita-modal-close" onClick={onClose}>
+          <button 
+            type="button" 
+            className="visita-modal-close" 
+            onClick={onClose}
+            disabled={isSubmitting}
+          >
             ×
           </button>
         </div>
@@ -223,7 +258,7 @@ const VisitaFormularioModal = ({
             className="visita-search-input"
             placeholder={clientPlaceholder}
             autoComplete="off"
-            disabled={isEditMode || !!selectedClient}
+            disabled={isEditMode || !!selectedClient || isSubmitting}
           />
           {showClientSuggestions && (
             <ul className="visita-client-list">
@@ -247,16 +282,26 @@ const VisitaFormularioModal = ({
           <div className="visita-fecha-row">
             <input
               id="fecha"
-              type="datetime-local"
-              value={values.fecha_hora}
-              onChange={(event) => handleChange("fecha_hora", event.target.value)}
+              type="date"
+              value={selectedDate}
+              max={getCurrentLocalDateTime().slice(0, 10)}
+              onChange={(event) => setSelectedDate(event.target.value)}
+              disabled={isSubmitting}
+            />
+            <input
+              id="hora"
+              type="time"
+              value={selectedTime}
+              onChange={(event) => setSelectedTime(event.target.value)}
+              disabled={isSubmitting}
             />
             <button
               type="button"
               className="visita-current-time-button"
               onClick={handleSetCurrentTime}
+              disabled={isSubmitting}
             >
-              Hora actual
+              Ahora
             </button>
           </div>
 
@@ -265,6 +310,7 @@ const VisitaFormularioModal = ({
             id="estado"
             value={values.id_estado}
             onChange={(event) => handleChange("id_estado", event.target.value)}
+            disabled={isSubmitting}
           >
             <option value="">-- Seleccionar estado --</option>
             {estados.map((estado) => (
@@ -280,6 +326,7 @@ const VisitaFormularioModal = ({
             value={values.observaciones}
             onChange={(event) => handleChange("observaciones", event.target.value)}
             placeholder="Puedes añadir detalles de la visita, pero no es obligatorio"
+            disabled={isSubmitting}
           />
 
           {!canSubmit && (
@@ -288,8 +335,12 @@ const VisitaFormularioModal = ({
             </div>
           )}
 
-          <button type="submit" className="visita-modal-submit" disabled={!canSubmit}>
-            Guardar
+          <button 
+            type="submit" 
+            className="visita-modal-submit" 
+            disabled={!canSubmit || isSubmitting}
+          >
+            {isSubmitting ? "Guardando..." : "Guardar"}
           </button>
         </form>
       </div>

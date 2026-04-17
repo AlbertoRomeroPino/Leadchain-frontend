@@ -26,7 +26,7 @@ const ZonaList = ({ zonas, selectedZonaId, edificiosPorZona, onSelectZona }: Zon
             className={selectedZonaId === zona.id ? "selected" : ""}
           >
             <td>{zona.id}</td>
-            <td>{zona.nombre_zona}</td>
+            <td>{zona.nombre}</td>
             <td>{edificiosPorZona[zona.id] || 0}</td>
           </tr>
         ))}

@@ -23,6 +23,7 @@ const Visitas = () => {
   const [estados, setEstados] = useState<EstadoVisita[]>([]);
   const [selectedVisita, setSelectedVisita] = useState<Visita | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useInitialize(async () => {
     try {
@@ -72,6 +73,7 @@ const Visitas = () => {
     observaciones: string;
   }) => {
     try {
+      setIsSaving(true);
       if (selectedVisita) {
         const idUsuario =
           selectedVisita.id_usuario ??
@@ -95,6 +97,8 @@ const Visitas = () => {
     } catch (error) {
       showErrorAlert(error, "Guardar Visita");
       console.error(error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -188,6 +192,7 @@ const Visitas = () => {
               getBuildingLabel={getBuildingLabel}
               getCardStyle={getCardStyle}
               onEdit={openEditModal}
+              isLoading={isSaving}
             />
           )
         ) : null}

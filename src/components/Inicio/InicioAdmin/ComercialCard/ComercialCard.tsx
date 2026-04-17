@@ -5,6 +5,7 @@ import type { User } from "../../../../types/users/User";
 import type { Visita } from "../../../../types/visitas/Visita";
 import type { Cliente } from "../../../../types/clientes/Cliente";
 import type { Edificio } from "../../../../types/edificios/Edificio";
+import type { Zona } from "../../../../types/zonas/Zona";
 import ComercialCardIndividual from "./ComercialCardIndividual";
 
 export interface ComercialCardProps {
@@ -12,6 +13,7 @@ export interface ComercialCardProps {
   visitas: Visita[];
   clientes: Cliente[];
   edificios: Edificio[];
+  zonas: Zona[];
 }
 
 export interface ComercialStats {
@@ -23,7 +25,7 @@ export interface ComercialStats {
   totalVisitas: number;
 }
 
-const ComercialCard = ({ comerciales, visitas, clientes, edificios }: ComercialCardProps) => {
+const ComercialCard = ({ comerciales, visitas, clientes, edificios, zonas }: ComercialCardProps) => {
   const [stats, setStats] = useState<Map<number, ComercialStats>>(new Map());
 
   useInitialize(
@@ -36,25 +38,18 @@ const ComercialCard = ({ comerciales, visitas, clientes, edificios }: ComercialC
 
         const categoriasEstados: Record<string, { etiquetas: string[] }> = {
           exitoso: {
-            etiquetas: ["Vendido", "Presupuestado", "vendido", "presupuestado"],
+            etiquetas: ["Vendido"],
           },
           rechazado: {
-            etiquetas: ["Cancelado", "No interesado", "cancelado", "no interesado"],
+            etiquetas: ["Cancelada", "No Interesado"],
           },
           enProceso: {
             etiquetas: [
-              "En Proceso",
-              "En camino",
+              "En Camino",
               "Pendiente",
               "Volver luego",
               "Ausente",
               "Local Cerrado",
-              "en proceso",
-              "en camino",
-              "pendiente",
-              "volver luego",
-              "ausente",
-              "local cerrado",
             ],
           },
         };
@@ -81,31 +76,27 @@ const ComercialCard = ({ comerciales, visitas, clientes, edificios }: ComercialC
           const totalClientes = clientesDelComercial.length;
 
           const visitasDelComercial = visitas.filter(
-            (visita) =>
-              visita.id_usuario === comercial.id &&
-              idsClientesUnicos.has(visita.id_cliente),
+            (visita) => visita.id_usuario === comercial.id
           );
           const totalVisitas = visitasDelComercial.length;
 
-          let exitosos = 0;
-          let rechazados = 0;
-          let enProceso = 0;
+          const exitosos = visitasDelComercial.filter(
+            (visita) =>
+              visita.estado &&
+              categoriasEstados.exitoso.etiquetas.includes(visita.estado.etiqueta)
+          ).length;
 
-          visitasDelComercial.forEach((visita) => {
-            if (!visita.estado) {
-              return;
-            }
+          const rechazados = visitasDelComercial.filter(
+            (visita) =>
+              visita.estado &&
+              categoriasEstados.rechazado.etiquetas.includes(visita.estado.etiqueta)
+          ).length;
 
-            const etiqueta = visita.estado.etiqueta;
-
-            if (categoriasEstados.exitoso.etiquetas.includes(etiqueta)) {
-              exitosos++;
-            } else if (categoriasEstados.rechazado.etiquetas.includes(etiqueta)) {
-              rechazados++;
-            } else if (categoriasEstados.enProceso.etiquetas.includes(etiqueta)) {
-              enProceso++;
-            }
-          });
+          const enProceso = visitasDelComercial.filter(
+            (visita) =>
+              visita.estado &&
+              categoriasEstados.enProceso.etiquetas.includes(visita.estado.etiqueta)
+          ).length;
 
           statsMap.set(comercial.id, {
             comercialId: comercial.id,
@@ -122,7 +113,7 @@ const ComercialCard = ({ comerciales, visitas, clientes, edificios }: ComercialC
         console.error("Error al calcular estadísticas de comerciales:", error);
       }
     },
-    [comerciales, visitas, clientes, edificios],
+    [comerciales, visitas, clientes, edificios, zonas],
   );
 
   return (
@@ -131,13 +122,17 @@ const ComercialCard = ({ comerciales, visitas, clientes, edificios }: ComercialC
         <p className="comerciales-empty">No tienes comerciales asignados.</p>
       ) : (
         <div className="comerciales-grid">
-          {comerciales.map((comercial) => (
-            <ComercialCardIndividual
-              key={comercial.id}
-              comercial={comercial}
-              stats={stats.get(comercial.id) ?? null}
-            />
-          ))}
+          {comerciales.map((comercial) => {
+            const zonaDelComercial = zonas.find(z => Number(z.id) === Number(comercial.id_zona));
+            return (
+              <ComercialCardIndividual
+                key={comercial.id}
+                comercial={comercial}
+                stats={stats.get(comercial.id) ?? null}
+                zona={zonaDelComercial ?? null}
+              />
+            );
+          })}
         </div>
       )}
     </div>

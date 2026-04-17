@@ -22,7 +22,7 @@ const InfoClienteEdificioCard = ({
           <strong>Tipo:</strong> {edificio?.tipo ?? "-"}
         </p>
         <p className="info-cliente-line">
-          <strong>Zona:</strong> {zona?.nombre_zona ?? "-"}
+          <strong>Zona:</strong> {zona?.nombre ?? "-"}
         </p>
         <p className="info-cliente-line">
           <strong>Planta:</strong> {edificio?.planta ?? "-"}

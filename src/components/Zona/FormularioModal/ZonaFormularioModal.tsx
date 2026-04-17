@@ -20,7 +20,7 @@ interface ZonaFormularioModalProps {
   loading: boolean;
   mode?: "create" | "edit";
   initialValues?: {
-    nombre_zona: string;
+    nombre: string;
     area: GeoPoint[];
   };
   onClose: () => void;
@@ -46,16 +46,15 @@ const ZonaFormularioModal = ({
   onClose,
   onSubmit,
 }: ZonaFormularioModalProps) => {
-  const [nombreZona, setNombreZona] = useState(initialValues?.nombre_zona ?? "");
+  const [nombreZona, setNombreZona] = useState(initialValues?.nombre ?? "");
   const [puntos, setPuntos] = useState<GeoPoint[]>(initialValues?.area ?? []);
   const [mapCenter, setMapCenter] = useState<[number, number]>(
     CORDOBA_CENTER as [number, number]
   );
-  const [testMode, setTestMode] = useState(false);
 
   useEffect(() => {
-    if (initialValues?.nombre_zona) {
-      setNombreZona(initialValues.nombre_zona);
+    if (initialValues?.nombre) {
+      setNombreZona(initialValues.nombre);
     }
     if (initialValues?.area && initialValues.area.length > 0) {
       setPuntos(initialValues.area);
@@ -66,7 +65,7 @@ const ZonaFormularioModal = ({
   const handleMapClick = (lat: number, lng: number) => {
     // Validar que el punto está dentro de Córdoba
     if (!isPuntoDentroCordoba(lat, lng)) {
-      alert("❌ Solo puedes seleccionar puntos dentro de Córdoba");
+      alert("Solo puedes seleccionar puntos dentro de Córdoba");
       return;
     }
     setPuntos([...puntos, { lat, lng }]);
@@ -92,18 +91,11 @@ const ZonaFormularioModal = ({
       alert("Debes seleccionar mínimo 3 puntos para crear un polígono");
       return;
     }
-// Si está en modo test, solo muestra el resultado sin enviar
-    if (testMode) {
-      alert(
-        `MODO TEST - No se guardará\n\nZona: ${nombreZona}\nPuntos: ${puntos.length}\nÁrea válida: ✓`
-      );
-      return;
-    }
 
     
     try {
       await onSubmit({
-        nombre_zona: nombreZona.trim(),
+        nombre: nombreZona.trim(),
         area: puntos,
       });
 
@@ -304,22 +296,6 @@ const ZonaFormularioModal = ({
 
           {/* Botones de acción */}
           <div className="zona-formulario-acciones">
-            {testMode && (
-              <div className="zona-test-badge">
-                <Eye size={14} />
-                MODO TEST - No se guardará
-              </div>
-            )}
-            <button
-              type="button"
-              className={`zona-btn-test ${testMode ? "active" : ""}`}
-              onClick={() => setTestMode(!testMode)}
-              disabled={loading}
-              title={testMode ? "Desactivar modo test" : "Activar modo test"}
-            >
-              {testMode ? <EyeOff size={14} /> : <Eye size={14} />}
-              {testMode ? "Desactivar Test" : "Test"}
-            </button>
             <button
               type="button"
               className="zona-btn-cancelar"

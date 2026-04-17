@@ -4,9 +4,10 @@ import type { ClienteSinVisita } from "./ClientesSinVisitar";
 interface ClienteSinVisitaCardProps {
   item: ClienteSinVisita;
   onCrearVisita: (clienteId: number) => void;
+  isLoading?: boolean;
 }
 
-const ClienteSinVisitaCard = ({ item, onCrearVisita }: ClienteSinVisitaCardProps) => {
+const ClienteSinVisitaCard = ({ item, onCrearVisita, isLoading = false }: ClienteSinVisitaCardProps) => {
   return (
     <div className="cliente-card">
       <div className="cliente-card-header">
@@ -43,8 +44,9 @@ const ClienteSinVisitaCard = ({ item, onCrearVisita }: ClienteSinVisitaCardProps
         <button
           className="btn-crear-visita"
           onClick={() => onCrearVisita(item.cliente.id)}
+          disabled={isLoading}
         >
-          + Crear Visita
+          {isLoading ? "Guardando..." : "+ Crear Visita"}
         </button>
       </div>
     </div>

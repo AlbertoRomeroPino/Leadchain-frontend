@@ -130,8 +130,52 @@ const Edificios = () => {
 
       // Adjuntar cliente al edificio usando la relación many-to-many
       await EdificiosService.attachCliente(edificioId, idCliente, planta, puerta);
-      
-      // Hacer refresh del edificio desde el servidor para obtener los datos actualizados
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Error al adjuntar cliente";
+      throw new Error(message);
+    } finally {
+      setCreatingEdificio(false);
+    }
+  };
+
+  // Nuevo método para adjuntar múltiples clientes de una sola vez (más eficiente)
+  const handleAppendMultipleClientes = async (edificioId: number, clientes: any[]) => {
+    try {
+      setCreatingEdificio(true);
+
+      // Llamar al endpoint batch que crea y adjunta todo de una sola vez
+      const edificioActualizado = await EdificiosService.attachMultipleClientes(
+        edificioId,
+        clientes
+      );
+
+      // Actualizar el estado local con el edificio actualizado
+      setEdificios((prev) =>
+        prev.map((item) =>
+          item.id === edificioId ? edificioActualizado : item
+        )
+      );
+
+      // Si el edificio está seleccionado, actualizar la vista de detalles
+      if (edificioSeleccionado?.id === edificioId) {
+        setEdificioSeleccionado(edificioActualizado);
+      }
+
+      setShowCreateForm(false);
+      alert(`${clientes.length} cliente${clientes.length > 1 ? "s" : ""} agregado${clientes.length > 1 ? "s" : ""} correctamente`);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Error al adjuntar clientes";
+      throw new Error(message);
+    } finally {
+      setCreatingEdificio(false);
+    }
+  };
+
+  // Función auxiliar para hacer refresh después de adjuntar todos los clientes
+  const handleRefreshEdificio = async (edificioId: number) => {
+    try {
       const edificioActualizado = await EdificiosService.getEdificioDetalle(edificioId);
       
       setEdificios((prev) =>
@@ -139,12 +183,13 @@ const Edificios = () => {
           item.id === edificioId ? edificioActualizado : item
         )
       );
+
+      if (edificioSeleccionado?.id === edificioId) {
+        setEdificioSeleccionado(edificioActualizado);
+      }
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Error al adjuntar cliente";
-      throw new Error(message);
+      console.error("Error al refrescar edificio:", err);
     } finally {
-      setCreatingEdificio(false);
       setShowCreateForm(false);
     }
   };
@@ -190,7 +235,7 @@ const Edificios = () => {
                 edificios={edificios}
                 onClose={() => setShowCreateForm(false)}
                 onCreateEdificio={handleCreateEdificio}
-                onAppendToExisting={handleAppendToExisting}
+                onAppendMultipleClientes={handleAppendMultipleClientes}
                 /* Dentro del Modal usa .form-edificio y .form-edificio-input */
               />
             )}

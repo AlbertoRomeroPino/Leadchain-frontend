@@ -9,6 +9,7 @@ interface ComercialesFormModalProps {
   comercialAEditar: User | null;
   setComercialAEditar: (comercial: User | null) => void;
   zonas: Zona[];
+  comerciales: User[];
   handleCreateComercialSuccess: (comercial: User) => void;
 }
 
@@ -18,6 +19,7 @@ const ComercialesFormModal = ({
   comercialAEditar,
   setComercialAEditar,
   zonas,
+  comerciales,
   handleCreateComercialSuccess,
 }: ComercialesFormModalProps) => {
   return (
@@ -46,6 +48,7 @@ const ComercialesFormModal = ({
             </button>
             <ComercialesForm
               zonas={zonas}
+              comerciales={comerciales}
               comercialAEditar={comercialAEditar}
               onSuccess={handleCreateComercialSuccess}
             />

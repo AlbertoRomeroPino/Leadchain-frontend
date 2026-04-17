@@ -8,11 +8,9 @@ export type Edificio = {
     ubicacion: GeoPoint | null;
     id_zona: number;
     tipo: string;
-    id_cliente: number | null;
     // Cuando se obtiene a través de cliente, incluir datos pivot
     planta?: string | null;
     puerta?: string | null;
-    cliente?: Cliente | null;
     clientes?:
       | Array<Cliente & { planta?: string | null; puerta?: string | null }>
       | { count: number };
@@ -26,5 +24,4 @@ export type EdificioInput = {
     ubicacion: GeoPoint;
     id_zona: number;
     tipo: string;
-    id_cliente?: number | null;
 }

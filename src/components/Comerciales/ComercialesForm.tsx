@@ -12,11 +12,21 @@ import "../../styles/components/Comerciales/ComercialesForm.css";
 
 interface ComercialesFormProps {
   zonas: Zona[];
+  comerciales: User[];
   comercialAEditar?: User | null;
   onSuccess?: (comercial: User) => void;
 }
 
-const ComercialesForm = ({ zonas, comercialAEditar = null, onSuccess }: ComercialesFormProps) => {
+const ComercialesForm = ({ zonas, comerciales, comercialAEditar = null, onSuccess }: ComercialesFormProps) => {
+  // Obtener IDs de zonas ya asignadas a otros comerciales
+  const zonasAsignadas = new Set(
+    comerciales
+      .filter((c) => c.id !== comercialAEditar?.id) // Excluir el comercial que se está editando
+      .map((c) => c.id_zona)
+  );
+
+  // Filtrar zonas disponibles (excluir las ya asignadas)
+  const zonasDisponibles = zonas.filter((zona) => !zonasAsignadas.has(zona.id));
   const [nombre, setNombre] = useState(comercialAEditar?.nombre || "");
   const [apellidos, setApellidos] = useState(comercialAEditar?.apellidos || "");
   const [email, setEmail] = useState(comercialAEditar?.email || "");
@@ -172,9 +182,9 @@ const ComercialesForm = ({ zonas, comercialAEditar = null, onSuccess }: Comercia
             disabled={isLoading}
           >
             <option value="">Selecciona una zona</option>
-            {zonas.map((zona) => (
+            {zonasDisponibles.map((zona) => (
               <option key={zona.id} value={zona.id.toString()}>
-                {zona.nombre_zona}
+                {zona.nombre}
               </option>
             ))}
           </select>

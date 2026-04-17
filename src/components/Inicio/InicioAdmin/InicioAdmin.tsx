@@ -9,12 +9,14 @@ import type { User } from "../../../types/users/User";
 import type { Visita } from "../../../types/visitas/Visita";
 import type { Cliente } from "../../../types/clientes/Cliente";
 import type { Edificio } from "../../../types/edificios/Edificio";
+import type { Zona } from "../../../types/zonas/Zona";
 
 interface AdminDashboardState {
   comerciales: User[];
   visitas: Visita[];
   clientes: Cliente[];
   edificios: Edificio[];
+  zonas: Zona[];
 }
 
 const InicioAdmin = () => {
@@ -24,6 +26,7 @@ const InicioAdmin = () => {
     visitas: [],
     clientes: [],
     edificios: [],
+    zonas: [],
   });
 
   useInitialize(async () => {
@@ -47,6 +50,7 @@ const InicioAdmin = () => {
         visitas: inicioData.visitas,
         clientes: inicioData.clientes,
         edificios: inicioData.edificios,
+        zonas: inicioData.zonas,
       });
       showSuccessAlert("Información cargada");
     } catch (error) {
@@ -67,6 +71,7 @@ const InicioAdmin = () => {
         visitas={data.visitas}
         clientes={data.clientes}
         edificios={data.edificios}
+        zonas={data.zonas}
       />
     </div>
   );

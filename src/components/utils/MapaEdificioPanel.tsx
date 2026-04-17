@@ -132,7 +132,7 @@ const MapaEdificioPanel = ({
               {userRole === "admin" && zona && (
                 <div className="mapa-edificio-info-row">
                   <span className="mapa-edificio-label">Zona:</span>
-                  <span className="mapa-edificio-value">{zona.nombre_zona}</span>
+                  <span className="mapa-edificio-value">{zona.nombre}</span>
                 </div>
               )}
             </div>

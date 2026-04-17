@@ -13,7 +13,7 @@ interface EdificioModalEdificioProps {
   setIdZona: (idZona: number) => void;
   idCliente: number | null;
   setIdCliente: (idCliente: number | null) => void;
-  zonas: { id: number; nombre_zona: string }[];
+  zonas: { id: number; nombre: string }[];
   clientePlanta: string;
   setClientePlanta: (planta: string) => void;
   clientePuerta: string;
@@ -75,48 +75,10 @@ const EdificioModalEdificio = ({
         onChange={(event) => setTipo(event.target.value)}
         required
       />
-      <select
-        className="form-edificio-input"
-        value={idZona}
-        onChange={(event) => setIdZona(Number(event.target.value))}
-      >
-        {zonas.map((zona) => (
-          <option key={zona.id} value={zona.id}>
-            {zona.nombre_zona}
-          </option>
-        ))}
-      </select>
       
       {/* Solo mostrar campos de Piso, Puerta y Cliente si ESTAMOS CREANDO (no editando) */}
       {!isEditing && (
         <>
-          {/* Contenedor para Planta y Puerta con botón de Casa */}
-          <div className="form-edificio-fields-group">
-            <div className="form-edificio-fields-wrapper">
-              <input
-                className="form-edificio-input"
-                type="text"
-                placeholder="Piso/Planta del cliente (opcional)"
-                value={clientePlanta}
-                onChange={(e) => setClientePlanta(e.target.value)}
-              />
-              <input
-                className="form-edificio-input"
-                type="text"
-                placeholder="Puerta del cliente (opcional)"
-                value={clientePuerta}
-                onChange={(e) => setClientePuerta(e.target.value)}
-              />
-            </div>
-            <button
-              type="button"
-              className="form-edificio-house-btn"
-              onClick={handleFillHouseFields}
-              title="Rellenar para una casa (Baja, S/N)"
-            >
-              🏠 Casa
-            </button>
-          </div>
           <select
             className="form-edificio-input"
             value={idCliente ?? ""}
@@ -131,8 +93,50 @@ const EdificioModalEdificio = ({
               </option>
             ))}
           </select>
+
+          {/* Solo mostrar Planta y Puerta si hay cliente seleccionado */}
+          {idCliente && (
+            <div className="form-edificio-fields-group">
+              <div className="form-edificio-fields-wrapper">
+                <input
+                  className="form-edificio-input"
+                  type="text"
+                  placeholder="Piso/Planta del cliente (opcional)"
+                  value={clientePlanta}
+                  onChange={(e) => setClientePlanta(e.target.value)}
+                />
+                <input
+                  className="form-edificio-input"
+                  type="text"
+                  placeholder="Puerta del cliente (opcional)"
+                  value={clientePuerta}
+                  onChange={(e) => setClientePuerta(e.target.value)}
+                />
+              </div>
+              <button
+                type="button"
+                className="form-edificio-house-btn"
+                onClick={handleFillHouseFields}
+                title="Rellenar para una casa (Baja, S/N)"
+              >
+                🏠 Casa
+              </button>
+            </div>
+          )}
         </>
       )}
+
+      <select
+        className="form-edificio-input"
+        value={idZona}
+        onChange={(event) => setIdZona(Number(event.target.value))}
+      >
+        {zonas.map((zona) => (
+          <option key={zona.id} value={zona.id}>
+            {zona.nombre}
+          </option>
+        ))}
+      </select>
     </>
   );
 };

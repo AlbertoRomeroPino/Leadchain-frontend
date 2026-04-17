@@ -29,3 +29,88 @@
   border-color: #dc2626;
   color: #ffffff;
 }
+
+/* Bloques de clientes */
+.clientes-bloques {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.cliente-bloque {
+  background-color: #261414;
+  border: 1px solid #3f1b1b;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cliente-bloque-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #1a0f0f;
+  border-bottom: 1px solid #3f1b1b;
+}
+
+.cliente-bloque-toggle {
+  flex: 1;
+  text-align: left;
+  background: none;
+  border: none;
+  color: #ffe4e6;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.3s;
+}
+
+.cliente-bloque-toggle:hover {
+  color: #ffffff;
+}
+
+.cliente-bloque-delete {
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.3s;
+  margin-left: 8px;
+}
+
+.cliente-bloque-delete:hover {
+  color: #ef4444;
+}
+
+.cliente-bloque-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+/* Botón para agregar cliente */
+.form-edificio-add-cliente {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #1a3a1a;
+  border: 2px solid #10b981;
+  border-radius: 6px;
+  color: #86efac;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 8px;
+}
+
+.form-edificio-add-cliente:hover {
+  background-color: #0f2818;
+  border-color: #6ee7b7;
+  color: #a7f3d0;
+}
+

@@ -19,6 +19,7 @@ export interface InicioAdminData {
   clientes: Cliente[];
   edificios: Edificio[];
   estados_visita: Array<{ id: number; etiqueta: string; color_hex: string }>;
+  zonas: Zona[];
 }
 
 export interface InicioMapaData {

@@ -46,7 +46,7 @@ const Zona = () => {
     }
   });
 
-  const handleCreateZona = async (zona: { nombre_zona: string; area: GeoPoint[] }) => {
+  const handleCreateZona = async (zona: { nombre: string; area: GeoPoint[] }) => {
     try {
       setCreatingZona(true);
       await ZonaService.createZona(zona);
@@ -61,7 +61,7 @@ const Zona = () => {
     }
   };
 
-  const handleUpdateZona = async (zona: { nombre_zona: string; area: GeoPoint[] }) => {
+  const handleUpdateZona = async (zona: { nombre: string; area: GeoPoint[] }) => {
     if (!selectedZona) return;
     try {
       setCreatingZona(true);
@@ -79,7 +79,7 @@ const Zona = () => {
     }
   };
 
-  const handleFormSubmit = async (zona: { nombre_zona: string; area: GeoPoint[] }) => {
+  const handleFormSubmit = async (zona: { nombre: string; area: GeoPoint[] }) => {
     if (editMode && selectedZona) {
       await handleUpdateZona(zona);
     } else {
@@ -106,7 +106,7 @@ const Zona = () => {
     if (!selectedZona) return;
     if (
       window.confirm(
-        `¿Estás seguro de que deseas eliminar la zona "${selectedZona.nombre_zona}"? Esta acción eliminará todos los edificios y datos asociados.`
+        `¿Estás seguro de que deseas eliminar la zona "${selectedZona.nombre}"? Esta acción eliminará todos los edificios y datos asociados.`
       )
     ) {
       try {
@@ -187,7 +187,7 @@ const Zona = () => {
           initialValues={
             editMode && selectedZona
               ? {
-                  nombre_zona: selectedZona.nombre_zona,
+                  nombre: selectedZona.nombre,
                   area: selectedZona.area ?? [],
                 }
               : undefined

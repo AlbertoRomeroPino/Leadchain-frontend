@@ -4,7 +4,7 @@ import '../../../styles/components/Edificios/Info/EdificioInfoDetailsCard.css';
 
 interface EdificioInfoDetailsCardProps {
   edificio: Edificio
-  zona?: { nombre_zona?: string } | null
+  zona?: { nombre?: string } | null
 }
 
 const EdificioInfoDetailsCard = ({
@@ -21,7 +21,7 @@ const EdificioInfoDetailsCard = ({
         <strong className="edificio-details-label">Tipo:</strong> {edificio.tipo}
       </p>
       <p className="edificio-details-row">
-        <strong className="edificio-details-label">Zona:</strong> {zona?.nombre_zona ?? edificio.id_zona}
+        <strong className="edificio-details-label">Zona:</strong> {zona?.nombre ?? edificio.id_zona}
       </p>
       <p className="edificio-details-row">
         <strong className="edificio-details-label">Lat:</strong> {edificio.ubicacion?.lat ?? '-'}

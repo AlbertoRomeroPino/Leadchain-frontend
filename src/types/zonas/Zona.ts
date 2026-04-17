@@ -3,14 +3,14 @@ import type { Cliente } from "../clientes/Cliente";
 
 // Definición de zona al crear o actualizar
 export type ZonaInput = {
-    nombre_zona: string;
+    nombre: string;
     area: GeoPoint[];
 };
 
 // Definición de zona al obtener datos
 export type Zona = {
     id: number;
-    nombre_zona: string;
+    nombre: string;
     area: GeoPoint[] | null;
     created_at: string;
     updated_at: string;

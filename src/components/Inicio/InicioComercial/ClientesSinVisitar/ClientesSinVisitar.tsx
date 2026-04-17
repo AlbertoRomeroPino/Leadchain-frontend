@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../../../../styles/components/Inicio/InicioComercial/ClientesSinVisitar/ClientesSinVisitar.css";
 import type { Cliente } from "../../../../types/clientes/Cliente";
 import type { Visita } from "../../../../types/visitas/Visita";
@@ -37,6 +37,7 @@ const ClientesSinVisitar = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [estados, setEstados] = useState<EstadoVisita[]>([]);
   const [clientes, setClientes] = useState<ClienteSinVisita[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
 
   useInitialize(
     async () => {
@@ -76,12 +77,13 @@ const ClientesSinVisitar = ({
   };
 
   const handleCloseModal = () => {
-    setClienteSeleccionado(null);
     setIsModalOpen(false);
+    // NO resetear clienteSeleccionado aquí, esperar a que isSaving se vuelva false
   };
 
   const handleSubmitVisita = async (values: VisitaFormValues) => {
     try {
+      setIsSaving(true);
       showLoadingAlert("Guardando visita...");
       await VisitasService.createVisita({
         ...values,
@@ -90,11 +92,36 @@ const ClientesSinVisitar = ({
       showSuccessAlert("Visita creada");
       handleCloseModal();
       onVisitaCreada();
+      // No establecer isSaving a false aquí, esperar a que el cliente se mueva
     } catch (error) {
       showErrorAlert(error, "Crear Visita");
       console.error("Error al crear visita:", error);
+      setIsSaving(false);
     }
   };
+
+  // Esperar a que el cliente sea movido a Visitados antes de desbloquear botones
+  useEffect(() => {
+    if (!isSaving || !clienteSeleccionado) return;
+
+    // Timeout de seguridad: desbloquear después de 5 segundos si algo salió mal
+    const timeoutId = setTimeout(() => {
+      setIsSaving(false);
+      setClienteSeleccionado(null);
+    }, 5000);
+
+    // Verificar si el cliente todavía está en la lista de "sin visita"
+    const clienteAúnEnLista = clientesSinVisita.some(c => c.cliente.id === clienteSeleccionado);
+    
+    // Si el cliente ya no está en la lista, se ha movido a "Visitados"
+    if (!clienteAúnEnLista) {
+      clearTimeout(timeoutId);
+      setIsSaving(false);
+      setClienteSeleccionado(null);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [clientesSinVisita, isSaving, clienteSeleccionado]);
 
   const clienteSeleccionadoCompleto = clientes.find(
     (c) => c.cliente.id === clienteSeleccionado,
@@ -122,6 +149,7 @@ const ClientesSinVisitar = ({
                 key={item.cliente.id}
                 item={item}
                 onCrearVisita={handleCrearVisita}
+                isLoading={isSaving}
               />
             ))}
           </div>

@@ -151,6 +151,7 @@ const Comerciales = () => {
           comercialAEditar={comercialAEditar}
           setComercialAEditar={setComercialAEditar}
           zonas={zonas}
+          comerciales={comerciales}
           handleCreateComercialSuccess={handleCreateComercialSuccess}
         />
       </main>

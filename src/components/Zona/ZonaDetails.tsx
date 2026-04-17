@@ -27,7 +27,7 @@ const ZonaDetails = ({
       </div>
       <div className="zona-detail-row">
         <span>Nombre:</span>
-        <strong>{selectedZona.nombre_zona}</strong>
+        <strong>{selectedZona.nombre}</strong>
       </div>
       <div className="zona-detail-row">
         <span>Área puntos:</span>

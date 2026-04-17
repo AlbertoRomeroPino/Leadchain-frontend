@@ -83,4 +83,33 @@ export const EdificiosService = {
         }
     },
 
+    async attachMultipleClientes(edificioId: number, clientes: any[]) {
+        try {
+            const payload = {
+                clientes: clientes.map((c) => ({
+                    mode: c.mode,
+                    ...(c.mode === "crear" && {
+                        nombre: c.nombre,
+                        apellidos: c.apellidos,
+                        email: c.email,
+                        telefono: c.telefono,
+                    }),
+                    ...(c.mode === "seleccionar" && {
+                        clienteId: c.clienteSinEdificioId,
+                    }),
+                    planta: c.planta,
+                    puerta: c.puerta,
+                })),
+            };
+
+            const response = await authHttp.post(
+                `/api/edificios/${edificioId}/clientes/attach-bulk`,
+                payload
+            );
+            return response.data;
+        } catch (error) {
+            throw new Error(ExceptionService.getErrorMessage(error, "Error al adjuntar múltiples clientes"));
+        }
+    },
+
 }
