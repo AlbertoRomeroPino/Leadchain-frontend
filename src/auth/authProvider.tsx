@@ -5,7 +5,8 @@ import { setAuthCallbacks, setAuthToken } from "../services/https";
 import { AuthContext, type AuthContextValue } from "./AuthContext";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const initial: AuthSession | null = authStorage.get();
+  // Verificar si la sesión ha expirado
+  const initial: AuthSession | null = authStorage.isSessionExpired() ? null : authStorage.get();
   
   // Extraer usuario correctamente desde localStorage
   let initialUser: User | null = null;
@@ -48,6 +49,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       authStorage.set({ token, user });
     }
   }, [user, token]);
+
+  // Verificar periódicamente si la sesión ha expirado
+  useEffect(() => {
+    const checkSessionExpiry = () => {
+      if (authStorage.isSessionExpired()) {
+        logout();
+      }
+    };
+
+    // Verificar cada minuto si la sesión expiró
+    const interval = setInterval(checkSessionExpiry, 60000);
+
+    return () => clearInterval(interval);
+  }, [logout]);
 
   useEffect(() => {
     setAuthToken(token);
