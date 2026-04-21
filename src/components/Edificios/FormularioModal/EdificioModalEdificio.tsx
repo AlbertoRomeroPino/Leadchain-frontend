@@ -4,6 +4,24 @@ import { clientesService } from "../../../services/ClientesService";
 
 import '../../../styles/components/Edificios/FormularioModal/EdificioModalEdificio.css';
 
+const MAX_CLIENTE_NOMBRE_LENGTH = 40;
+
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 3).trimEnd()}...`;
+};
+
+const formatClienteNombre = (cliente: Cliente) => {
+  const apellidos = cliente.apellidos?.trim() ?? "";
+  const lowerApellidos = apellidos.toLowerCase();
+  const nombreCompleto =
+    !apellidos || lowerApellidos === "sin apellidos" || lowerApellidos === "sin apellido"
+      ? cliente.nombre
+      : `${cliente.nombre} ${apellidos}`;
+
+  return truncateText(nombreCompleto, MAX_CLIENTE_NOMBRE_LENGTH);
+};
+
 interface EdificioModalEdificioProps {
   direccionCompleta: string;
   setDireccionCompleta: (direccion: string) => void;
@@ -64,7 +82,8 @@ const EdificioModalEdificio = ({
         type="text"
         placeholder="Dirección completa"
         value={direccionCompleta}
-        onChange={(event) => setDireccionCompleta(event.target.value)}
+        onChange={(event) => setDireccionCompleta(event.target.value.slice(0, 40))}
+        maxLength={40}
         required
       />
       <input
@@ -72,7 +91,8 @@ const EdificioModalEdificio = ({
         type="text"
         placeholder="Tipo"
         value={tipo}
-        onChange={(event) => setTipo(event.target.value)}
+        onChange={(event) => setTipo(event.target.value.slice(0, 25))}
+        maxLength={25}
         required
       />
       
@@ -89,7 +109,7 @@ const EdificioModalEdificio = ({
             <option value="">Seleccionar cliente (opcional)</option>
             {clientes.map((cliente) => (
               <option key={cliente.id} value={cliente.id}>
-                {cliente.nombre} {cliente.apellidos}
+                {formatClienteNombre(cliente)}
               </option>
             ))}
           </select>
@@ -103,14 +123,16 @@ const EdificioModalEdificio = ({
                   type="text"
                   placeholder="Piso/Planta del cliente (opcional)"
                   value={clientePlanta}
-                  onChange={(e) => setClientePlanta(e.target.value)}
+                  onChange={(e) => setClientePlanta(e.target.value.slice(0, 20))}
+                  maxLength={20}
                 />
                 <input
                   className="form-edificio-input"
                   type="text"
                   placeholder="Puerta del cliente (opcional)"
                   value={clientePuerta}
-                  onChange={(e) => setClientePuerta(e.target.value)}
+                  onChange={(e) => setClientePuerta(e.target.value.slice(0, 20))}
+                  maxLength={20}
                 />
               </div>
               <button

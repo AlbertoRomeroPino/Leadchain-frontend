@@ -5,6 +5,21 @@ import type { Edificio } from "../../types/edificios/Edificio";
 import type { Cliente } from "../../types/clientes/Cliente";
 import { useMemo } from "react";
 import L from "leaflet";
+
+const MAX_CLIENTE_NOMBRE_LENGTH = 40;
+
+const getNombreCompleto = (cliente: Cliente) => {
+  const apellidos = cliente.apellidos?.trim() ?? "";
+  const lowerApellidos = apellidos.toLowerCase();
+  const nombreCompleto =
+    !apellidos || lowerApellidos === "sin apellidos" || lowerApellidos === "sin apellido"
+      ? cliente.nombre
+      : `${cliente.nombre} ${apellidos}`;
+
+  if (nombreCompleto.length <= MAX_CLIENTE_NOMBRE_LENGTH) return nombreCompleto;
+
+  return `${nombreCompleto.slice(0, MAX_CLIENTE_NOMBRE_LENGTH - 3).trimEnd()}...`;
+};
 import {
   CORDOBA_BOUNDS,
   CORDOBA_CENTER,
@@ -159,7 +174,7 @@ const ZonaMap = ({ selectedZona }: ZonaMapProps) => {
                       >
                         <div>
                           <p className="popup-client-name">
-                            {item.cliente.nombre} {item.cliente.apellidos}
+                            {getNombreCompleto(item.cliente)}
                           </p>
                           <p className="popup-client-details">
                             Piso: {item.cliente.planta ?? "N/A"} • Puerta: {item.cliente.puerta ?? "N/A"}

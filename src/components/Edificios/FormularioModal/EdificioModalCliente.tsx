@@ -27,6 +27,15 @@ interface EdificioModalClienteProps {
 
 const generarId = () => Math.random().toString(36).substr(2, 9);
 
+const formatClienteNombre = (cliente: Cliente) => {
+  const apellidos = cliente.apellidos?.trim() ?? "";
+  const lowerApellidos = apellidos.toLowerCase();
+  if (!apellidos || lowerApellidos === "sin apellidos" || lowerApellidos === "sin apellido") {
+    return cliente.nombre;
+  }
+  return `${cliente.nombre} ${apellidos}`;
+};
+
 const EdificioModalCliente = ({
   existingEdificioId,
   setExistingEdificioId,
@@ -173,7 +182,11 @@ const EdificioModalCliente = ({
                         type="text"
                         placeholder="Apellidos cliente (opcional)"
                         value={cliente.apellidos}
-                        onChange={(e) => actualizarCliente(cliente.id, { apellidos: e.target.value })}
+                        onChange={(e) =>
+                          actualizarCliente(cliente.id, {
+                            apellidos: e.target.value.slice(0, 100),
+                          })
+                        }
                         maxLength={100}
                       />
                       <input
@@ -181,14 +194,20 @@ const EdificioModalCliente = ({
                         type="email"
                         placeholder="Correo electrónico (opcional)"
                         value={cliente.email}
-                        onChange={(e) => actualizarCliente(cliente.id, { email: e.target.value })}
+                        onChange={(e) => actualizarCliente(cliente.id, { email: e.target.value.slice(0, 100) })}
+                        maxLength={100}
                       />
                       <input
                         className="form-edificio-input"
                         type="tel"
                         placeholder="Teléfono (opcional)"
                         value={cliente.telefono}
-                        onChange={(e) => actualizarCliente(cliente.id, { telefono: e.target.value })}
+                        onChange={(e) =>
+                          actualizarCliente(cliente.id, {
+                            telefono: e.target.value.replace(/\D/g, "").slice(0, 15),
+                          })
+                        }
+                        maxLength={15}
                       />
                     </>
                   ) : (
@@ -205,7 +224,7 @@ const EdificioModalCliente = ({
                       <option value="">Selecciona un cliente</option>
                       {getClientesDisponiblesForBloque(cliente.id).map((c) => (
                         <option key={c.id} value={c.id}>
-                          {c.nombre} {c.apellidos} - {c.email || c.telefono || "Sin contacto"}
+                          {formatClienteNombre(c)} - {c.email || c.telefono || "Sin contacto"}
                         </option>
                       ))}
                     </select>
