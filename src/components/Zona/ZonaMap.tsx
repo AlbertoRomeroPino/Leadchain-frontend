@@ -1,9 +1,9 @@
-import { MapContainer, Marker, Popup, Polygon, Rectangle, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, Polygon, Rectangle, TileLayer, useMap } from "react-leaflet";
 import "../../styles/components/Zona/ZonaMap.css";
 import type { Zona } from "../../types/zonas/Zona";
 import type { Edificio } from "../../types/edificios/Edificio";
 import type { Cliente } from "../../types/clientes/Cliente";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import L from "leaflet";
 
 const MAX_CLIENTE_NOMBRE_LENGTH = 40;
@@ -53,6 +53,25 @@ const convertirAreaAPoligono = (area: Zona["area"] = []) =>
   (area ?? [])
     .map((punto) => [punto.lat, punto.lng] as [number, number])
     .filter((point) => point.length === 2);
+
+const MapResizeHandler = () => {
+  const map = useMap();
+
+  useEffect(() => {
+    const resizeMap = () => {
+      map.invalidateSize();
+    };
+
+    resizeMap();
+    window.addEventListener("resize", resizeMap);
+
+    return () => {
+      window.removeEventListener("resize", resizeMap);
+    };
+  }, [map]);
+
+  return null;
+};
 
 const ZonaMap = ({ selectedZona }: ZonaMapProps) => {
   const polygonCoordinates = useMemo(
@@ -106,6 +125,7 @@ const ZonaMap = ({ selectedZona }: ZonaMapProps) => {
         {...CORDOBA_MAP_CONFIG}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <MapResizeHandler />
 
         <Polygon
           positions={[CORDOBA_OUTER_RING, CORDOBA_HOLE]}
