@@ -42,9 +42,12 @@ const ComercialesForm = ({ zonas, comerciales, comercialAEditar = null, onSucces
 
   const validateForm = () => {
     const errors: string[] = [];
+    const nombreTrim = nombre.trim();
+    const apellidosTrim = apellidos.trim();
 
-    if (!nombre.trim()) errors.push("Nombre es requerido");
-    if (!apellidos.trim()) errors.push("Apellidos son requeridos");
+    if (!nombreTrim) errors.push("Nombre es requerido");
+    if (nombreTrim.length > 50) errors.push("Nombre no puede tener más de 50 caracteres");
+    if (apellidosTrim.length > 100) errors.push("Apellidos no puede tener más de 100 caracteres");
     if (!email.trim()) errors.push("Email es requerido");
     if (!zonaSeleccionada) errors.push("Zona debe estar seleccionada");
 
@@ -139,6 +142,7 @@ const ComercialesForm = ({ zonas, comerciales, comercialAEditar = null, onSucces
             name="nombre"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
+            maxLength={50}
             disabled={isLoading}
           />
         </label>
@@ -149,6 +153,7 @@ const ComercialesForm = ({ zonas, comerciales, comercialAEditar = null, onSucces
             name="apellidos"
             value={apellidos}
             onChange={(e) => setApellidos(e.target.value)}
+            maxLength={100}
             disabled={isLoading}
           />
         </label>

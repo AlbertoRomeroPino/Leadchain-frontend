@@ -41,6 +41,8 @@ const combineDatetime = (date: string, time: string) => {
   return `${date}T${time}`;
 };
 
+const MAX_OBSERVACIONES_LENGTH = 80;
+
 const getCurrentLocalDateTime = () => {
   const date = new Date();
   const tzOffset = date.getTimezoneOffset() * 60000;
@@ -72,7 +74,7 @@ const VisitaFormularioModal = ({
       ? formatDateForInput(initialValues.fecha_hora)
       : new Date().toISOString().slice(0, 16),
     id_estado: initialValues?.id_estado ?? 0, // Por defecto 0 = sin seleccionar
-    observaciones: initialValues?.observaciones ?? "",
+    observaciones: (initialValues?.observaciones ?? "").slice(0, MAX_OBSERVACIONES_LENGTH),
   });
   const [clientQuery, setClientQuery] = useState(isEditMode ? defaultClientName : "");
 
@@ -158,7 +160,12 @@ const VisitaFormularioModal = ({
   const handleChange = (field: keyof VisitaFormValues, value: string) => {
     setValues((prev) => ({
       ...prev,
-      [field]: field === "id_cliente" || field === "id_estado" ? Number(value) : value,
+      [field]:
+        field === "id_cliente" || field === "id_estado"
+          ? Number(value)
+          : field === "observaciones"
+          ? value.slice(0, MAX_OBSERVACIONES_LENGTH)
+          : value,
     }));
   };
 
@@ -209,6 +216,7 @@ const VisitaFormularioModal = ({
     const finalValues: VisitaFormValues = {
       ...values,
       id_cliente: !isEditMode && selectedClient?.id ? selectedClient.id : values.id_cliente,
+      observaciones: values.observaciones.slice(0, MAX_OBSERVACIONES_LENGTH),
     };
 
     if (!finalValues.id_cliente || finalValues.id_cliente <= 0) {

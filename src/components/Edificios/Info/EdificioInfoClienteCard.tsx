@@ -11,6 +11,7 @@ interface ClienteInfo {
 }
 
 import '../../../styles/components/Edificios/Info/EdificioInfoClienteCard.css';
+import EdificioInfoClienteInfo from './EdificioInfoClienteInfo';
 
 interface EdificioInfoClienteCardProps {
   edificioId: number
@@ -44,6 +45,8 @@ const EdificioInfoClienteCard = ({
     }
   };
 
+
+
   return (
     <div className="edificio-card edificio-clientes-card">
       <h2 className="edificio-clientes-title">Clientes</h2>
@@ -54,16 +57,7 @@ const EdificioInfoClienteCard = ({
           clientes.map(({ cliente, planta, puerta }) => (
             <li key={`cliente-${cliente.id}`} className="edificio-cliente-item">
               <div className="cliente-info-wrapper">
-                <div className="cliente-detail">
-                  <div className="cliente-nombre">
-                    {cliente.nombre} {cliente.apellidos}
-                  </div>
-                  <div className="cliente-meta">Piso: {planta ?? '-'} • Puerta: {puerta ?? '-'}</div>
-                  <div className="cliente-contacto">
-                    <div>Tel: {cliente.telefono ?? 'N/A'}</div>
-                    <div>Email: {cliente.email ?? 'N/A'}</div>
-                  </div>
-                </div>
+                <EdificioInfoClienteInfo cliente={cliente} planta={planta ?? undefined} puerta={puerta ?? undefined} />
                 {canManage && (
                   <button
                     onClick={() => handleRemoveCliente(cliente.id)}

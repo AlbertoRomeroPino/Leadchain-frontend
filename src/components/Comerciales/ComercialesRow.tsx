@@ -20,6 +20,16 @@ const ComercialesRow = ({
   onToggleExpand,
   onToggleSelect,
 }: ComercialesRowProps) => {
+
+  const nombreCompleto = function () {
+    // si el nombre y apellidos del comercial es de mas de 40 caracteres en total, se capa a 40 caracteres y se añade "..." al final
+    const nombreCompleto = `${comercial.nombre} ${comercial.apellidos}`;
+    if (nombreCompleto.length > 40) {
+      return nombreCompleto.slice(0, 40) + "...";
+    }
+    return nombreCompleto;
+  }
+
   return (
     <>
       <tr className="comerciales-row" onClick={onToggleExpand}>
@@ -32,7 +42,7 @@ const ComercialesRow = ({
           />
         </td>
         <td>
-          {comercial.nombre} {comercial.apellidos}
+          {nombreCompleto()}
         </td>
         <td>{comercial.email}</td>
         <td>{zonaNombre || "-"}</td>

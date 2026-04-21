@@ -269,10 +269,13 @@ const GlovalMap = ({
               clientesCount = edificio.clientes.count;
             }
 
+            const edificioZona = zonasAMostrar.find((z) => z.id === edificio.id_zona);
+
             return (
               <EdificioMarker
                 key={`edificio-${edificio.id}`}
                 edificio={edificio}
+                zona={edificioZona}
                 icon={createEdificioIcon(clientesCount)}
               />
             );

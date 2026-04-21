@@ -3,9 +3,11 @@ import { Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import type { Edificio } from "../../types/edificios/Edificio";
 import type { Cliente } from "../../types/clientes/Cliente";
+import type { Zona } from "../../types/zonas/Zona";
 
 interface EdificioMarkerProps {
   edificio: Edificio;
+  zona?: Zona | null;
   icon: L.DivIcon;
 }
 
@@ -13,7 +15,7 @@ interface EdificioMarkerProps {
  * Componente memoizado para cada marcador de edificio
  * Evita que se re-rendericen todos los edificios cuando cambia algo
  */
-const EdificioMarker = memo(({ edificio, icon }: EdificioMarkerProps) => {
+const EdificioMarker = memo(({ edificio, zona, icon }: EdificioMarkerProps) => {
   if (!edificio.ubicacion) return null;
 
   // Obtener el conteo de clientes - puede ser array u objeto con count
@@ -31,6 +33,12 @@ const EdificioMarker = memo(({ edificio, icon }: EdificioMarkerProps) => {
         edificio,
       }))
     : [];
+
+  const getNombreCompleto = (cliente: Cliente) => {
+    const nombre = `${cliente.nombre ?? ""} ${cliente.apellidos ?? ""}`.trim();
+    if (nombre.length <= 40) return nombre;
+    return `${nombre.slice(0, 37).trimEnd()}...`;
+  };
 
   return (
     <Marker
@@ -53,6 +61,9 @@ const EdificioMarker = memo(({ edificio, icon }: EdificioMarkerProps) => {
               ? `${clientesCount} cliente${clientesCount !== 1 ? "s" : ""} en esta ubicación`
               : "Sin clientes asignados"}
           </p>
+          <p className="popup-zone">
+            <strong>Zona:</strong> {zona?.nombre ?? "No encontrada"}
+          </p>
           <div className="popup-list">
             {clientesConEdificio.map((item, idx) => (
               <div
@@ -61,7 +72,7 @@ const EdificioMarker = memo(({ edificio, icon }: EdificioMarkerProps) => {
               >
                 <div>
                   <p className="popup-client-name">
-                    {item.cliente.nombre} {item.cliente.apellidos}
+                    {getNombreCompleto(item.cliente)}
                   </p>
                   <p className="popup-client-details">
                     Piso: {item.cliente.planta ?? "N/A"} • Puerta: {item.cliente.puerta ?? "N/A"}

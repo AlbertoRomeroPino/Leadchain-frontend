@@ -10,15 +10,49 @@ type VisitaCardAdminProps = {
   onDelete: (visita: Visita) => void;
 };
 
+const ComercialNombreCompleto = (visita: Visita) => {
+  const nombreCompleto = `${visita.usuario?.nombre ?? "Usuario"} ${visita.usuario?.apellidos ?? ""}`.trim();
+
+  if (nombreCompleto.length > 40) {
+    if (visita.usuario?.apellidos === "Sin apellidos") {
+      return `${visita.usuario?.nombre?.slice(0, 40) ?? ""}...`;
+    }
+    return `${nombreCompleto.slice(0, 40)}...`;
+  }
+
+  if (visita.usuario?.apellidos === "Sin apellidos") {
+    return visita.usuario?.nombre ?? "Usuario";
+  }
+
+  return nombreCompleto;
+};
+
+const ClienteNombreCompleto = (visita: Visita) => {
+  const nombreCompleto = `${visita.cliente?.nombre ?? "Cliente"} ${visita.cliente?.apellidos ?? ""}`.trim();
+
+  if (nombreCompleto.length > 40) {
+    if (visita.cliente?.apellidos === "Sin apellidos") {
+      return `${visita.cliente?.nombre?.slice(0, 40) ?? ""}...`;
+    }
+    return `${nombreCompleto.slice(0, 40)}...`;
+  }
+
+  if (visita.cliente?.apellidos === "Sin apellidos") {
+    return visita.cliente?.nombre ?? "Cliente";
+  }
+
+  return nombreCompleto;
+};
+
 const VisitaCardAdmin = ({ visita, buildingLabel, style, onDelete }: VisitaCardAdminProps) => (
   <article key={visita.id} className="admin-visita-card" style={style}>
     <div className="admin-visita-header">
       <div>
         <div className="admin-visita-title">
-          {visita.usuario ? `${visita.usuario.nombre} ${visita.usuario.apellidos}` : "Usuario desconocido"}
+          {visita.usuario ? ComercialNombreCompleto(visita) : "Usuario desconocido"}
         </div>
         <div className="admin-visita-subtitle">
-          {visita.cliente ? `${visita.cliente.nombre} ${visita.cliente.apellidos}` : "Cliente eliminado"}
+          {visita.cliente ? ClienteNombreCompleto(visita) : "Cliente eliminado"}
         </div>
         <div className="admin-visita-status-text">
           Estado: {visita.estado?.etiqueta ?? "Sin estado"}

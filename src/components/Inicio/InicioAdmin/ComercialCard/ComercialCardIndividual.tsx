@@ -20,14 +20,33 @@ const ComercialCardIndividual: React.FC<ComercialCardIndividualProps> = ({
   const cobertura =
     totalClientes > 0 ? Math.round((totalVisitas / totalClientes) * 100) : 0;
 
+  const nombreCompleto = () => {
+    const nombreCompleto = `${comercial.nombre} ${comercial.apellidos}`.trim();
+    if (nombreCompleto.length > 40) {
+      if (comercial.apellidos === "Sin apellidos") {
+        return comercial.nombre;
+      } else {
+        return nombreCompleto.slice(0, 40) + "...";
+      }
+    } else {
+      if (comercial.apellidos === "Sin apellidos") {
+        return comercial.nombre;
+      } else {
+        return nombreCompleto.slice(0, 40);
+      }
+    }
+  };
+
   return (
     <div className="comercial-card-individual">
       <div className="comercial-card-header">
         <div className="comercial-card-left">
           <h4 className="comercial-card-name">
-            {comercial.nombre} {comercial.apellidos}
+            {nombreCompleto()}
           </h4>
-          <p className="comercial-card-email">{comercial.email || "Email: N/A"}</p>
+          <p className="comercial-card-email">
+            {comercial.email || "Email: N/A"}
+          </p>
         </div>
         {zona && <span className="comercial-card-zone">{zona.nombre}</span>}
       </div>

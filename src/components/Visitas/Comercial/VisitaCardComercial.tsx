@@ -11,12 +11,26 @@ type VisitaCardComercialProps = {
   isLoading?: boolean;
 };
 
+const getClienteNombreCompleto = (visita: Visita) => {
+  const nombreCompleto = `${visita.cliente?.nombre ?? "Cliente"} ${visita.cliente?.apellidos ?? ""}`.trim();
+  if (nombreCompleto.length > 40) {
+    if (visita.cliente?.apellidos === "Sin apellidos") {
+      return `${visita.cliente?.nombre?.slice(0, 40) ?? ""}...`;
+    }
+    return `${nombreCompleto.slice(0, 40)}...`;
+  }
+  if (visita.cliente?.apellidos === "Sin apellidos") {
+    return visita.cliente?.nombre ?? "Cliente";
+  }
+  return nombreCompleto;
+};
+
 const VisitaCardComercial = ({ visita, buildingLabel, style, onEdit, isLoading = false }: VisitaCardComercialProps) => (
   <article key={visita.id} className="visita-postit" style={style}>
     <div className="visita-postit-header">
       <div>
         <div className="visita-postit-title">
-          {visita.cliente ? `${visita.cliente.nombre} ${visita.cliente.apellidos}` : "Cliente eliminado"}
+          {visita.cliente ? getClienteNombreCompleto(visita) : "Cliente eliminado"}
         </div>
         <div className="visita-postit-subtitle">{buildingLabel}</div>
         <div className="visita-state-text">

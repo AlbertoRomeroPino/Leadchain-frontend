@@ -266,8 +266,8 @@ const EdificioCreateModal = ({
         }
 
         if (cliente.mode === "crear") {
-          if (!cliente.nombre.trim() || !cliente.apellidos.trim()) {
-            alert("Completa nombre y apellidos para todos los clientes a crear");
+          if (!cliente.nombre.trim()) {
+            alert("Completa el nombre para todos los clientes a crear");
             return;
           }
         } else {

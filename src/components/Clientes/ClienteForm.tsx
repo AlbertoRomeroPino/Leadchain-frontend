@@ -27,14 +27,32 @@ const FormCliente = ({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const trimmedNombre = nombre.trim();
+    const trimmedApellidos = apellidos.trim();
+
     const payload = {
-      nombre: nombre.trim(),
-      apellidos: apellidos.trim(),
+      nombre: trimmedNombre,
+      apellidos: trimmedApellidos === "" ? "Sin apellidos" : trimmedApellidos,
       telefono: telefono.trim() || undefined,
       email: email.trim() || undefined,
     };
 
-    if (!payload.nombre || !payload.apellidos) {
+    const errors: string[] = [];
+    const nombreTrim = payload.nombre;
+    const apellidosTrim = trimmedApellidos;
+
+    if (!nombreTrim) {
+      errors.push("Nombre es requerido");
+    } else if (nombreTrim.length > 50) {
+      errors.push("Nombre no puede tener más de 50 caracteres");
+    }
+
+    if (apellidosTrim.length > 100) {
+      errors.push("Apellidos no puede tener más de 100 caracteres");
+    }
+
+    if (errors.length > 0) {
+      alert(errors.join("\n"));
       return;
     }
 
@@ -60,15 +78,16 @@ const FormCliente = ({
         placeholder="Nombre"
         value={nombre}
         onChange={(event) => setNombre(event.target.value)}
+        maxLength={50}
         required
       />
       <input
         className="form-cliente-input"
         type="text"
-        placeholder="Apellidos"
+        placeholder="Apellidos (opcional)"
         value={apellidos}
         onChange={(event) => setApellidos(event.target.value)}
-        required
+        maxLength={100}
       />
       <input
         className="form-cliente-input"

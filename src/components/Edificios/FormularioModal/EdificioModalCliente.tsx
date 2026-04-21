@@ -165,15 +165,16 @@ const EdificioModalCliente = ({
                         placeholder="Nombre cliente"
                         value={cliente.nombre}
                         onChange={(e) => actualizarCliente(cliente.id, { nombre: e.target.value })}
+                        maxLength={50}
                         required
                       />
                       <input
                         className="form-edificio-input"
                         type="text"
-                        placeholder="Apellidos cliente"
+                        placeholder="Apellidos cliente (opcional)"
                         value={cliente.apellidos}
                         onChange={(e) => actualizarCliente(cliente.id, { apellidos: e.target.value })}
-                        required
+                        maxLength={100}
                       />
                       <input
                         className="form-edificio-input"
