@@ -99,9 +99,12 @@ const FormCliente = ({
       <input
         className="form-cliente-input"
         type="tel"
+        inputMode="numeric"
+        pattern="[0-9]*"
         placeholder="Teléfono"
         value={telefono}
-        onChange={(event) => setTelefono(event.target.value)}
+        onChange={(event) => setTelefono(event.target.value.replace(/\D/g, "").slice(0, 15))}
+        maxLength={15}
       />
 
       <div className="form-cliente-actions">

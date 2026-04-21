@@ -200,6 +200,8 @@ const EdificioModalCliente = ({
                       <input
                         className="form-edificio-input"
                         type="tel"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         placeholder="Teléfono (opcional)"
                         value={cliente.telefono}
                         onChange={(e) =>
