@@ -12,7 +12,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   position: relative;
   background-color: #0f0a0a;
-  z-index: 1;
+  z-index: 0;
 }
 
 .map-container-inner {
@@ -20,21 +20,8 @@
   width: 100% !important;
 }
 
-/* Z-index para componentes Leaflet */
-.leaflet-pane {
-  z-index: 400 !important;
-}
-
-.leaflet-overlay-pane {
-  z-index: 450 !important;
-}
-
-.leaflet-marker-pane {
-  z-index: 500 !important;
-}
-
-.leaflet-popup-pane {
-  z-index: 700 !important;
+.leaflet-container {
+  z-index: 0;
 }
 
 /* Marcador personalizado */
