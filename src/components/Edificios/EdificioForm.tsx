@@ -25,7 +25,6 @@ const EdificioForm = ({
   const [lat, setLat] = useState(initialValues?.ubicacion?.lat ?? 0);
   const [lng, setLng] = useState(initialValues?.ubicacion?.lng ?? 0);
   const [tipo, setTipo] = useState(initialValues?.tipo ?? "");
-  const [idCliente, setIdCliente] = useState(initialValues?.id_cliente ?? "");
 
   const isEditMode = mode === "edit";
 
@@ -37,7 +36,6 @@ const EdificioForm = ({
       id_zona: Number(idZona),
       ubicacion: { lat: Number(lat), lng: Number(lng) } as GeoPoint,
       tipo: tipo.trim(),
-      id_cliente: idCliente ? Number(idCliente) : undefined,
     };
 
     if (
@@ -102,15 +100,6 @@ const EdificioForm = ({
           value={tipo}
           onChange={(e) => setTipo(e.target.value)}
           required
-        />
-      </div>
-
-      <div>
-        <label>ID Cliente</label>
-        <input
-          type="number"
-          value={idCliente}
-          onChange={(e) => setIdCliente(e.target.value)}
         />
       </div>
 

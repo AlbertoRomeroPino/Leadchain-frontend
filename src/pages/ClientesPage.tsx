@@ -1,6 +1,6 @@
 import type { Cliente } from "../types/clientes/Cliente";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { clientesService } from "../services/ClientesService";
 import { useAuth } from "../auth/useAuth";
 import {
@@ -29,7 +29,7 @@ const Clientes = () => {
   const { user } = useAuth();
   const canCreateCliente = user?.rol === "admin";
 
-  useInitialize(async () => {
+  const refreshClientes = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -50,6 +50,10 @@ const Clientes = () => {
       showErrorAlert(err, "Cargar Clientes");
     }
   }, [user]);
+
+  useInitialize(async () => {
+    await refreshClientes();
+  }, [refreshClientes]);
 
   const handleCreateCliente = async (cliente: {
     nombre: string;
@@ -87,20 +91,12 @@ const Clientes = () => {
     }
   };
 
-  const handleClienteUpdated = (clienteActualizado: Cliente) => {
+  const handleClienteUpdated = async (clienteActualizado: Cliente) => {
     setClienteSeleccionado((prev) =>
       prev?.id === clienteActualizado.id ? clienteActualizado : prev,
     );
-    setClientes((prev) =>
-      prev.map((item) =>
-        item.id === clienteActualizado.id ? clienteActualizado : item,
-      ),
-    );
-    setClientesSinEdificio((prev) =>
-      prev.map((item) =>
-        item.id === clienteActualizado.id ? clienteActualizado : item,
-      ),
-    );
+
+    await refreshClientes();
   };
 
   const handleClienteDeleted = (clienteId: number) => {
@@ -114,6 +110,13 @@ const Clientes = () => {
   const clientesConEdificio = useMemo(() => {
     return clientes.filter((cliente) => cliente.id_usuario_asignado !== null);
   }, [clientes]);
+
+  const clientesSinEdificioFiltrados = useMemo(() => {
+    const clientesConEdificioIds = new Set(clientesConEdificio.map((cliente) => cliente.id));
+    return clientesSinEdificio.filter(
+      (cliente) => !clientesConEdificioIds.has(cliente.id),
+    );
+  }, [clientesSinEdificio, clientesConEdificio]);
 
   return (
     <div className="clientes-wrapper">
@@ -142,7 +145,7 @@ const Clientes = () => {
 
             <ClientesSinEdificioTable
               isAdmin={user?.rol === "admin"}
-              clientesSinEdificio={clientesSinEdificio}
+              clientesSinEdificio={clientesSinEdificioFiltrados}
               onSelectCliente={setClienteSeleccionado}
             />
 

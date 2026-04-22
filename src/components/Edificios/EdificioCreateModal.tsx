@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import type { EdificioInput, Edificio } from "../../types/edificios/Edificio";
+import type {
+  EdificioInput,
+  Edificio,
+  EdificioClienteBlock,
+} from "../../types/edificios/Edificio";
 import type { Zona } from "../../types/zonas/Zona";
 import type { Cliente } from "../../types/clientes/Cliente";
 import "../../styles/components/Edificios/EdificioCreateModal.css";
@@ -9,18 +13,6 @@ import EdificioModalMapa from "./FormularioModal/EdificioModalMapa";
 import EdificioModalCliente from "./FormularioModal/EdificioModalCliente";
 import { clientesService } from "../../services/ClientesService";
 
-interface ClienteBlock {
-  id: string;
-  mode: "crear" | "seleccionar";
-  nombre: string;
-  apellidos: string;
-  email: string;
-  telefono: string;
-  clienteSinEdificioId: number | null;
-  planta: string;
-  puerta: string;
-}
-
 interface EdificioCreateModalProps {
   show: boolean;
   loading: boolean;
@@ -28,7 +20,7 @@ interface EdificioCreateModalProps {
   edificios: Edificio[];
   onClose: () => void;
   onCreateEdificio: (payload: EdificioInput) => Promise<Edificio>;
-  onAppendMultipleClientes: (edificioId: number, clientes: ClienteBlock[]) => Promise<void>;
+  onAppendMultipleClientes: (edificioId: number, clientes: EdificioClienteBlock[]) => Promise<void>;
   edificioAEditar?: Edificio;
   onUpdateEdificio?: (id: number, payload: EdificioInput) => Promise<void>;
 }
@@ -51,18 +43,22 @@ const EdificioCreateModal = ({
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
   const [idCliente, setIdCliente] = useState<number | null>(null);
+  const [clientePlanta, setClientePlanta] = useState("");
+  const [clientePuerta, setClientePuerta] = useState("");
 
   const handleZonaChange = (zonaId: number) => {
     setIdZona(zonaId);
     setLat(null);
     setLng(null);
     setIdCliente(null);
+    setClientePlanta("");
+    setClientePuerta("");
   };
 
   const [existingEdificioId, setExistingEdificioId] = useState<number | "">(
     "",
   );
-  const [clientes, setClientes] = useState<ClienteBlock[]>([]);
+  const [clientes, setClientes] = useState<EdificioClienteBlock[]>([]);
   const [clientesSinEdificio, setClientesSinEdificio] = useState<Cliente[]>([]);
   // const [loadingClientes, setLoadingClientes] = useState(false);
 
@@ -80,7 +76,9 @@ const EdificioCreateModal = ({
           setLat(edificioAEditar.ubicacion.lat);
           setLng(edificioAEditar.ubicacion.lng);
         }
-        setIdCliente(edificioAEditar.id_cliente);
+        setIdCliente(null);
+        setClientePlanta("");
+        setClientePuerta("");
         setExistingEdificioId("");
         setClientes([]);
       } else {
@@ -161,9 +159,7 @@ const EdificioCreateModal = ({
             tipo: tipo.trim(),
             id_zona: idZona,
             ubicacion: { lat, lng },
-            id_cliente: idCliente || edificioAEditar.id_cliente,
           });
-
           alert("Edificio actualizado correctamente");
         }
       } catch (updateError) {
@@ -323,10 +319,10 @@ const EdificioCreateModal = ({
                 idCliente={idCliente}
                 setIdCliente={setIdCliente}
                 zonas={zonas}
-                clientePlanta=""
-                setClientePlanta={() => {}}
-                clientePuerta=""
-                setClientePuerta={() => {}}
+                clientePlanta={clientePlanta}
+                setClientePlanta={setClientePlanta}
+                clientePuerta={clientePuerta}
+                setClientePuerta={setClientePuerta}
                 isEditing={!!edificioAEditar}
               />
 

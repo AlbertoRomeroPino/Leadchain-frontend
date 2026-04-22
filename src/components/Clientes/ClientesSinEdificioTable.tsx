@@ -17,6 +17,8 @@ const ClientesSinEdificioTable = ({
     return null;
   }
 
+  
+
   return (
     <div className="clientes-secondary-section">
       <h2 className="clientes-secondary-title">Clientes sin edificio</h2>

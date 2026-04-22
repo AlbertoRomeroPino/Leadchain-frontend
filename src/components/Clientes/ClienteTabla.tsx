@@ -15,6 +15,9 @@ const nombreCapado = (cliente: Cliente) => {
   return cliente.nombre;
 };
 const apellidosCapados = (cliente: Cliente) => {
+  if (cliente.apellidos === "Sin apellidos") {
+    return "-";
+  }
   if (cliente.apellidos.length > 25) {
     return cliente.apellidos.slice(0, 25) + "...";
   }

@@ -1,6 +1,9 @@
 import { authHttp } from "./https";
 import { ExceptionService } from "./ExceptionService";
-import type {EdificioInput } from "../types/edificios/Edificio";
+import type {
+  EdificioInput,
+  EdificioClienteBlock,
+} from "../types/edificios/Edificio";
 
 
 export const EdificiosService = {
@@ -83,7 +86,10 @@ export const EdificiosService = {
         }
     },
 
-    async attachMultipleClientes(edificioId: number, clientes: any[]) {
+    async attachMultipleClientes(
+        edificioId: number,
+        clientes: EdificioClienteBlock[],
+    ) {
         try {
             const payload = {
                 clientes: clientes.map((c) => ({

@@ -25,3 +25,15 @@ export type EdificioInput = {
     id_zona: number;
     tipo: string;
 }
+
+export type EdificioClienteBlock = {
+    id: string;
+    mode: "crear" | "seleccionar";
+    nombre: string;
+    apellidos: string;
+    email: string;
+    telefono: string;
+    clienteSinEdificioId: number | null;
+    planta: string;
+    puerta: string;
+};

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Polygon, Rectangle, useMapEvent } from "react-leaflet";
-import { X, MapPin, Trash2, RotateCcw, Eye, EyeOff } from "lucide-react";
+import { X, MapPin, Trash2, RotateCcw } from "lucide-react";
 import L from "leaflet";
 import type { GeoPoint } from "../../../types/shared/GeoPoint";
 import type { ZonaInput } from "../../../types/zonas/Zona";

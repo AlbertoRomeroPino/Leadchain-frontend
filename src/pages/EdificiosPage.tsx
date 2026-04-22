@@ -1,13 +1,16 @@
 import { useState } from "react";
 import Sidebar from "../layout/Sidebar";
-import type { Edificio, EdificioInput } from "../types/edificios/Edificio";
+import type {
+  Edificio,
+  EdificioInput,
+  EdificioClienteBlock,
+} from "../types/edificios/Edificio";
 import type { Zona } from "../types/zonas/Zona";
 import EdificioInfo from "../components/Edificios/EdificioInfo";
 import EdificioTabla from "../components/Edificios/EdificioTabla";
 import { useAuth } from "../auth/useAuth";
 import { EdificiosService } from "../services/EdificiosService";
 import { ZonaService } from "../services/ZonaService";
-import { clientesService } from "../services/ClientesService";
 import EdificioHeader from "../components/Edificios/EdificioHeader";
 import EdificioCreateModal from "../components/Edificios/EdificioCreateModal";
 import { useInitialize } from "../hooks/useInitialize";
@@ -97,50 +100,11 @@ const Edificios = () => {
     setEdificioSeleccionado(null);
   };
 
-  const handleAppendToExisting = async (
-    edificioId: number,
-    nombre?: string,
-    apellidos?: string,
-    email?: string,
-    telefono?: string,
-    clienteExistenteId?: number,
-    planta?: string,
-    puerta?: string,
-  ) => {
-    try {
-      setCreatingEdificio(true);
-      let idCliente: number;
-
-      if (clienteExistenteId) {
-        // Usar cliente existente
-        idCliente = clienteExistenteId;
-      } else if (nombre && apellidos) {
-        // Crear nuevo cliente
-        const nuevoCliente = await clientesService.createCliente({
-          nombre,
-          apellidos,
-          ...(email ? { email } : {}),
-          ...(telefono ? { telefono } : {}),
-          id_usuario_asignado: null,
-        });
-        idCliente = nuevoCliente.id;
-      } else {
-        throw new Error("Debe proporcionar cliente nuevo o existente");
-      }
-
-      // Adjuntar cliente al edificio usando la relación many-to-many
-      await EdificiosService.attachCliente(edificioId, idCliente, planta, puerta);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Error al adjuntar cliente";
-      throw new Error(message);
-    } finally {
-      setCreatingEdificio(false);
-    }
-  };
-
   // Nuevo método para adjuntar múltiples clientes de una sola vez (más eficiente)
-  const handleAppendMultipleClientes = async (edificioId: number, clientes: any[]) => {
+  const handleAppendMultipleClientes = async (
+    edificioId: number,
+    clientes: EdificioClienteBlock[],
+  ) => {
     try {
       setCreatingEdificio(true);
 
@@ -174,26 +138,6 @@ const Edificios = () => {
   };
 
   // Función auxiliar para hacer refresh después de adjuntar todos los clientes
-  const handleRefreshEdificio = async (edificioId: number) => {
-    try {
-      const edificioActualizado = await EdificiosService.getEdificioDetalle(edificioId);
-      
-      setEdificios((prev) =>
-        prev.map((item) =>
-          item.id === edificioId ? edificioActualizado : item
-        )
-      );
-
-      if (edificioSeleccionado?.id === edificioId) {
-        setEdificioSeleccionado(edificioActualizado);
-      }
-    } catch (err) {
-      console.error("Error al refrescar edificio:", err);
-    } finally {
-      setShowCreateForm(false);
-    }
-  };
-
   return (
     <div className="edificios-page">
       <Sidebar />

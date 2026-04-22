@@ -176,7 +176,7 @@ const EdificioInfo = ({
                 edificios={[]}
                 onClose={handleCloseEdit}
                 onCreateEdificio={notImplementedCreateEdificio}
-                onAppendToExisting={async () => {}}
+                onAppendMultipleClientes={async () => {}}
                 edificioAEditar={edificioInfo}
                 onUpdateEdificio={handleUpdateEdificio}
               />
