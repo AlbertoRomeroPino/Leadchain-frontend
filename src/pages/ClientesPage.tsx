@@ -112,9 +112,8 @@ const Clientes = () => {
   };
 
   const clientesConEdificio = useMemo(() => {
-    const sinEdificioIds = new Set(clientesSinEdificio.map((cliente) => cliente.id));
-    return clientes.filter((cliente) => !sinEdificioIds.has(cliente.id));
-  }, [clientes, clientesSinEdificio]);
+    return clientes.filter((cliente) => cliente.id_usuario_asignado !== null);
+  }, [clientes]);
 
   return (
     <div className="clientes-wrapper">
