@@ -1,6 +1,6 @@
 import type { Cliente } from "../types/clientes/Cliente";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { clientesService } from "../services/ClientesService";
 import { useAuth } from "../auth/useAuth";
 import {
@@ -111,6 +111,11 @@ const Clientes = () => {
     setClienteSeleccionado(null);
   };
 
+  const clientesConEdificio = useMemo(() => {
+    const sinEdificioIds = new Set(clientesSinEdificio.map((cliente) => cliente.id));
+    return clientes.filter((cliente) => !sinEdificioIds.has(cliente.id));
+  }, [clientes, clientesSinEdificio]);
+
   return (
     <div className="clientes-wrapper">
       <Sidebar />
@@ -132,7 +137,7 @@ const Clientes = () => {
             />
 
             <ClientesConEdificioTable
-              clientes={clientes}
+              clientes={clientesConEdificio}
               onSelectCliente={setClienteSeleccionado}
             />
 
