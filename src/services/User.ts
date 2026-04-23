@@ -23,20 +23,6 @@ export const UserService = {
     }
   },
 
-  async getUserById(id: number) {
-    try {
-      const response = await authHttp.get(`/api/users/${id}`);
-      return response.data;
-    } catch (error) {
-      throw new Error(
-        ExceptionService.getErrorMessage(
-          error,
-          `Error al obtener el usuario con ID ${id}`,
-        ),
-      );
-    }
-  },
-
   async createUser(user: UserInput) {
     try {
       const response = await authHttp.post("/api/users", user);
@@ -71,17 +57,6 @@ export const UserService = {
           error,
           `Error al eliminar el usuario con ID ${id}`,
         ),
-      );
-    }
-  },
-
-  async getUsers() {
-    try {
-      const response = await authHttp.get("/api/users");
-      return response.data;
-    } catch (error) {
-      throw new Error(
-        ExceptionService.getErrorMessage(error, "Error al obtener los usuarios"),
       );
     }
   },

@@ -13,15 +13,6 @@ export const ZonaService = {
         }
     },
 
-    async getZonaById(id: number) {
-        try {
-            const response = await authHttp.get(`/api/zonas/${id}`);
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, "Error al obtener la zona"));
-        }
-    },
-
     async getZonas() {
         try {
             const response = await authHttp.get("/api/zonas");

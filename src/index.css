@@ -11,12 +11,20 @@ body {
   padding: 0;
   background-color: #0f0a0a;
   color: #ffffff;
+  font-family: "Varela Round", sans-serif;
 }
 
 * {
   box-sizing: border-box;
   scrollbar-width: thin;
   scrollbar-color: #dc2626 #1f1414;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
 }
 
 /* Estilos de scrollbar para navegadores Webkit (Chrome, Safari, Edge) */

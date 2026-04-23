@@ -4,20 +4,49 @@ import { authStorage } from "./authStorage";
 import { setAuthCallbacks, setAuthToken } from "../services/https";
 import { AuthContext, type AuthContextValue } from "./AuthContext";
 
+type AuthPayload = {
+  user?: User;
+};
+
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    "nombre" in value &&
+    "apellidos" in value &&
+    "email" in value
+  );
+}
+
+function isAuthPayload(value: unknown): value is AuthPayload {
+  return typeof value === "object" && value !== null && "user" in value;
+}
+
+function resolveStoredUser(session: AuthSession | null): User | null {
+  const rawUser: unknown = session?.user;
+
+  if (!rawUser) {
+    return null;
+  }
+
+  if (isUser(rawUser)) {
+    return rawUser;
+  }
+
+  if (isAuthPayload(rawUser) && isUser(rawUser.user)) {
+    return rawUser.user;
+  }
+
+  return null;
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Verificar si la sesión ha expirado
   const initial: AuthSession | null = authStorage.isSessionExpired() ? null : authStorage.get();
-  
+
   // Extraer usuario correctamente desde localStorage
-  let initialUser: User | null = null;
-  if (initial?.user) {
-    // Si localStorage contiene la respuesta completa por error anterior
-    if ('user' in initial.user && !('nombre' in initial.user)) {
-      initialUser = (initial.user as any).user;
-    } else {
-      initialUser = initial.user as User;
-    }
-  }
+  const initialUser = resolveStoredUser(initial);
 
   const [user, setUser] = useState<User | null>(initialUser ?? null);
   const [token, setToken] = useState<string | null>(initial?.token ?? null);
@@ -78,16 +107,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(newToken);
       },
       onUserUpdated: (updatedUser) => {
-        // Actualizar datos del usuario cuando se obtienen del endpoint /me
-        // Validar que no sea la respuesta completa
-        let userToUse = updatedUser;
-        if ('user' in updatedUser && typeof (updatedUser as any).user === 'object' && !('nombre' in updatedUser)) {
-          userToUse = (updatedUser as any).user;
+        // Normalizar payload por compatibilidad con datos viejos en storage
+        const userToUse = resolveStoredUser({
+          token: token ?? "",
+          user: updatedUser as User,
+        });
+
+        if (userToUse) {
+          setUser(userToUse);
+        } else {
+          setUser(updatedUser);
         }
-        setUser(userToUse as User);
       },
     });
-  }, [logout]);
+  }, [logout, token]);
 
   const value = useMemo<AuthContextValue>(
     () => ({

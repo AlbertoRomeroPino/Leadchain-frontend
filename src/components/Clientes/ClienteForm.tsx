@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { ClienteInput } from "../../types/clientes/Cliente";
 import "../../styles/components/Clientes/ClienteForm.css";
+import { showErrorAlert } from "../utils/errorHandler";
 
 interface FormClienteProps {
   onSubmit: (cliente: ClienteInput) => Promise<void>;
@@ -52,7 +53,7 @@ const FormCliente = ({
     }
 
     if (errors.length > 0) {
-      alert(errors.join("\n"));
+      showErrorAlert(errors.join("\n"));
       return;
     }
 

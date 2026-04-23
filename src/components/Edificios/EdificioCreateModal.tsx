@@ -12,6 +12,7 @@ import EdificioModalEdificio from "./FormularioModal/EdificioModalEdificio";
 import EdificioModalMapa from "./FormularioModal/EdificioModalMapa";
 import EdificioModalCliente from "./FormularioModal/EdificioModalCliente";
 import { clientesService } from "../../services/ClientesService";
+import { showErrorAlert, showInfoAlert, showSuccessAlert } from "../utils/errorHandler";
 
 interface EdificioCreateModalProps {
   show: boolean;
@@ -65,6 +66,8 @@ const EdificioCreateModal = ({
   useEffect(() => {
     if (!show) return;
 
+    // queueMicrotask para asegurar que el estado se actualice después de que el modal se haya renderizado, 
+    // evitando posibles problemas de renderizado condicional
     queueMicrotask(() => {
       if (edificioAEditar) {
         // Modo edición
@@ -128,27 +131,27 @@ const EdificioCreateModal = ({
     // Si estamos en modo edición
     if (edificioAEditar && mode === "new") {
       if (!direccionCompleta.trim()) {
-        alert("Dirección completa es obligatorio.");
+        showInfoAlert("Dirección completa es obligatorio.");
         return;
       }
 
       if (!tipo.trim()) {
-        alert("Tipo de edificio es obligatorio.");
+        showInfoAlert("Tipo de edificio es obligatorio.");
         return;
       }
 
       if (!idZona || idZona <= 0) {
-        alert("Selecciona una zona válida.");
+        showInfoAlert("Selecciona una zona válida.");
         return;
       }
 
       if (lat == null || lng == null) {
-        alert("Selecciona una ubicación en el mapa dentro de la zona.");
+        showInfoAlert("Selecciona una ubicación en el mapa dentro de la zona.");
         return;
       }
 
       if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-        alert("Ubicación no válida.");
+        showInfoAlert("Ubicación no válida.");
         return;
       }
 
@@ -160,7 +163,7 @@ const EdificioCreateModal = ({
             id_zona: idZona,
             ubicacion: { lat, lng },
           });
-          alert("Edificio actualizado correctamente");
+          showSuccessAlert("Edificio actualizado correctamente");
         }
       } catch (updateError) {
         const message =
@@ -168,7 +171,7 @@ const EdificioCreateModal = ({
             ? updateError.message
             : "Error al actualizar el edificio";
         console.error("updateEdificio error:", updateError);
-        alert(message);
+        showErrorAlert(message);
         return;
       }
 
@@ -178,27 +181,27 @@ const EdificioCreateModal = ({
 
     if (mode === "new") {
       if (!direccionCompleta.trim()) {
-        alert("Dirección completa es obligatorio.");
+        showInfoAlert("Dirección completa es obligatorio.");
         return;
       }
 
       if (!tipo.trim()) {
-        alert("Tipo de edificio es obligatorio.");
+        showInfoAlert("Tipo de edificio es obligatorio.");
         return;
       }
 
       if (!idZona || idZona <= 0) {
-        alert("Selecciona una zona válida.");
+        showInfoAlert("Selecciona una zona válida.");
         return;
       }
 
       if (lat == null || lng == null) {
-        alert("Selecciona una ubicación en el mapa dentro de la zona.");
+        showInfoAlert("Selecciona una ubicación en el mapa dentro de la zona.");
         return;
       }
 
       if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-        alert("Ubicación no válida.");
+        showInfoAlert("Ubicación no válida.");
         return;
       }
 
@@ -228,14 +231,14 @@ const EdificioCreateModal = ({
           ]);
         }
 
-        alert("Edificio creado correctamente");
+        showSuccessAlert("Edificio creado correctamente");
       } catch (createError) {
         const message =
           createError instanceof Error
             ? createError.message
             : "Error al crear el edificio";
         console.error("createEdificio error:", createError);
-        alert(message);
+        showErrorAlert(message);
         return;
       }
 
@@ -245,30 +248,30 @@ const EdificioCreateModal = ({
 
     if (mode === "existing") {
       if (existingEdificioId === "") {
-        alert("Selecciona un edificio válido");
+        showInfoAlert("Selecciona un edificio válido");
         return;
       }
 
       if (clientes.length === 0) {
-        alert("Agrega al menos un cliente");
+        showInfoAlert("Agrega al menos un cliente");
         return;
       }
 
       // Validar todos los clientes
       for (const cliente of clientes) {
         if (!cliente.planta.trim() || !cliente.puerta.trim()) {
-          alert("Completa piso y puerta para todos los clientes");
+          showInfoAlert("Completa piso y puerta para todos los clientes");
           return;
         }
 
         if (cliente.mode === "crear") {
           if (!cliente.nombre.trim()) {
-            alert("Completa el nombre para todos los clientes a crear");
+            showInfoAlert("Completa el nombre para todos los clientes a crear");
             return;
           }
         } else {
           if (!cliente.clienteSinEdificioId) {
-            alert("Selecciona un cliente para todos los bloques");
+            showInfoAlert("Selecciona un cliente para todos los bloques");
             return;
           }
         }
@@ -284,7 +287,7 @@ const EdificioCreateModal = ({
             ? appendError.message
             : "Error al agregar clientes";
         console.error("appendMultipleClientes error:", appendError);
-        alert(message);
+        showErrorAlert(message);
         return;
       }
 
