@@ -127,7 +127,11 @@ const Edificios = () => {
       }
 
       setShowCreateForm(false);
-      alert(`${clientes.length} cliente${clientes.length > 1 ? "s" : ""} agregado${clientes.length > 1 ? "s" : ""} correctamente`);
+      showStatusAlert({
+        type: "success",
+        title: "Clientes agregados",
+        description: `${clientes.length} cliente${clientes.length > 1 ? "s" : ""} agregado${clientes.length > 1 ? "s" : ""} correctamente`
+      });
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Error al adjuntar clientes";

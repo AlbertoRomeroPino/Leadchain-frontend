@@ -2,6 +2,8 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig, type AxiosRequ
 import type { AuthSession, User } from "../types/users/User";
 import { authStorage } from "../auth/authStorage";
 import { isTokenExpiringIn } from "./tokenManager";
+import { showErrorAlert } from "../components/utils/errorHandler";
+import { authService } from "./authService";
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() || "/";
 
@@ -83,9 +85,6 @@ async function attemptTokenRefresh(): Promise<string | null> {
 
   refreshPromise = (async () => {
     try {
-      // Importar aquí para evitar circularidad
-      const { authService } = await import("./authService");
-
       const session = authStorage.get();
 
       const { token: newToken } = await authService.refresh();
@@ -112,13 +111,13 @@ async function attemptTokenRefresh(): Promise<string | null> {
             onUserUpdated(updatedUser);
           }
         } catch (error) {
-          // No es crítico si falla, el token ya se renovó
+          showErrorAlert(error);
         }
 
         return newToken;
       }
       return null;
-    } catch (error) {
+    } catch {
       return null;
     } finally {
       refreshPromise = null;

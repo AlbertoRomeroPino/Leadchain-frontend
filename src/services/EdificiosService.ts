@@ -17,15 +17,6 @@ export const EdificiosService = {
         }
     },
 
-    async getEdificioById(id: number) {
-        try {
-            const response = await authHttp.get(`/api/edificios/${id}`);
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, `Error al obtener edificio con ID ${id}`));
-        }
-    },
-
     async getEdificioDetalle(id: number) {
         try {
             const response = await authHttp.get(`/api/edificios/${id}/detalle`);
@@ -61,22 +52,6 @@ export const EdificiosService = {
         }
     },
 
-    async attachCliente(edificioId: number, clienteId: number, planta?: string, puerta?: string) {
-        try {
-            const payload: { planta?: string; puerta?: string } = {};
-            if (planta) payload.planta = planta;
-            if (puerta) payload.puerta = puerta;
-            
-            const response = await authHttp.post(
-                `/api/edificios/${edificioId}/clientes/${clienteId}`,
-                Object.keys(payload).length > 0 ? payload : undefined
-            );
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, "Error al adjuntar cliente"));
-        }
-    },
-
     async detachCliente(edificioId: number, clienteId: number) {
         try {
             const response = await authHttp.delete(`/api/edificios/${edificioId}/clientes/${clienteId}`);
@@ -109,7 +84,7 @@ export const EdificiosService = {
             };
 
             const response = await authHttp.post(
-                `/api/edificios/${edificioId}/clientes/attach-bulk`,
+                `/api/edificios/${edificioId}/clientes/adjuntar-varios`,
                 payload
             );
             return response.data;

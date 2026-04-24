@@ -12,6 +12,7 @@ import L, { type LatLngLiteral } from "leaflet";
 import { CORDOBA_CENTER } from "../../utils/cordobaMapConfig";
 
 import '../../../styles/components/Edificios/FormularioModal/EdificioModalMapa.css';
+import { showInfoAlert } from "../../utils/errorHandler";
 
 // Crear un ícono simple y limpio
 const createSimpleMarkerIcon = () => {
@@ -135,7 +136,7 @@ const EdificioModalMapa = ({
         if (!zonaPolygon || pointInPolygon(event.latlng, polygonPoints)) {
           onSelect(event.latlng);
         } else {
-          window.alert(
+          showInfoAlert(
             "La ubicación debe estar dentro de los límites de la zona.",
           );
         }

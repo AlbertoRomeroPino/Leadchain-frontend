@@ -3,7 +3,11 @@ import { useAuth } from "../auth/useAuth";
 import Sidebar from "../layout/Sidebar";
 import { VisitasService } from "../services/VisitasService";
 import { useInitialize } from "../hooks/useInitialize";
-import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../components/utils/errorHandler";
+import {
+  showLoadingAlert,
+  showErrorAlert,
+  showSuccessAlert,
+} from "../components/utils/errorHandler";
 import type { Visita } from "../types/visitas/Visita";
 import type { Cliente } from "../types/clientes/Cliente";
 import type { EstadoVisita } from "../types/visitas/EstadoVisita";
@@ -12,6 +16,7 @@ import VisitasHeader from "../components/Visitas/VisitasHeader";
 import VisitasAdminGrid from "../components/Visitas/Admin/VisitasAdminGrid";
 import VisitasComercialGrid from "../components/Visitas/Comercial/VisitasComercialGrid";
 import "../styles/Visitas.css";
+import showStatusAlert from "../components/utils/StatusAlert";
 
 const Visitas = () => {
   const { user } = useAuth();
@@ -102,19 +107,23 @@ const Visitas = () => {
     }
   };
 
-  const handleBorrarVisita = async (visita: Visita) => {
-    if (!window.confirm("¿Seguro que deseas eliminar esta visita?")) {
-      return;
-    }
-
-    try {
-      await VisitasService.deleteVisita(visita.id);
-      await refreshVisitas();
-      showSuccessAlert("Visita eliminada");
-    } catch (error) {
-      showErrorAlert(error, "Eliminar Visita");
-      console.error(error);
-    }
+  const handleBorrarVisita = (visita: Visita) => {
+    showStatusAlert({
+      title: "Deseas eliminar esta visita?",
+      description: "Esta accion no se puede deshacer.",
+      type: "action",
+      actionLabel: "Si, eliminar",
+      onAction: async () => {
+        try {
+          await VisitasService.deleteVisita(visita.id);
+          await refreshVisitas();
+          showSuccessAlert("Visita eliminada");
+        } catch (error) {
+          showErrorAlert(error, "Eliminar Visita");
+          console.error(error);
+        }
+      },
+    });
   };
 
   const getBuildingLabel = (visita: Visita) => {
@@ -129,39 +138,44 @@ const Visitas = () => {
         new Set(
           visitas
             .map((visita) => visita.estado?.etiqueta?.trim() ?? "")
-            .filter(Boolean)
-        )
+            .filter(Boolean),
+        ),
       )
     : [];
 
-  const filteredVisitas = visitas?.filter((visita) => {
-    const query = search.trim().toLowerCase();
-    const matchesSearch = user?.rol === "admin"
-      ? [visita.usuario?.nombre, visita.usuario?.apellidos]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase()
-          .includes(query)
-      : visita.cliente
-          ? [visita.cliente.nombre, visita.cliente.apellidos]
+  const filteredVisitas =
+    visitas?.filter((visita) => {
+      const query = search.trim().toLowerCase();
+      const matchesSearch =
+        user?.rol === "admin"
+          ? [visita.usuario?.nombre, visita.usuario?.apellidos]
               .filter(Boolean)
               .join(" ")
               .toLowerCase()
               .includes(query)
-          : false;
+          : visita.cliente
+            ? [visita.cliente.nombre, visita.cliente.apellidos]
+                .filter(Boolean)
+                .join(" ")
+                .toLowerCase()
+                .includes(query)
+            : false;
 
-    const statusName = visita.estado?.etiqueta?.toLowerCase() ?? "";
-    const matchesStatus = statusFilter === "all" || statusName === statusFilter;
+      const statusName = visita.estado?.etiqueta?.toLowerCase() ?? "";
+      const matchesStatus =
+        statusFilter === "all" || statusName === statusFilter;
 
-    return matchesSearch && matchesStatus;
-  }) ?? [];
+      return matchesSearch && matchesStatus;
+    }) ?? [];
 
   const getCardStyle = (colorHex?: string) => ({
     borderColor: colorHex ?? "#3f1b1b",
     background: colorHex
       ? `linear-gradient(180deg, ${colorHex}22 0%, rgba(19, 19, 29, 0.96) 100%)`
       : "linear-gradient(180deg, rgba(12, 12, 22, 0.98) 0%, rgba(19, 19, 29, 0.96) 100%)",
-    boxShadow: colorHex ? `0 10px 30px ${colorHex}33` : "0 10px 30px rgba(0,0,0,0.22)",
+    boxShadow: colorHex
+      ? `0 10px 30px ${colorHex}33`
+      : "0 10px 30px rgba(0,0,0,0.22)",
   });
 
   return (
@@ -199,18 +213,22 @@ const Visitas = () => {
       </main>
 
       <VisitaFormularioModal
-        key={isModalOpen ? selectedVisita?.id ?? "create" : "closed"}
+        key={isModalOpen ? (selectedVisita?.id ?? "create") : "closed"}
         open={isModalOpen}
         onClose={closeModal}
         onSubmit={handleSaveVisita}
         clientes={availableClients}
         estados={estados}
-        initialValues={selectedVisita ? {
-          id_cliente: selectedVisita.id_cliente,
-          fecha_hora: selectedVisita.fecha_hora,
-          id_estado: selectedVisita.id_estado,
-          observaciones: selectedVisita.observaciones ?? "",
-        } : undefined}
+        initialValues={
+          selectedVisita
+            ? {
+                id_cliente: selectedVisita.id_cliente,
+                fecha_hora: selectedVisita.fecha_hora,
+                id_estado: selectedVisita.id_estado,
+                observaciones: selectedVisita.observaciones ?? "",
+              }
+            : undefined
+        }
         selectedClient={selectedVisita?.cliente ?? undefined}
         mode={selectedVisita ? "edit" : "create"}
       />

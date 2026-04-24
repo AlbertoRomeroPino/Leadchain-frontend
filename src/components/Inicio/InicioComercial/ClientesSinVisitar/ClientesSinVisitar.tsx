@@ -106,19 +106,16 @@ const ClientesSinVisitar = ({
 
     // Timeout de seguridad: desbloquear después de 5 segundos si algo salió mal
     const timeoutId = setTimeout(() => {
-      setIsSaving(false);
-      setClienteSeleccionado(null);
-    }, 5000);
+      const clienteAúnEnLista = clientesSinVisita.some(
+        (c) => c.cliente.id === clienteSeleccionado,
+      );
 
-    // Verificar si el cliente todavía está en la lista de "sin visita"
-    const clienteAúnEnLista = clientesSinVisita.some(c => c.cliente.id === clienteSeleccionado);
-    
-    // Si el cliente ya no está en la lista, se ha movido a "Visitados"
-    if (!clienteAúnEnLista) {
-      clearTimeout(timeoutId);
-      setIsSaving(false);
-      setClienteSeleccionado(null);
-    }
+      // Si el cliente ya no está en la lista, se ha movido a "Visitados"
+      if (!clienteAúnEnLista) {
+        setIsSaving(false);
+        setClienteSeleccionado(null);
+      }
+    }, 5000);
 
     return () => clearTimeout(timeoutId);
   }, [clientesSinVisita, isSaving, clienteSeleccionado]);

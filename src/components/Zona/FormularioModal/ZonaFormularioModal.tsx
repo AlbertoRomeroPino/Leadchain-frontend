@@ -14,6 +14,7 @@ import {
   CORDOBA_MAP_CONFIG,
 } from "../../utils/cordobaMapConfig";
 import "../../../styles/components/Zona/FormularioModal/ZonaFormularioModal.css";
+import { showInfoAlert } from "../../utils/errorHandler";
 
 interface ZonaFormularioModalProps {
   show: boolean;
@@ -46,26 +47,31 @@ const ZonaFormularioModal = ({
   onClose,
   onSubmit,
 }: ZonaFormularioModalProps) => {
-  const [nombreZona, setNombreZona] = useState(initialValues?.nombre ?? "");
-  const [puntos, setPuntos] = useState<GeoPoint[]>(initialValues?.area ?? []);
+  const [nombreZona, setNombreZona] = useState(() => initialValues?.nombre ?? "");
+  const [puntos, setPuntos] = useState<GeoPoint[]>(() => initialValues?.area ?? []);
   const [mapCenter, setMapCenter] = useState<[number, number]>(
     CORDOBA_CENTER as [number, number]
   );
 
   useEffect(() => {
-    if (initialValues?.nombre) {
-      setNombreZona(initialValues.nombre);
-    }
-    if (initialValues?.area && initialValues.area.length > 0) {
-      setPuntos(initialValues.area);
-      setMapCenter(getCentroPoligono(initialValues.area) as [number, number]);
-    }
-  }, [initialValues, show]);
+    if (!show) return;
+    if (!initialValues) return;
+
+    queueMicrotask(() => {
+      if (initialValues.nombre && initialValues.nombre !== nombreZona) {
+        setNombreZona(initialValues.nombre);
+      }
+      if (initialValues.area && initialValues.area.length > 0) {
+        setPuntos(initialValues.area);
+        setMapCenter(getCentroPoligono(initialValues.area) as [number, number]);
+      }
+    });
+  }, [show, initialValues, nombreZona]);
 
   const handleMapClick = (lat: number, lng: number) => {
     // Validar que el punto está dentro de Córdoba
     if (!isPuntoDentroCordoba(lat, lng)) {
-      alert("Solo puedes seleccionar puntos dentro de Córdoba");
+      showInfoAlert("Solo puedes seleccionar puntos dentro de Córdoba");
       return;
     }
     setPuntos([...puntos, { lat, lng }]);
@@ -83,12 +89,12 @@ const ZonaFormularioModal = ({
     e.preventDefault();
 
     if (!nombreZona.trim()) {
-      alert("Por favor ingresa un nombre para la zona");
+      showInfoAlert("Por favor ingresa un nombre para la zona");
       return;
     }
 
     if (puntos.length < 3) {
-      alert("Debes seleccionar mínimo 3 puntos para crear un polígono");
+      showInfoAlert("Debes seleccionar mínimo 3 puntos para crear un polígono");
       return;
     }
 

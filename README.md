@@ -13,27 +13,23 @@
   </a>
 </p>
 
-<p align="center" style="color: #666; margin-top: 6px;">
-  Proyecto en construcción: algunas funcionalidades aún pueden estar en mejora.
-</p>
-
 <p align="center">
-  <a href="#acerca">Acerca</a> •
-  <a href="#caracteristicas">Características</a> •
-  <a href="#como-funciona">Cómo funciona</a> •
-  <a href="#tecnologias">Tecnologías</a> •
-  <a href="#estructura-del-proyecto">Estructura</a> •
-  <a href="#scripts">Scripts</a> •
-  <a href="#autor">Autor</a> •
-  <a href="#licencia">Licencia</a>
+  <a href="#Acerca">Acerca</a> •
+  <a href="#Caracteristicas">Características</a> •
+  <a href="#Como-funciona">Cómo funciona</a> •
+  <a href="#Tecnologias">Tecnologías</a> •
+  <a href="#Estructura-del-proyecto">Estructura</a> •
+  <a href="#Scripts">Scripts</a> •
+  <a href="#Autor">Autor</a> •
+  <a href="#Licencia">Licencia</a>
 </p>
 
 ## Acerca
 
 Leadchain Frontend es la aplicación cliente de un proyecto TFG para la gestión de rutas comerciales y visitas técnicas. Incluye autenticación por token, roles de usuario, mapas interactivos y paneles de control para clientes, edificios, zonas y comerciales.
 
-- Backend API: https://github.com/AlbertoRomeroPino/Leadchain-backend.git
-- Frontend: https://github.com/AlbertoRomeroPino/Leadchain-frontend.git
+- API Rest: [repositorio backend](https://github.com/AlbertoRomeroPino/Leadchain-backend.git)
+- Frontend: [Repositorio Frontend](https://github.com/AlbertoRomeroPino/Leadchain-frontend.git)
 
 ---
 
@@ -84,7 +80,9 @@ npm install
 npm run dev
 ```
 
-Abre el navegador en `http://localhost:5173`.
+Abre el navegador en `http://localhost:5173`. 
+
+> Nota: Se necesita tener lanzado el backend para que funcione el login
 
 ---
 
@@ -103,35 +101,9 @@ Abre el navegador en `http://localhost:5173`.
 - **React Leaflet**
 - **Lucide React**
 - **ESLint**
+- **Sileo**
 
 ---
-
-## Estructura del proyecto
-
-```text
-Leadchain-frontend/
-├── public/
-│   └── icons/
-│       ├── leadchain-logo.png
-│       └── Logo.svg
-├── scripts/
-│   └── tree-front.js
-├── src/
-│   ├── auth/
-│   ├── components/
-│   ├── examples/
-│   ├── guards/
-│   ├── hooks/
-│   ├── layout/
-│   ├── main.tsx
-│   ├── pages/
-│   ├── services/
-│   ├── styles/
-│   ├── types/
-│   └── utils/
-├── package.json
-└── README.md
-```
 
 ### Descripción breve
 
@@ -146,11 +118,9 @@ Leadchain-frontend/
 
 ## Scripts
 
-- `npm run dev` — inicia la app en modo desarrollo
-- `npm run build` — construye la aplicación
-- `npm run lint` — ejecuta ESLint
-- `npm run preview` — previsualiza el build
-- `npm run tree` — muestra la estructura de carpetas del frontend
+* `npm run dev`: Inicia el entorno de desarrollo en `http://localhost:5173`.
+* `npm run build`: Genera el build para producción.
+* `npm run tree`: Muestra la estructura de directorios filtrando archivos innecesarios.
 
 ### `npm run tree`
 
@@ -173,6 +143,210 @@ npm run tree -- --exclude=public/icons,archivo-extra
 ```
 
 ---
+
+## Estructura del proyecto
+
+```text
+Leadchain-frontend
+├── dist
+│   ├── assets
+│   │   ├── framework-vendor-CIGW-MKW.css
+│   │   ├── framework-vendor-CVc0_C0b.js
+│   │   ├── index-BiRZRfpw.js
+│   │   ├── index-BPNxTgO0.css
+│   │   ├── network-vendor-BOeqtr82.js
+│   │   ├── ui-vendor-D-5DAzdn.js
+│   │   ├── vendor-C1M2qnCh.js
+│   │   ├── ZonaPage-BZ-HEB4c.css
+│   │   └── ZonaPage-Ds9RISy0.js
+│   ├── icons
+│   │   ├── leadchain-logo.png
+│   │   └── Logo.svg
+│   └── index.html
+├── public
+│   └── icons
+│       ├── leadchain-logo.png
+│       └── Logo.svg
+├── scripts
+│   └── tree-front.js
+├── src
+│   ├── auth
+│   │   ├── AuthContext.ts
+│   │   ├── authProvider.tsx
+│   │   ├── authStorage.ts
+│   │   └── useAuth.ts
+│   ├── components
+│   │   ├── Clientes
+│   │   │   ├── Info
+│   │   │   │   ├── InfoClienteDatosCard.tsx
+│   │   │   │   ├── InfoClienteEdificioCard.tsx
+│   │   │   │   ├── InfoClienteEditModal.tsx
+│   │   │   │   ├── InfoClienteToolbar.tsx
+│   │   │   │   └── InfoClienteVisitasCard.tsx
+│   │   │   ├── ClienteForm.tsx
+│   │   │   ├── ClienteInfo.tsx
+│   │   │   ├── ClientesConEdificioTable.tsx
+│   │   │   ├── ClientesCreateModal.tsx
+│   │   │   ├── ClientesHeader.tsx
+│   │   │   ├── ClientesSinEdificioTable.tsx
+│   │   │   └── ClienteTabla.tsx
+│   │   ├── Comerciales
+│   │   │   ├── ComercialesForm.tsx
+│   │   │   ├── ComercialesFormModal.tsx
+│   │   │   ├── ComercialesHeader.tsx
+│   │   │   ├── ComercialesRow.tsx
+│   │   │   ├── ComercialesStatus.tsx
+│   │   │   └── ComercialesTable.tsx
+│   │   ├── Edificios
+│   │   │   ├── FormularioModal
+│   │   │   │   ├── EdificioModalCliente.tsx
+│   │   │   │   ├── EdificioModalEdificio.tsx
+│   │   │   │   ├── EdificioModalMapa.tsx
+│   │   │   │   └── EdificioModalPestaña.tsx
+│   │   │   ├── Info
+│   │   │   │   ├── EdificioInfoClienteCard.tsx
+│   │   │   │   ├── EdificioInfoClienteInfo.tsx
+│   │   │   │   ├── EdificioInfoDetailsCard.tsx
+│   │   │   │   ├── EdificioInfoMapCard.tsx
+│   │   │   │   └── EdificioInfoToolbar.tsx
+│   │   │   ├── EdificioCreateModal.tsx
+│   │   │   ├── EdificioForm.tsx
+│   │   │   ├── EdificioHeader.tsx
+│   │   │   ├── EdificioInfo.tsx
+│   │   │   └── EdificioTabla.tsx
+│   │   ├── Inicio
+│   │   │   ├── InicioAdmin
+│   │   │   │   ├── ComercialCard
+│   │   │   │   │   ├── ComercialCard.tsx
+│   │   │   │   │   ├── ComercialCardIndividual.tsx
+│   │   │   │   │   └── ComercialStatsBars.tsx
+│   │   │   │   └── InicioAdmin.tsx
+│   │   │   └── InicioComercial
+│   │   │       ├── ClientesSinVisitar
+│   │   │       │   ├── ClienteConVisitaCard.tsx
+│   │   │       │   ├── ClienteSinVisitaCard.tsx
+│   │   │       │   ├── ClientesSinVisitar.tsx
+│   │   │       │   └── ClientesStats.tsx
+│   │   │       └── InicioComercial.tsx
+│   │   ├── MapSetup
+│   │   │   ├── MAP_BOUNDS_RESTRICTIONS_GUIDE.md
+│   │   │   ├── MapView.tsx
+│   │   │   └── ZoomCalculator.tsx
+│   │   ├── MapViews
+│   │   │   ├── AdminMapView.tsx
+│   │   │   ├── CommercialMapView.tsx
+│   │   │   ├── EdificioMarker.tsx
+│   │   │   └── MapBoundsSetup.tsx
+│   │   ├── sidebar
+│   │   │   └── MenuButtons.tsx
+│   │   ├── utils
+│   │   │   ├── cordobaMapConfig.ts
+│   │   │   ├── errorHandler.ts
+│   │   │   ├── GlovalMap.tsx
+│   │   │   ├── MapaEdificioPanel.tsx
+│   │   │   └── StatusAlert.tsx
+│   │   ├── Visitas
+│   │   │   ├── Admin
+│   │   │   │   ├── VisitaCardAdmin.tsx
+│   │   │   │   └── VisitasAdminGrid.tsx
+│   │   │   ├── Comercial
+│   │   │   │   ├── VisitaCardComercial.tsx
+│   │   │   │   └── VisitasComercialGrid.tsx
+│   │   │   ├── FormularioModal
+│   │   │   │   └── VisitaFormularioModal.tsx
+│   │   │   └── VisitasHeader.tsx
+│   │   └── Zona
+│   │       ├── FormularioModal
+│   │       │   └── ZonaFormularioModal.tsx
+│   │       ├── ZonaDetails.tsx
+│   │       ├── ZonaHeader.tsx
+│   │       ├── ZonaInfo.tsx
+│   │       ├── ZonaList.tsx
+│   │       └── ZonaMap.tsx
+│   ├── guards
+│   │   ├── ProtectedRoute.tsx
+│   │   └── RolRoutes.tsx
+│   ├── hooks
+│   │   ├── useCalculateZoomFromBounds.ts
+│   │   ├── useInitialize.ts
+│   │   └── useMapBoundsRestrictions.ts
+│   ├── layout
+│   │   └── Sidebar.tsx
+│   ├── pages
+│   │   ├── ClientesPage.tsx
+│   │   ├── ComercialesPage.tsx
+│   │   ├── EdificiosPage.tsx
+│   │   ├── InicioPage.tsx
+│   │   ├── LoginPage.tsx
+│   │   ├── MapPage.tsx
+│   │   ├── NotFoundBSODPage.tsx
+│   │   ├── VisitasPage.tsx
+│   │   └── ZonaPage.tsx
+│   ├── services
+│   │   ├── authService.ts
+│   │   ├── ClientesService.ts
+│   │   ├── EdificiosService.ts
+│   │   ├── EstadoVisitaService.ts
+│   │   ├── ExceptionService.ts
+│   │   ├── https.ts
+│   │   ├── InicioService.ts
+│   │   ├── tokenManager.ts
+│   │   ├── User.ts
+│   │   ├── UserService.ts
+│   │   ├── VisitasService.ts
+│   │   └── ZonaService.ts
+│   ├── styles
+│   │    └── components
+│   │       ├── Clientes
+│   │       │   └── Info
+│   │       ├── Comerciales
+│   │       ├── Edificios
+│   │       │   ├── FormularioModal
+│   │       │   └── Info
+│   │       ├── Inicio
+│   │       │   ├── InicioAdmin
+│   │       │   │   └── ComercialCard
+│   │       │   └── InicioComercial
+│   │       │       └── ClientesSinVisitar
+│   │       ├── sidebar
+│   │       ├── utils
+│   │       ├── Visitas
+│   │       │   ├── Admin
+│   │       │   ├── Comercial
+│   │       │   └── FormularioModal
+│   │       └── Zona
+│   │           └── FormularioModal
+│   ├── types
+│   │   ├── clientes
+│   │   │   ├── Cliente.ts
+│   │   │   └── ClienteDetalle.ts
+│   │   ├── edificios
+│   │   │   └── Edificio.ts
+│   │   ├── shared
+│   │   │   └── GeoPoint.ts
+│   │   ├── users
+│   │   │   └── User.ts
+│   │   ├── visitas
+│   │   │   ├── EstadoVisita.ts
+│   │   │   └── Visita.ts
+│   │   └── zonas
+│   │       └── Zona.ts
+│   ├── utils
+│   ├── App.css
+│   ├── App.tsx
+│   ├── index.css
+│   └── main.tsx
+├── .env
+├── .gitignore
+├── index.html
+├── package.json
+└── README.md
+```
+
+
+---
+
+
 
 ## Autenticación
 
@@ -200,12 +374,6 @@ El frontend incluye un sistema de sesión que renueva el token JWT automáticame
 - **Alberto Romero Pino**
 - **Email**: albertoromeropino2004@gmail.com
 - **LinkedIn**: [linkedin.com/in/alberto-romero-pino-8aa0a32ba](linkedin.com/in/alberto-romero-pino-8aa0a32ba)
-
----
-
-## Licencia
-
-Este proyecto está bajo la licencia **MIT**.
 
 ---
 

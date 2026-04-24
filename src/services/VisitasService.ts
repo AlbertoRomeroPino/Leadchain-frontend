@@ -4,24 +4,6 @@ import { authHttp } from "./https";
 
 export const VisitasService = {
 
-    async getVisitas() {
-        try {
-            const response = await authHttp.get("/api/visitas");
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, "Error al obtener visitas"));
-        }
-    },
-
-    async getVisitaById(id: number) {
-        try {
-            const response = await authHttp.get(`/api/visitas/${id}`);
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, `Error al obtener visita con ID ${id}`));
-        }
-    },
-
     async createVisita(visita: VisitaInput) {
         try {
             const response = await authHttp.post("/api/visitas", visita);

@@ -4,7 +4,7 @@
 
 /* Contenedor de Sileo */
 [data-sileo-viewport="true"] {
-  z-index: 99999 !important;
+  z-index: 999999 !important;
 }
 
 /* Contenedor del toast */
@@ -22,7 +22,8 @@
   font-family: inherit;
   max-width: 400px;
   min-width: 280px;
-  z-index: 99999 !important;
+  z-index: 999999 !important;
+  position: relative !important;
 }
 
 /* Estados del toast */
@@ -79,6 +80,7 @@
   font-weight: 700 !important;
   color: #ffffff !important;
   margin: 0 !important;
+  text-transform: none !important;
 }
 
 [role="alert"].success [class*="title"],
