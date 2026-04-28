@@ -47,5 +47,6 @@ export const useInitialize = (
     return () => {
       abortControllerRef.current?.abort();
     };
-  }, deps);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps ?? []);
 };
