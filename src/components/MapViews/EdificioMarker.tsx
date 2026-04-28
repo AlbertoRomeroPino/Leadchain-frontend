@@ -1,9 +1,7 @@
 import { memo } from "react";
 import { Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import type { Edificio } from "../../types/edificios/Edificio";
-import type { Cliente } from "../../types/clientes/Cliente";
-import type { Zona } from "../../types/zonas/Zona";
+import type { Edificio, Cliente, Zona} from "../../types";
 
 interface EdificioMarkerProps {
   edificio: Edificio;

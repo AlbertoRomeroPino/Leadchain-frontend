@@ -14,17 +14,17 @@
 </p>
 
 <p align="center">
-  <a href="#Acerca">Acerca</a> •
-  <a href="#Caracteristicas">Características</a> •
-  <a href="#Como-funciona">Cómo funciona</a> •
-  <a href="#Tecnologias">Tecnologías</a> •
-  <a href="#Estructura-del-proyecto">Estructura</a> •
-  <a href="#Scripts">Scripts</a> •
-  <a href="#Autor">Autor</a> •
-  <a href="#Licencia">Licencia</a>
+  <a href="#acerca">Acerca</a> •
+  <a href="#caracteristicas">Características</a> •
+  <a href="#como-funciona">Cómo funciona</a> •
+  <a href="#tecnologias">Tecnologías</a> •
+  <a href="#estructura-del-proyecto">Estructura</a> •
+  <a href="#scripts">Scripts</a> •
+  <a href="#autenticacion">Autenticacion</a> •
+  <a href="#autor">Autor</a>
 </p>
 
-## Acerca
+<h2 align="center" id="acerca"> Acerca </h2>
 
 Leadchain Frontend es la aplicación cliente de un proyecto TFG para la gestión de rutas comerciales y visitas técnicas. Incluye autenticación por token, roles de usuario, mapas interactivos y paneles de control para clientes, edificios, zonas y comerciales.
 
@@ -33,7 +33,7 @@ Leadchain Frontend es la aplicación cliente de un proyecto TFG para la gestión
 
 ---
 
-## Características
+<h2 align="center" id="caracteristicas">Características</h2>
 
 - [X] Login con token JWT y almacenamiento de sesión
 - [X] Renovación automática de token cuando expira
@@ -47,7 +47,7 @@ Leadchain Frontend es la aplicación cliente de un proyecto TFG para la gestión
 
 ---
 
-## Cómo funciona
+<h2 align="center" id="como-funciona">Cómo funciona</h2>
 
 El proyecto está dividido en dos partes:
 
@@ -56,7 +56,7 @@ El proyecto está dividido en dos partes:
 
 Este repositorio contiene solo el frontend. El backend debe ejecutarse para que la app funcione correctamente.
 
-### Requisitos previos
+<h3 align="center">Requisitos previos</h3>
 
 Antes de empezar necesitas tener instalado:
 
@@ -64,7 +64,7 @@ Antes de empezar necesitas tener instalado:
 - [Node.js](https://nodejs.org/)
 - [npm](https://www.npmjs.com/)
 
-### Ejecutar la aplicación web (Frontend)
+<h3 align="center">Ejecutar la aplicación web (Frontend)</h3>
 
 ```bash
 # Clona este repositorio
@@ -80,20 +80,20 @@ npm install
 npm run dev
 ```
 
-Abre el navegador en `http://localhost:5173`. 
+Abre el navegador en `http://localhost:5173`.
 
 > Nota: Se necesita tener lanzado el backend para que funcione el login
 
 ---
 
-## Tecnologías
+<h2 align="center" id="tecnologias">Tecnologías</h2>
 
-#### Plataforma
+<h4 align="center">Plataforma </h4>
 
 - **React** + **TypeScript**
 - **Vite**
 
-#### Librerías principales
+<h4 align="center">Librerías principales </h4>
 
 - **React Router Dom**
 - **Axios**
@@ -105,7 +105,7 @@ Abre el navegador en `http://localhost:5173`.
 
 ---
 
-### Descripción breve
+<h3 align="center"> Descripción breve </h3>
 
 - `src/auth/` — gestión de sesión y contexto de usuario.
 - `src/components/` — componentes reutilizables de la UI.
@@ -116,13 +116,13 @@ Abre el navegador en `http://localhost:5173`.
 
 ---
 
-## Scripts
+<h2 align="center" id="scripts">Scripts</h2>
 
 * `npm run dev`: Inicia el entorno de desarrollo en `http://localhost:5173`.
 * `npm run build`: Genera el build para producción.
 * `npm run tree`: Muestra la estructura de directorios filtrando archivos innecesarios.
 
-### `npm run tree`
+<h3 align="center">npm run tree</h3>
 
 Este comando imprime un árbol de directorios del frontend con exclusiones configurables.
 
@@ -144,25 +144,10 @@ npm run tree -- --exclude=public/icons,archivo-extra
 
 ---
 
-## Estructura del proyecto
+<h2 align="center" id="estructura-del-proyecto">Estructura del proyecto</h2>
 
 ```text
 Leadchain-frontend
-├── dist
-│   ├── assets
-│   │   ├── framework-vendor-CIGW-MKW.css
-│   │   ├── framework-vendor-CVc0_C0b.js
-│   │   ├── index-BiRZRfpw.js
-│   │   ├── index-BPNxTgO0.css
-│   │   ├── network-vendor-BOeqtr82.js
-│   │   ├── ui-vendor-D-5DAzdn.js
-│   │   ├── vendor-C1M2qnCh.js
-│   │   ├── ZonaPage-BZ-HEB4c.css
-│   │   └── ZonaPage-Ds9RISy0.js
-│   ├── icons
-│   │   ├── leadchain-logo.png
-│   │   └── Logo.svg
-│   └── index.html
 ├── public
 │   └── icons
 │       ├── leadchain-logo.png
@@ -296,42 +281,118 @@ Leadchain-frontend
 │   │   ├── VisitasService.ts
 │   │   └── ZonaService.ts
 │   ├── styles
-│   │    └── components
-│   │       ├── Clientes
-│   │       │   └── Info
-│   │       ├── Comerciales
-│   │       ├── Edificios
-│   │       │   ├── FormularioModal
-│   │       │   └── Info
-│   │       ├── Inicio
-│   │       │   ├── InicioAdmin
-│   │       │   │   └── ComercialCard
-│   │       │   └── InicioComercial
-│   │       │       └── ClientesSinVisitar
-│   │       ├── sidebar
-│   │       ├── utils
-│   │       ├── Visitas
-│   │       │   ├── Admin
-│   │       │   ├── Comercial
-│   │       │   └── FormularioModal
-│   │       └── Zona
-│   │           └── FormularioModal
+│   │   ├── components
+│   │   │   ├── Clientes
+│   │   │   │   ├── Info
+│   │   │   │   │   ├── InfoClienteDatosCard.css
+│   │   │   │   │   ├── InfoClienteEdificioCard.css
+│   │   │   │   │   ├── InfoClienteEditModal.css
+│   │   │   │   │   ├── InfoClienteToolbar.css
+│   │   │   │   │   └── InfoClienteVisitasCard.css
+│   │   │   │   ├── ClienteForm.css
+│   │   │   │   ├── ClienteInfo.css
+│   │   │   │   ├── ClientesConEdificioTable.css
+│   │   │   │   ├── ClientesCreateModal.css
+│   │   │   │   ├── ClientesHeader.css
+│   │   │   │   ├── ClientesSinEdificioTable.css
+│   │   │   │   └── ClienteTabla.css
+│   │   │   ├── Comerciales
+│   │   │   │   ├── ComercialesForm.css
+│   │   │   │   ├── ComercialesFormModal.css
+│   │   │   │   ├── ComercialesHeader.css
+│   │   │   │   ├── ComercialesRow.css
+│   │   │   │   ├── ComercialesStatus.css
+│   │   │   │   └── ComercialesTable.css
+│   │   │   ├── Edificios
+│   │   │   │   ├── FormularioModal
+│   │   │   │   │   ├── EdificioModalCliente.css
+│   │   │   │   │   ├── EdificioModalEdificio.css
+│   │   │   │   │   ├── EdificioModalMapa.css
+│   │   │   │   │   └── EdificioModalPestaña.css
+│   │   │   │   ├── Info
+│   │   │   │   │   ├── EdificioInfoClienteCard.css
+│   │   │   │   │   ├── EdificioInfoDetailsCard.css
+│   │   │   │   │   ├── EdificioInfoMapCard.css
+│   │   │   │   │   └── EdificioInfoToolbar.css
+│   │   │   │   ├── EdificioCreateModal.css
+│   │   │   │   ├── EdificioForm.css
+│   │   │   │   ├── EdificioHeader.css
+│   │   │   │   ├── EdificioInfo.css
+│   │   │   │   └── EdificioTabla.css
+│   │   │   ├── Inicio
+│   │   │   │   ├── InicioAdmin
+│   │   │   │   │   ├── ComercialCard
+│   │   │   │   │   │   ├── ComercialCard.css
+│   │   │   │   │   │   ├── ComercialCardIndividual.css
+│   │   │   │   │   │   └── ComercialStatsBars.css
+│   │   │   │   │   └── InicioAdmin.css
+│   │   │   │   └── InicioComercial
+│   │   │   │       ├── ClientesSinVisitar
+│   │   │   │       │   ├── ClienteConVisitaCard.css
+│   │   │   │       │   ├── ClienteSinVisitaCard.css
+│   │   │   │       │   ├── ClientesSinVisitar.css
+│   │   │   │       │   └── ClientesStats.css
+│   │   │   │       └── InicioComercial.css
+│   │   │   ├── sidebar
+│   │   │   │   ├── MenuButtons.css
+│   │   │   │   └── Sidebar.css
+│   │   │   ├── utils
+│   │   │   │   ├── CommercialZoneInfo.css
+│   │   │   │   ├── CommercialZoneMap.css
+│   │   │   │   ├── GlovalMap.css
+│   │   │   │   ├── MapaEdificioPanel.css
+│   │   │   │   └── StatusAlert.css
+│   │   │   ├── Visitas
+│   │   │   │   ├── Admin
+│   │   │   │   │   ├── VisitaCardAdmin.css
+│   │   │   │   │   └── VisitasAdminGrid.css
+│   │   │   │   ├── Comercial
+│   │   │   │   │   ├── VisitaCardComercial.css
+│   │   │   │   │   └── VisitasComercialGrid.css
+│   │   │   │   ├── FormularioModal
+│   │   │   │   │   └── VisitaFormularioModal.css
+│   │   │   │   └── VisitasHeader.css
+│   │   │   └── Zona
+│   │   │       ├── FormularioModal
+│   │   │       │   └── ZonaFormularioModal.css
+│   │   │       ├── ZonaDetails.css
+│   │   │       ├── ZonaHeader.css
+│   │   │       ├── ZonaInfo.css
+│   │   │       ├── ZonaList.css
+│   │   │       └── ZonaMap.css
+│   │   ├── Clientes.css
+│   │   ├── Comerciales.css
+│   │   ├── Edificios.css
+│   │   ├── InfoCliente.css
+│   │   ├── Inicio.css
+│   │   ├── Login.css
+│   │   ├── Map.css
+│   │   ├── NotFound.css
+│   │   ├── sileo.css
+│   │   ├── Visitas.css
+│   │   └── Zona.css
 │   ├── types
 │   │   ├── clientes
 │   │   │   ├── Cliente.ts
-│   │   │   └── ClienteDetalle.ts
+│   │   │   ├── ClienteDetalle.ts
+│   │   │   └── index.ts
 │   │   ├── edificios
-│   │   │   └── Edificio.ts
+│   │   │   ├── Edificio.ts
+│   │   │   └── index.ts
 │   │   ├── shared
-│   │   │   └── GeoPoint.ts
+│   │   │   ├── GeoPoint.ts
+│   │   │   └── index.ts
 │   │   ├── users
+│   │   │   ├── index.ts
 │   │   │   └── User.ts
 │   │   ├── visitas
 │   │   │   ├── EstadoVisita.ts
+│   │   │   ├── index.ts
 │   │   │   └── Visita.ts
-│   │   └── zonas
-│   │       └── Zona.ts
-│   ├── utils
+│   │   ├── zonas
+│   │   │   ├── index.ts
+│   │   │   └── Zona.ts
+│   │   └── index.ts
 │   ├── App.css
 │   ├── App.tsx
 │   ├── index.css
@@ -343,16 +404,13 @@ Leadchain-frontend
 └── README.md
 ```
 
-
 ---
 
-
-
-## Autenticación
+<h2 align="center" id="autenticacion">Autenticación </h2>
 
 El frontend incluye un sistema de sesión que renueva el token JWT automáticamente cuando la API devuelve `401`.
 
-### Qué hace
+<h3 align="center">Qué hace </h3>
 
 - Guarda el token y el usuario en `localStorage`.
 - Detecta tokens próximos a expirar.
@@ -360,7 +418,7 @@ El frontend incluye un sistema de sesión que renueva el token JWT automáticame
 - Actualiza el contexto de React.
 - Mantiene la sesión transparente al usuario.
 
-### Archivos clave
+<h3 align="center">Archivos clave</h3>
 
 - `src/services/https.ts`
 - `src/auth/authProvider.tsx`
@@ -369,7 +427,7 @@ El frontend incluye un sistema de sesión que renueva el token JWT automáticame
 
 ---
 
-## Autor
+<h2 align="center" id="autor">Autor</h2>
 
 - **Alberto Romero Pino**
 - **Email**: albertoromeropino2004@gmail.com
@@ -377,7 +435,7 @@ El frontend incluye un sistema de sesión que renueva el token JWT automáticame
 
 ---
 
-## Más información
+<h2 align="center">Más información</h2>
 
 - [React](https://reactjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)

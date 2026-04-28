@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Popup, Polygon, useMap } from 'react-leaflet'
 import L from 'leaflet'
-import type { GeoPoint } from '../../../types/shared/GeoPoint'
+import type { GeoPoint } from '../../../types'
 import { CORDOBA_CENTER } from '../../utils/cordobaMapConfig'
 
 import '../../../styles/components/Edificios/Info/EdificioInfoMapCard.css';

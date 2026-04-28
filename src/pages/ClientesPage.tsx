@@ -1,4 +1,4 @@
-import type { Cliente } from "../types/clientes/Cliente";
+import type { Cliente } from "../types";
 
 import { useCallback, useMemo, useState } from "react";
 import { clientesService } from "../services/ClientesService";

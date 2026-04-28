@@ -1,5 +1,4 @@
-import type { Cliente } from "./Cliente";
-import type { Edificio } from "../edificios/Edificio";
+import type { Cliente, Edificio } from "../";
 
 export type ClienteDetalleVisita = {
   id: number;

@@ -1,4 +1,4 @@
-import type { Cliente } from "../../../types/clientes/Cliente";
+import type { Cliente } from "../../../types";
 import FormCliente from "../ClienteForm";
 import "../../../styles/components/Clientes/Info/InfoClienteEditModal.css";
 

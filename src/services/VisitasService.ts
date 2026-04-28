@@ -1,4 +1,4 @@
-import type { Visita, VisitaInput } from "../types/visitas/Visita";
+import type { Visita, VisitaInput } from "../types";
 import { ExceptionService } from "./ExceptionService";
 import { authHttp } from "./https";
 

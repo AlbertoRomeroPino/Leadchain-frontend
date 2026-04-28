@@ -1,5 +1,4 @@
-import type { Zona } from "../../types/zonas/Zona";
-import type { User } from "../../types/users/User";
+import type { Zona, User } from "../../types";
 import ComercialesForm from "./ComercialesForm";
 import "../../styles/components/Comerciales/ComercialesFormModal.css";
 

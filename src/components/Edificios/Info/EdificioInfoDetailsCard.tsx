@@ -1,4 +1,4 @@
-import type { Edificio } from '../../../types/edificios/Edificio'
+import type { Edificio } from '../../../types'
 
 import '../../../styles/components/Edificios/Info/EdificioInfoDetailsCard.css';
 

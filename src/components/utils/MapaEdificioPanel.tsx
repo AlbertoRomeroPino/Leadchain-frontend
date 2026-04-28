@@ -1,10 +1,8 @@
 import { useState, useRef } from "react";
-import type { Cliente } from "../../types/clientes/Cliente";
-import type { Zona } from "../../types/zonas/Zona";
+import type { Cliente, Zona, Edificio } from "../../types";
 import { InicioService } from "../../services/InicioService";
 import { useInitialize } from "../../hooks/useInitialize";
 import { showLoadingAlert, showErrorAlert } from "./errorHandler";
-import type { Edificio } from "../../types/edificios/Edificio";
 import "../../styles/components/utils/MapaEdificioPanel.css";
 
 interface MapaEdificioPanelProps {

@@ -1,6 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import type { Cliente } from "../../../types/clientes/Cliente";
-import type { EstadoVisita } from "../../../types/visitas/EstadoVisita";
+import type { Cliente, EstadoVisita } from "../../../types";
 import { clientesService } from "../../../services/ClientesService";
 import "../../../styles/components/Visitas/FormularioModal/VisitaFormularioModal.css";
 

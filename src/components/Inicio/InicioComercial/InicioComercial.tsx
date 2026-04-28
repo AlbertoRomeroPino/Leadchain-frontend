@@ -3,8 +3,7 @@ import "../../../styles/components/Inicio/InicioComercial/InicioComercial.css";
 import { useAuth } from "../../../auth/useAuth";
 import { InicioService } from "../../../services/InicioService";
 import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../../../components/utils/errorHandler";
-import type { Cliente } from "../../../types/clientes/Cliente";
-import type { Visita } from "../../../types/visitas/Visita";
+import type { Cliente, Visita } from "../../../types";
 import ClientesSinVisitar from "./ClientesSinVisitar/ClientesSinVisitar";
 
 interface ClienteSinVisita {

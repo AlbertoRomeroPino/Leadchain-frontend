@@ -1,4 +1,4 @@
-import type { Visita } from "../../../types/visitas/Visita";
+import type { Visita } from "../../../types";
 import type { CSSProperties } from "react";
 import "../../../styles/components/Visitas/Comercial/VisitasComercialGrid.css";
 import VisitaCardComercial from "./VisitaCardComercial";

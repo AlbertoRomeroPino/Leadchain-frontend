@@ -1,6 +1,6 @@
 import { authHttp } from "./https";
 import { ExceptionService } from "./ExceptionService";
-import type { User } from "../types/users/User";
+import type { User } from "../types";
 
 export const UserService = {
   async getCurrentUser() {

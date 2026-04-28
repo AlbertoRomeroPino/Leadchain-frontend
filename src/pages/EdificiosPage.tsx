@@ -4,8 +4,8 @@ import type {
   Edificio,
   EdificioInput,
   EdificioClienteBlock,
-} from "../types/edificios/Edificio";
-import type { Zona } from "../types/zonas/Zona";
+  Zona,
+} from "../types";
 import EdificioInfo from "../components/Edificios/EdificioInfo";
 import EdificioTabla from "../components/Edificios/EdificioTabla";
 import { useAuth } from "../auth/useAuth";
@@ -80,7 +80,7 @@ const Edificios = () => {
 
     setEdificios((prev) => [...prev, nuevoEdificio]);
     setShowCreateForm(false);
-    
+
     return nuevoEdificio;
   };
 
@@ -111,14 +111,14 @@ const Edificios = () => {
       // Llamar al endpoint batch que crea y adjunta todo de una sola vez
       const edificioActualizado = await EdificiosService.attachMultipleClientes(
         edificioId,
-        clientes
+        clientes,
       );
 
       // Actualizar el estado local con el edificio actualizado
       setEdificios((prev) =>
         prev.map((item) =>
-          item.id === edificioId ? edificioActualizado : item
-        )
+          item.id === edificioId ? edificioActualizado : item,
+        ),
       );
 
       // Si el edificio está seleccionado, actualizar la vista de detalles
@@ -130,7 +130,7 @@ const Edificios = () => {
       showStatusAlert({
         type: "success",
         title: "Clientes agregados",
-        description: `${clientes.length} cliente${clientes.length > 1 ? "s" : ""} agregado${clientes.length > 1 ? "s" : ""} correctamente`
+        description: `${clientes.length} cliente${clientes.length > 1 ? "s" : ""} agregado${clientes.length > 1 ? "s" : ""} correctamente`,
       });
     } catch (err) {
       const message =

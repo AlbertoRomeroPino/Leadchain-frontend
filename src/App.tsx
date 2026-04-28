@@ -1,48 +1,54 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { lazy } from "react";
+import { Suspense, lazy } from "react";
 import "./index.css";
 import "./App.css";
 import LoginPage from "./pages/LoginPage";
 import InicioPage from "./pages/InicioPage";
-import MapPage from "./pages/MapPage";
-import ClientesPage from "./pages/ClientesPage";
-import ComercialesPage from "./pages/ComercialesPage";
-import VisitasPage from "./pages/VisitasPage";
-import EdificiosPage from "./pages/EdificiosPage";
 import NotFoundBSODPage from "./pages/NotFoundBSODPage";
 import { GuestRoute, ProtectedRoute } from "./guards/ProtectedRoute";
 import { IsAdmin } from "./guards/RolRoutes";
+
+// Lazy loading de las páginas para mejorar el rendimiento
+const MapPage = lazy(() => import("./pages/MapPage"));
+const ClientesPage = lazy(() => import("./pages/ClientesPage"));
+const EdificiosPage = lazy(() => import("./pages/EdificiosPage"));
 const ZonaPage = lazy(() => import("./pages/ZonaPage"));
+const VisitasPage = lazy(() => import("./pages/VisitasPage"));
+const ComercialesPage = lazy(() => import("./pages/ComercialesPage"));
+
+const protectedRoutes = [
+  { path: "/Inicio", element: <InicioPage /> },
+  { path: "/Map", element: <MapPage /> },
+  { path: "/Visitas", element: <VisitasPage /> },
+  { path: "/Clientes", element: <ClientesPage /> },
+  { path: "/Edificios", element: <EdificiosPage /> },
+  { path: "/Zona", element: <ZonaPage /> },
+];
 
 function App() {
   return (
-    <Routes>
-      {/* Redirección por defecto */}
-      <Route path="/" element={<Navigate to="/Login" />} />
+    // Usamos Suspense para manejar la carga de componentes con lazy loading
+    <Suspense fallback={null}>
+      <Routes>
+        <Route path="/" element={<Navigate to="/Login" replace />} />
 
-      {/* Rutas públicas */}
-      <Route element={<GuestRoute />}>
-        <Route path="/Login" element={<LoginPage />} />
-      </Route>
-
-      {/* Rutas privadas */}
-      <Route element={<ProtectedRoute />}>
-        <Route path="/Inicio" element={<InicioPage />} />
-        <Route path="/Map" element={<MapPage />} />
-        <Route path="/Visitas" element={<VisitasPage />} />
-        <Route path="/Clientes" element={<ClientesPage />} />
-        <Route path="/Edificios" element={<EdificiosPage />} />
-        <Route path="/Zona" element={<ZonaPage />} />
-        
-        {/* Rutas por rol */}
-        <Route element={<IsAdmin />}>
-          <Route path="/Comerciales" element={<ComercialesPage />} />
+        <Route element={<GuestRoute />}>
+          <Route path="/Login" element={<LoginPage />} />
         </Route>
-      </Route>
 
-      {/* 404 */}
-      <Route path="*" element={<NotFoundBSODPage />} />
-    </Routes>
+        <Route element={<ProtectedRoute />}>
+          {protectedRoutes.map(({ path, element }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
+
+          <Route element={<IsAdmin />}>
+            <Route path="/Comerciales" element={<ComercialesPage />} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<NotFoundBSODPage />} />
+      </Routes>
+    </Suspense>
   );
 }
 

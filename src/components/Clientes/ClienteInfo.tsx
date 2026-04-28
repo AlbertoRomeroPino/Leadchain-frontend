@@ -1,12 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { clientesService } from "../../services/ClientesService";
-import type { Cliente } from "../../types/clientes/Cliente";
-import type { ClienteDetalleResponse } from "../../types/clientes/ClienteDetalle";
-import type { Edificio } from "../../types/edificios/Edificio";
-import type { Visita } from "../../types/visitas/Visita";
+import type { Cliente, ClienteDetalleResponse, Edificio, Visita, Zona } from "../../types";
 import "../../styles/InfoCliente.css";
 import "../../styles/components/Clientes/ClienteInfo.css";
-import type { Zona } from "../../types/zonas/Zona";
 import { useAuth } from "../../auth/useAuth";
 import { useInitialize } from "../../hooks/useInitialize";
 import { showErrorAlert } from "../utils/errorHandler";

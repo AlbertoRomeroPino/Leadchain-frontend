@@ -1,4 +1,4 @@
-import type { UserVisitas } from '../../types/users/User';
+import type { UserVisitas } from '../../types';
 import { Trash, UserPlus2, UserRoundCog } from 'lucide-react';
 import '../../styles/components/Comerciales/ComercialesHeader.css';
 

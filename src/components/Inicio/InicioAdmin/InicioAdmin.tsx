@@ -5,11 +5,7 @@ import { useInitialize } from "../../../hooks/useInitialize";
 import ComercialCard from "./ComercialCard/ComercialCard";
 import { InicioService } from "../../../services/InicioService";
 import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../../utils/errorHandler";
-import type { User } from "../../../types/users/User";
-import type { Visita } from "../../../types/visitas/Visita";
-import type { Cliente } from "../../../types/clientes/Cliente";
-import type { Edificio } from "../../../types/edificios/Edificio";
-import type { Zona } from "../../../types/zonas/Zona";
+import type { User, Visita, Cliente, Edificio, Zona } from "../../../types";
 
 interface AdminDashboardState {
   comerciales: User[];

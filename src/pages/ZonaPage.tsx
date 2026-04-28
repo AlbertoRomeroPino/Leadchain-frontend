@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import Sidebar from "../layout/Sidebar";
-import type { Zona } from "../types/zonas/Zona";
-import type { GeoPoint } from "../types/shared/GeoPoint";
+import type { GeoPoint, Zona } from "../types";
 import { ZonaService } from "../services/ZonaService";
 import { useInitialize } from "../hooks/useInitialize";
 import showStatusAlert from "../components/utils/StatusAlert";

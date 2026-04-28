@@ -1,6 +1,5 @@
 import React from "react";
-import type { Zona } from "../../types/zonas/Zona";
-import type { UserVisitas } from "../../types/users/User";
+import type { Zona, UserVisitas } from "../../types";
 import ComercialesRow from "./ComercialesRow";
 import "../../styles/components/Comerciales/ComercialesTable.css";
 

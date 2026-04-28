@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
-import type { GeoPoint } from "../types/shared/GeoPoint";
+import type { GeoPoint } from "../types";
 
 interface UseCalculateZoomFromBoundsProps {
   /**

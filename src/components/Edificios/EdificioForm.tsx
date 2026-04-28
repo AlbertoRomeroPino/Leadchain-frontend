@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "../../styles/components/Edificios/EdificioForm.css";
-import type { EdificioInput } from "../../types/edificios/Edificio";
-import type { GeoPoint } from "../../types/shared/GeoPoint";
+import type { EdificioInput, GeoPoint } from "../../types";
 
 interface EdificioFormProps {
   onSubmit: (edificio: EdificioInput) => Promise<void>;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Cliente } from "../../../types/clientes/Cliente";
+import type { Cliente } from "../../../types";
 import { clientesService } from "../../../services/ClientesService";
 
 import '../../../styles/components/Edificios/FormularioModal/EdificioModalEdificio.css';

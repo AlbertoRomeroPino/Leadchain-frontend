@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { ClienteInput } from "../../types/clientes/Cliente";
+import type { ClienteInput } from "../../types";
 import "../../styles/components/Clientes/ClienteForm.css";
 import { showErrorAlert } from "../utils/errorHandler";
 

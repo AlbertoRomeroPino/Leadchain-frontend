@@ -1,4 +1,4 @@
-import type { Zona } from "../types/zonas/Zona";
+import type { Zona } from "../types";
 import { ExceptionService } from "./ExceptionService";
 import { authHttp } from "./https";
 

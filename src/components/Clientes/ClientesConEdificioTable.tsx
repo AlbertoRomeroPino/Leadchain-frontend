@@ -1,4 +1,4 @@
-import type { Cliente } from "../../types/clientes/Cliente";
+import type { Cliente } from "../../types";
 import ClienteTabla from "./ClienteTabla";
 import "../../styles/components/Clientes/ClientesConEdificioTable.css";
 

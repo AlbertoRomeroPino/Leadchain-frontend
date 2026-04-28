@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import "../../../../styles/components/Inicio/InicioComercial/ClientesSinVisitar/ClientesSinVisitar.css";
-import type { Cliente } from "../../../../types/clientes/Cliente";
-import type { Visita } from "../../../../types/visitas/Visita";
-import type { Edificio } from "../../../../types/edificios/Edificio";
-import type { EstadoVisita } from "../../../../types/visitas/EstadoVisita";
+import type { Cliente, Visita, Edificio, EstadoVisita} from "../../../../types";
 import { useAuth } from "../../../../auth/useAuth";
 import { VisitasService } from "../../../../services/VisitasService";
 import { EstadoVisitaService } from "../../../../services/EstadoVisitaService";

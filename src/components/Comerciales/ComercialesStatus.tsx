@@ -1,4 +1,4 @@
-import type { UserVisitas } from "../../types/users/User";
+import type { UserVisitas } from "../../types";
 import "../../styles/components/Comerciales/ComercialesStatus.css";
 
 interface ComercialesStatusProps {

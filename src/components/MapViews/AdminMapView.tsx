@@ -3,8 +3,7 @@ import GlovalMap from "../utils/GlovalMap";
 import { InicioService } from "../../services/InicioService";
 import { useInitialize } from "../../hooks/useInitialize";
 import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../utils/errorHandler";
-import type { Zona } from "../../types/zonas/Zona";
-import type { Edificio } from "../../types/edificios/Edificio";
+import type { Zona, Edificio } from "../../types";
 import type { LatLngBoundsExpression } from "leaflet";
 
 interface AdminMapViewProps {

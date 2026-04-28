@@ -3,7 +3,7 @@ import { ExceptionService } from "./ExceptionService";
 import type {
   EdificioInput,
   EdificioClienteBlock,
-} from "../types/edificios/Edificio";
+} from "../types";
 
 
 export const EdificiosService = {

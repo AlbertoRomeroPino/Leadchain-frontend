@@ -1,8 +1,4 @@
-import type { Zona } from "../types/zonas/Zona";
-import type { Edificio } from "../types/edificios/Edificio";
-import type { Cliente } from "../types/clientes/Cliente";
-import type { Visita } from "../types/visitas/Visita";
-import type { User } from "../types/users/User";
+import type { Zona, Edificio, Cliente, Visita, User } from "../types";
 import { ExceptionService } from "./ExceptionService";
 import { authHttp } from "./https";
 

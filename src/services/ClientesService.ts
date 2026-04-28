@@ -1,5 +1,4 @@
-import type { Cliente } from "../types/clientes/Cliente";
-import type { ClienteDetalleResponse } from "../types/clientes/ClienteDetalle";
+import type { Cliente, ClienteDetalleResponse } from "../types";
 import { authHttp } from "./https";
 import { ExceptionService } from "./ExceptionService";
 

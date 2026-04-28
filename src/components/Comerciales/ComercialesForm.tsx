@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import type { Zona } from "../../types/zonas/Zona";
-import type { UserInput, User, UserUpdateInput } from "../../types/users/User";
+import type { UserInput, User, UserUpdateInput, Zona} from "../../types";
 import { UserService } from "../../services/User";
 import { authStorage } from "../../auth/authStorage";
 import {

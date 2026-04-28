@@ -9,9 +9,7 @@ import EdificioMarker from "../MapViews/EdificioMarker";import ZoomCalculator fr
   CORDOBA_OUTER_RING,
   CORDOBA_HOLE,
 } from "./cordobaMapConfig";
-import type { Zona } from "../../types/zonas/Zona";
-import type { Edificio } from "../../types/edificios/Edificio";
-import type { GeoPoint } from "../../types/shared/GeoPoint";
+import type { Zona, Edificio, GeoPoint } from "../../types";
 import type { LatLngExpression, LatLngBoundsExpression } from "leaflet";
 import { useMemo } from "react";
 import L from "leaflet";

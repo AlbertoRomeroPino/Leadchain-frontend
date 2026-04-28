@@ -1,8 +1,7 @@
 import { useState } from "react";
 import Sidebar from "../layout/Sidebar";
 import { UserService } from "../services/User";
-import type { User, UserVisitas } from "../types/users/User";
-import type { Zona } from "../types/zonas/Zona";
+import type { User, UserVisitas, Zona } from "../types";
 import "../styles/Comerciales.css";
 import { useInitialize } from "../hooks/useInitialize";
 import {

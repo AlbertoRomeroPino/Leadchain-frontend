@@ -1,4 +1,4 @@
-import type { Visita } from "../../../types/visitas/Visita";
+import type { Visita } from "../../../types";
 import "../../../styles/components/Clientes/Info/InfoClienteVisitasCard.css";
 
 interface InfoClienteVisitasCardProps {

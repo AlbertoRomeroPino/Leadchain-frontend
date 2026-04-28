@@ -1,7 +1,6 @@
 import { authHttp } from "./https";
 import { ExceptionService } from "./ExceptionService";
-import type { User, UserInput, UserUpdateInput } from "../types/users/User";
-import type { Zona } from "../types/zonas/Zona";
+import type { User, UserInput, UserUpdateInput, Zona } from "../types";
 
 interface ComercialAMiCargoData {
   comerciales: User[];

@@ -1,5 +1,4 @@
-import type { VisitaUser } from "../visitas/Visita";
-import type { Cliente } from "../clientes/Cliente";
+import type { VisitaUser, Cliente } from "../";
 
 // Definición de usuario devuelto por API (sin password)
 export type User = {

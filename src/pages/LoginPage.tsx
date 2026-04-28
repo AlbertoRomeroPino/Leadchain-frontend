@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import type { LoginCredentials } from "../types/users/User";
+import type { LoginCredentials } from "../types";
 import type { AxiosError } from "axios";
 import { useAuth } from "../auth/useAuth";
 import { authService } from "../services/authService";

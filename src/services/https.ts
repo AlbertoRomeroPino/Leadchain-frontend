@@ -1,5 +1,5 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig, type AxiosRequestConfig } from "axios";
-import type { AuthSession, User } from "../types/users/User";
+import type { AuthSession, User } from "../types";
 import { authStorage } from "../auth/authStorage";
 import { isTokenExpiringIn } from "./tokenManager";
 import { showErrorAlert } from "../components/utils/errorHandler";

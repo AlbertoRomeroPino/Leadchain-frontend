@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Cliente } from "../../../types/clientes/Cliente";
+import type { Cliente } from "../../../types";
 
 import '../../../styles/components/Edificios/FormularioModal/EdificioModalCliente.css';
 

@@ -3,9 +3,9 @@ import type {
   EdificioInput,
   Edificio,
   EdificioClienteBlock,
-} from "../../types/edificios/Edificio";
-import type { Zona } from "../../types/zonas/Zona";
-import type { Cliente } from "../../types/clientes/Cliente";
+  Zona,
+  Cliente
+} from "../../types";
 import "../../styles/components/Edificios/EdificioCreateModal.css";
 import EdificioModalPestaña from "./FormularioModal/EdificioModalPestaña";
 import EdificioModalEdificio from "./FormularioModal/EdificioModalEdificio";

@@ -8,9 +8,7 @@ import {
   showErrorAlert,
   showSuccessAlert,
 } from "../components/utils/errorHandler";
-import type { Visita } from "../types/visitas/Visita";
-import type { Cliente } from "../types/clientes/Cliente";
-import type { EstadoVisita } from "../types/visitas/EstadoVisita";
+import type { Visita, Cliente, EstadoVisita } from "../types";
 import VisitaFormularioModal from "../components/Visitas/FormularioModal/VisitaFormularioModal";
 import VisitasHeader from "../components/Visitas/VisitasHeader";
 import VisitasAdminGrid from "../components/Visitas/Admin/VisitasAdminGrid";

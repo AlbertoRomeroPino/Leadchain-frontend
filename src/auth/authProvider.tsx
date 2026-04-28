@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { AuthSession, User } from "../types/users/User";
+import type { AuthSession, User } from "../types";
 import { authStorage } from "./authStorage";
 import { setAuthCallbacks, setAuthToken } from "../services/https";
 import { AuthContext, type AuthContextValue } from "./AuthContext";
