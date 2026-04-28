@@ -2,7 +2,7 @@ import Sidebar from "../layout/Sidebar";
 import AdminMapView from "../components/MapViews/AdminMapView";
 import CommercialMapView from "../components/MapViews/CommercialMapView";
 import "../styles/Map.css";
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../context/useAuth";
 
 const MapPage = () => {
   const { user } = useAuth();

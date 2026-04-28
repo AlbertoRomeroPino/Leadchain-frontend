@@ -1,4 +1,4 @@
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../context/useAuth";
 import Sidebar from "../layout/Sidebar";
 import InicioComercial from "../components/Inicio/InicioComercial/InicioComercial";
 import InicioAdmin from "../components/Inicio/InicioAdmin/InicioAdmin";

@@ -3,7 +3,7 @@ import { ClientesService } from "../../services/ClientesService";
 import type { Cliente, ClienteDetalleResponse, Edificio, Visita, Zona } from "../../types";
 import "../../styles/InfoCliente.css";
 import "../../styles/components/Clientes/ClienteInfo.css";
-import { useAuth } from "../../auth/useAuth";
+import { useAuth } from "../../context/useAuth";
 import { useInitialize } from "../../hooks/useInitialize";
 import { showErrorAlert } from "../utils/errorHandler";
 import InfoClienteToolbar from "./Info/InfoClienteToolbar";

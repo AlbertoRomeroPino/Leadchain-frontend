@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import type { LoginCredentials } from "../types";
 import type { AxiosError } from "axios";
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../context/useAuth";
 import { authService } from "../services/authService";
 import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../components/utils/errorHandler";
 import "../styles/Login.css";

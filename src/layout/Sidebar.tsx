@@ -1,7 +1,7 @@
 import { House, Map, User, MapPin, BookUser, LogOut, Building, Scan} from "lucide-react";
 import "../styles/components/sidebar/Sidebar.css";
 import { MenuButtons } from "../components/sidebar/MenuButtons";
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../context/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import type { User as UserType } from "../types";
 

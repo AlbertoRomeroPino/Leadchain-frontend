@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../context/useAuth";
 import Sidebar from "../layout/Sidebar";
 import { VisitasService } from "../services/VisitasService";
 import { useInitialize } from "../hooks/useInitialize";

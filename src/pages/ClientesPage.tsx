@@ -2,7 +2,7 @@ import type { Cliente } from "../types";
 
 import { useCallback, useMemo, useState } from "react";
 import { ClientesService } from "../services/ClientesService";
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../context/useAuth";
 import {
   showErrorAlert,
   showSuccessAlert,

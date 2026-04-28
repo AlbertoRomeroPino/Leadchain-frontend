@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import "./styles/sileo.css";
 import App from "./App.tsx";
-import { AuthProvider } from "./auth/authProvider";
+import { AuthProvider } from "./context/authProvider";
 import { Toaster } from "sileo";
 
 createRoot(document.getElementById("root")!).render(

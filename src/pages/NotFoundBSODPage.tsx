@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/NotFound.css";
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../context/useAuth";
 
 const NotFoundBSOD = () => {
   const navigate = useNavigate();

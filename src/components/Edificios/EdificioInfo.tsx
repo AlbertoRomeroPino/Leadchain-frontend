@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../../styles/components/Edificios/EdificioInfo.css";
 import type { Edificio, EdificioInput, Zona} from "../../types";
-import { useAuth } from "../../auth/useAuth";
+import { useAuth } from "../../context/useAuth";
 import { EdificiosService } from "../../services/EdificiosService";
 import { useInitialize } from "../../hooks/useInitialize";
 import showStatusAlert from "../utils/StatusAlert";

@@ -8,7 +8,7 @@ import type {
 } from "../types";
 import EdificioInfo from "../components/Edificios/EdificioInfo";
 import EdificioTabla from "../components/Edificios/EdificioTabla";
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../context/useAuth";
 import { EdificiosService } from "../services/EdificiosService";
 import { ZonaService } from "../services/ZonaService";
 import EdificioHeader from "../components/Edificios/EdificioHeader";

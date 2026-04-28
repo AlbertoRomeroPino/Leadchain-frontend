@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import "../../../styles/components/Inicio/InicioComercial/InicioComercial.css";
-import { useAuth } from "../../../auth/useAuth";
+import { useAuth } from "../../../context/useAuth";
 import { useInitialize } from "../../../hooks/useInitialize";
 import { InicioService } from "../../../services/InicioService";
 import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../../../components/utils/errorHandler";
