@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useCallback } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 import type { GeoPoint } from "../types";
@@ -25,35 +25,46 @@ export const useCalculateZoomFromBounds = ({
 }: UseCalculateZoomFromBoundsProps) => {
   const map = useMap();
 
-  useEffect(() => {
-    if (!zoneArea || zoneArea.length === 0) return;
+  // Convertir puntos GeoPoint a formato Leaflet [lat, lng] solo cuando zoneArea cambia
+  const polygonBounds = useMemo(() => {
+    if (!zoneArea || zoneArea.length === 0) return null;
 
     try {
-      // Convertir puntos GeoPoint a formato Leaflet
       const polygonPoints = zoneArea.map((p) => [p.lat, p.lng] as [number, number]);
+      return L.latLngBounds(polygonPoints);
+    } catch (error) {
+      console.error("Error al crear bounds del polígono:", error);
+      return null;
+    }
+  }, [zoneArea]);
 
-      // Crear bounds del polígono
-      const bounds = L.latLngBounds(polygonPoints);
+  // Memoizar el callback para evitar re-renders innecesarios
+  const handleZoomCalculated = useCallback(
+    (minZoom: number, initialZoom: number) => {
+      onZoomCalculated?.({ minZoom, initialZoom });
+    },
+    [onZoomCalculated]
+  );
 
-      // Calcular automáticamente el zoom mínimo requerido para ver todo el polígono
-      const minZoom = map.getBoundsZoom(bounds, false);
+  useEffect(() => {
+    if (!polygonBounds) return;
+
+    try {
+      // Calcular zoom mínimo requerido para ver todo el polígono
+      const minZoom = map.getBoundsZoom(polygonBounds, false);
 
       // Zoom inicial ligeramente más cercano (1 nivel más)
       const initialZoom = Math.min(minZoom + 1, 16);
 
-      // Llamar callback si está proporcionado
-      if (onZoomCalculated) {
-        onZoomCalculated({ minZoom, initialZoom });
-      }
+      // Notificar cambio de zoom
+      handleZoomCalculated(minZoom, initialZoom);
 
       // Aplicar configuración al mapa
       map.setMinZoom(minZoom);
       map.setMaxZoom(18);
-      map.fitBounds(bounds, { padding: [50, 50], animate: true });
-
-      
+      map.fitBounds(polygonBounds, { padding: [50, 50], animate: true });
     } catch (error) {
       console.error("Error al calcular zoom desde bounds:", error);
     }
-  }, [zoneArea, map, onZoomCalculated]);
+  }, [polygonBounds, map, handleZoomCalculated]);
 };

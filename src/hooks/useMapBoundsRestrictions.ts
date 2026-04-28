@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 import type { GeoPoint } from "../types";
@@ -28,6 +28,32 @@ interface UseMapBoundsRestrictionsProps {
 }
 
 /**
+ * Calcular los bounds del polígono en una sola pasada (O(n))
+ * evitando múltiples Math.min/max
+ */
+const calculatePolygonBounds = (zoneArea: GeoPoint[]) => {
+  if (zoneArea.length === 0) throw new Error("zoneArea cannot be empty");
+
+  const initial = zoneArea[0];
+  const bounds = {
+    minLat: initial.lat,
+    maxLat: initial.lat,
+    minLng: initial.lng,
+    maxLng: initial.lng,
+  };
+
+  for (let i = 1; i < zoneArea.length; i++) {
+    const point = zoneArea[i];
+    bounds.minLat = Math.min(bounds.minLat, point.lat);
+    bounds.maxLat = Math.max(bounds.maxLat, point.lat);
+    bounds.minLng = Math.min(bounds.minLng, point.lng);
+    bounds.maxLng = Math.max(bounds.maxLng, point.lng);
+  }
+
+  return bounds;
+};
+
+/**
  * Hook que configura restricciones de navegación y zoom según el rol del usuario
  *
  * Admin: Comportamiento libre, sin restricciones
@@ -40,66 +66,61 @@ export const useMapBoundsRestrictions = ({
   expansionFactor = 1.2,
 }: UseMapBoundsRestrictionsProps) => {
   const map = useMap();
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     // Admin: sin restricciones
     if (userRole !== "comercial" || !zoneArea || zoneArea.length === 0) {
-      // Restablecer configuración libre
       map.setMaxBounds(undefined);
       return;
     }
 
-    // COMERCIAL: Aplicar restricciones
     try {
-      // 1. Calcular bounds del polígono
-      const lats = zoneArea.map((p) => p.lat);
-      const lngs = zoneArea.map((p) => p.lng);
-
-      const minLat = Math.min(...lats);
-      const maxLat = Math.max(...lats);
-      const minLng = Math.min(...lngs);
-      const maxLng = Math.max(...lngs);
-
+      // === PASO 1: Calcular bounds del polígono ===
+      const { minLat, maxLat, minLng, maxLng } = calculatePolygonBounds(zoneArea);
       const polygonBounds = L.latLngBounds([minLat, minLng], [maxLat, maxLng]);
 
-      // 2. ENCUADRE INICIAL: fitBounds con padding
+      // === PASO 2: ENCUADRE INICIAL con padding ===
       map.fitBounds(polygonBounds, {
         padding: [paddingPixels, paddingPixels],
         animate: true,
         duration: 1.5,
       });
 
-      // 3. RESTRICCIÓN DE MOVIMIENTO: Expandir bounds para maxBounds
-      // Calcular distancias
+      // === PASO 3: Calcular bounds expandidos para maxBounds ===
       const latDiff = maxLat - minLat;
       const lngDiff = maxLng - minLng;
 
-      // Expandir según el factor (ej: 1.2 = 20% más allá)
-      const latExpansion = latDiff * (expansionFactor - 1) / 2;
-      const lngExpansion = lngDiff * (expansionFactor - 1) / 2;
+      const latExpansion = (latDiff * (expansionFactor - 1)) / 2;
+      const lngExpansion = (lngDiff * (expansionFactor - 1)) / 2;
 
       const expandedBounds = L.latLngBounds(
         [minLat - latExpansion, minLng - lngExpansion],
         [maxLat + latExpansion, maxLng + lngExpansion]
       );
 
-      // Configurar maxBounds
       map.setMaxBounds(expandedBounds);
 
-      // 4. Event listener para asegurar que siempre está dentro de los límites
+      // === PASO 4: Asegurar que el mapa siempre está dentro de los límites ===
+      // Usar debounce para evitar múltiples cálculos
       const ensureInBounds = () => {
-        if (!map.getBounds().intersects(expandedBounds)) {
-          map.panInsideBounds(expandedBounds, { animate: true });
-        }
+        if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+
+        debounceTimerRef.current = setTimeout(() => {
+          if (!map.getBounds().intersects(expandedBounds)) {
+            map.panInsideBounds(expandedBounds, { animate: true });
+          }
+        }, 200);
       };
 
       map.on("moveend", ensureInBounds);
       map.on("zoomend", ensureInBounds);
 
-      
-
-      // Cleanup
+      // Cleanup: desmontar listeners y limpiar timeout
       return () => {
+        if (debounceTimerRef.current) {
+          clearTimeout(debounceTimerRef.current);
+        }
         map.off("moveend", ensureInBounds);
         map.off("zoomend", ensureInBounds);
       };

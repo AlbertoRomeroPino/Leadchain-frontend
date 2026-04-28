@@ -3,6 +3,7 @@ import "../styles/components/sidebar/Sidebar.css";
 import { MenuButtons } from "../components/sidebar/MenuButtons";
 import { useAuth } from "../auth/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
+import type { User as UserType } from "../types";
 
 // Definir qué botones ve cada rol
 const ROLE_PERMISSIONS: Record<string, string[]> = {
@@ -39,40 +40,36 @@ const menuItems: Array<{
   { icon: <Scan size={24} />, label: "Zona", path: "/Zona" },
 ];
 
+// Mapeo precalculado de índices para evitar búsquedas repetidas
+const menuItemsMap = Object.fromEntries(
+  menuItems.map((item, idx) => [item.label, idx])
+);
+
+// Extrae el rol del usuario de forma segura
+const getUserRole = (user: UserType | null): string => {
+  return user?.rol || 'comercial';
+};
+
 function Sidebar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Calcular activeIndex basado en la ruta actual
-  const activeIndex = menuItems.findIndex(
-    (item) => item.path === location.pathname,
-  );
 
   const handleLogout = () => {
     logout();
     navigate("/Login");
   };
 
-  // Dummy setActiveIndex para compatibilidad con MenuButtons
-  const setActiveIndex = () => {};
+  // Calcular activeIndex basado en la ruta actual
+  const activeIndex = menuItems.findIndex(
+    (item) => item.path === location.pathname,
+  );
 
-  type MaybeNestedUser = { user?: { rol?: string } } & { rol?: string };
-
+  // Obtener rol del usuario
+  const userRole = getUserRole(user);
+  
   // Filtrar menú según el rol del usuario
-  let userRole = 'comercial'; // Default
-  
-  if (user) {
-    const authUser = user as MaybeNestedUser;
-
-    if (authUser.user && typeof authUser.user === 'object') {
-      userRole = authUser.user.rol || 'comercial';
-    } else {
-      userRole = authUser.rol || 'comercial';
-    }
-  }
-  
-  const allowedLabels = ROLE_PERMISSIONS[userRole] || [];
+  const allowedLabels = ROLE_PERMISSIONS[userRole] ?? [];
   const filteredMenuItems = menuItems.filter((item) =>
     allowedLabels.includes(item.label),
   );
@@ -87,9 +84,7 @@ function Sidebar() {
           </li>
 
           {filteredMenuItems.map((item) => {
-            const originalIndex = menuItems.findIndex(
-              (menuItem) => menuItem.label === item.label,
-            );
+            const originalIndex = menuItemsMap[item.label] ?? 0;
 
             return (
               <li key={item.label}>
@@ -98,7 +93,7 @@ function Sidebar() {
                   label={item.label}
                   path={item.path}
                   index={originalIndex}
-                  setActiveIndex={setActiveIndex}
+                  setActiveIndex={() => {}}
                   activeIndex={activeIndex}
                 />
               </li>

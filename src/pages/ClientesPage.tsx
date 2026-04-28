@@ -51,9 +51,7 @@ const Clientes = () => {
     }
   }, [user]);
 
-  useInitialize(async () => {
-    await refreshClientes();
-  }, [refreshClientes]);
+  useInitialize(refreshClientes);
 
   const handleCreateCliente = async (cliente: {
     nombre: string;

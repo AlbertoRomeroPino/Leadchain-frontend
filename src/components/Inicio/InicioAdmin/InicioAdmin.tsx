@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import "../../../styles/components/Inicio/InicioAdmin/InicioAdmin.css";
 import { useAuth } from "../../../auth/useAuth";
 import { useInitialize } from "../../../hooks/useInitialize";
@@ -25,7 +25,8 @@ const InicioAdmin = () => {
     zonas: [],
   });
 
-  useInitialize(async () => {
+  // Memoizar el callback para que sea estable entre renders
+  const loadDashboard = useCallback(async () => {
     if (!user || user.rol !== "admin") {
       return;
     }
@@ -53,7 +54,10 @@ const InicioAdmin = () => {
       showErrorAlert(error, "Cargar Tablero");
       console.error("Error al cargar dashboard admin:", error);
     }
-  }, [user?.id]);
+  }, [user]);
+
+  // El callback estable asegura que el effect corra solo cuando user.id cambia
+  useInitialize(loadDashboard);
 
   return (
     <div className="inicio-admin">

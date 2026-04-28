@@ -1,49 +1,51 @@
 import { useEffect, useRef, type DependencyList } from 'react';
 
 /**
- * Hook para ejecutar una función async solo una vez al montar el componente
- * Previene la doble ejecución causada por React 18 Strict Mode
+ * Hook para ejecutar una función async solo UNA VEZ en el ciclo de vida del componente
+ * 
+ * Cuando NO hay deps: ejecuta solo en montaje inicial (similar a useEffect con [])
+ * Cuando hay deps: ejecuta cuando las deps cambian (igual que useEffect)
+ * 
+ * Cancela automáticamente ejecuciones duplicadas de React 18 Strict Mode
  * 
  * @param callback - Función async a ejecutar
- * @param deps - Dependencias opcionales (como en useEffect)
- * 
- * @example
- * // Sin dependencias - ejecuta solo una vez
- * useInitialize(async () => {
- *   const response = await fetch('/api/data');
- *   setData(response);
- * });
- * 
- * // Con dependencias - ejecuta cuando cambian
- * useInitialize(async () => {
- *   const response = await fetch(`/api/user/${userId}`);
- *   setUserData(response);
- * }, [userId]);
+ * @param deps - Dependencias opcionales. Si no se pasan, ejecuta solo en montaje
  */
 export const useInitialize = (
   callback: () => Promise<void>,
   deps?: DependencyList
 ) => {
-  const isInitialized = useRef(false);
-  const depsRef = useRef<DependencyList | undefined>(deps);
+  const hasRanRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    // Resetea el flag si las dependencias cambiaron
-    const hasDepsChanged = deps && depsRef.current && 
-      deps.length === depsRef.current.length &&
-      deps.some((dep, idx) => dep !== depsRef.current?.[idx]);
-    
-    if (hasDepsChanged) {
-      isInitialized.current = false;
+    // Si ya ejecutamos y NO tenemos deps explícitas, no correr de nuevo
+    // (comportamiento de useEffect con [] - ejecuta solo en montaje)
+    if (hasRanRef.current && !deps) {
+      return;
     }
-    depsRef.current = deps;
 
-    if (!isInitialized.current) {
-      isInitialized.current = true;
-      callback().catch((error) => {
-        console.error('Error in useInitialize:', error);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps ? deps : []);
+    hasRanRef.current = true;
+
+    // Cancelar requests anteriores
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
+    // Ejecutar el callback
+    (async () => {
+      try {
+        await callback();
+      } catch (error) {
+        if (!signal.aborted) {
+          console.error('Error in useInitialize:', error);
+        }
+      }
+    })();
+
+    // Cleanup
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, deps);
 };
