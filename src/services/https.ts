@@ -1,19 +1,21 @@
-import axios, { type AxiosError, type InternalAxiosRequestConfig, type AxiosRequestConfig } from "axios";
+import axios, {
+  AxiosHeaders,
+  type AxiosError,
+  type InternalAxiosRequestConfig,
+  type AxiosRequestConfig,
+} from "axios";
 import type { AuthSession, User } from "../types";
 import { authStorage } from "../auth/authStorage";
-import { isTokenExpiringIn } from "./tokenManager";
-import { showErrorAlert } from "../components/utils/errorHandler";
 import { authService } from "./authService";
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() || "/";
+const API_BASE_URL =
+  (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() || "/";
 
 // Tipo extendido para configuración de request con propiedades personalizadas
 type CustomAxiosRequestConfig = InternalAxiosRequestConfig & {
-  __shouldRefreshToken?: boolean;
   __refreshRetried?: boolean;
 };
 
-// Configuración para evitar errores HTTP/2 en tunnels de GitHub
 const axiosConfig: AxiosRequestConfig = {
   baseURL: API_BASE_URL,
 };
@@ -60,14 +62,9 @@ export function setAuthToken(token: string | null) {
 authHttp.interceptors.request.use((config: CustomAxiosRequestConfig) => {
   const session: AuthSession | null = authStorage.get();
   if (session?.token) {
-    config.headers = config.headers ?? {};
-    config.headers.Authorization = `Bearer ${session.token}`;
-
-    // Verificar si el token está por expirar (en los próximos 5 minutos = 300 segundos)
-    if (isTokenExpiringIn(session.token, 300)) {
-      // Marcar la solicitud para posible refresh después de respuesta
-      config.__shouldRefreshToken = true;
-    }
+    const headers = new AxiosHeaders(config.headers ?? {});
+    headers.set("Authorization", `Bearer ${session.token}`);
+    config.headers = headers;
   }
   return config;
 });
@@ -103,15 +100,19 @@ async function attemptTokenRefresh(): Promise<string | null> {
         // Obtener datos actualizados del usuario
         try {
           const updatedUser = await authService.me();
-          const finalSession: AuthSession = { token: newToken, user: updatedUser };
+          const finalSession: AuthSession = {
+            token: newToken,
+            user: updatedUser,
+          };
           authStorage.set(finalSession);
 
           // Notificar al Context que los datos del usuario fueron actualizados
           if (onUserUpdated) {
             onUserUpdated(updatedUser);
           }
-        } catch (error) {
-          showErrorAlert(error);
+        } catch {
+          // Si no se pueden obtener los datos del usuario actualizados,
+          // mantenemos el nuevo token para no bloquear la sesión.
         }
 
         return newToken;
@@ -173,5 +174,5 @@ authHttp.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );

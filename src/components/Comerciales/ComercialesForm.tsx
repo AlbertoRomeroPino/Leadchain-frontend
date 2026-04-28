@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import type { UserInput, User, UserUpdateInput, Zona} from "../../types";
-import { UserService } from "../../services/User";
+import type { UserInput, User, UserUpdateInput, Zona } from "../../types";
+import { UserService } from "../../services/UserService";
 import { authStorage } from "../../auth/authStorage";
 import {
   showErrorAlert,

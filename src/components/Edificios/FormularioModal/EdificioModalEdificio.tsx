@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Cliente } from "../../../types";
-import { clientesService } from "../../../services/ClientesService";
+import { ClientesService } from "../../../services/ClientesService";
 
 import '../../../styles/components/Edificios/FormularioModal/EdificioModalEdificio.css';
 
@@ -60,7 +60,7 @@ const EdificioModalEdificio = ({
   useEffect(() => {
     const fetchClientesSinEdificio = async () => {
       try {
-        const data = await clientesService.getClientesSinEdificio();
+        const data = await ClientesService.getClientesSinEdificio();
         setClientes(data);
       } catch {
         setClientes([]);

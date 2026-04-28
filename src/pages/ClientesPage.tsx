@@ -1,7 +1,7 @@
 import type { Cliente } from "../types";
 
 import { useCallback, useMemo, useState } from "react";
-import { clientesService } from "../services/ClientesService";
+import { ClientesService } from "../services/ClientesService";
 import { useAuth } from "../auth/useAuth";
 import {
   showErrorAlert,
@@ -36,9 +36,9 @@ const Clientes = () => {
       showLoadingAlert("Cargando clientes...");
 
       const [clientesConEdificio, sinEdificio] = await Promise.all([
-        clientesService.getClientes(),
+        ClientesService.getClientes(),
         user?.rol === "admin"
-          ? clientesService.getClientesSinEdificio()
+          ? ClientesService.getClientesSinEdificio()
           : Promise.resolve([] as Cliente[]),
       ]);
 
@@ -68,7 +68,7 @@ const Clientes = () => {
     try {
       setCreatingCliente(true);
 
-      const nuevoCliente = await clientesService.createCliente({
+      const nuevoCliente = await ClientesService.createCliente({
         nombre: cliente.nombre,
         apellidos: cliente.apellidos,
         ...(cliente.telefono ? { telefono: cliente.telefono } : {}),

@@ -11,7 +11,7 @@ import EdificioModalPestaña from "./FormularioModal/EdificioModalPestaña";
 import EdificioModalEdificio from "./FormularioModal/EdificioModalEdificio";
 import EdificioModalMapa from "./FormularioModal/EdificioModalMapa";
 import EdificioModalCliente from "./FormularioModal/EdificioModalCliente";
-import { clientesService } from "../../services/ClientesService";
+import { ClientesService } from "../../services/ClientesService";
 import { showErrorAlert, showInfoAlert, showSuccessAlert } from "../utils/errorHandler";
 
 interface EdificioCreateModalProps {
@@ -109,7 +109,7 @@ const EdificioCreateModal = ({
     const cargarClientesSinEdificio = async () => {
       // setLoadingClientes(true);
       try {
-        const clientes = await clientesService.getClientesSinEdificio();
+        const clientes = await ClientesService.getClientesSinEdificio();
         setClientesSinEdificio(clientes);
       } catch (err) {
         console.error("Error al cargar clientes sin edificio:", err);

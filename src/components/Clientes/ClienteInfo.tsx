@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { clientesService } from "../../services/ClientesService";
+import { ClientesService } from "../../services/ClientesService";
 import type { Cliente, ClienteDetalleResponse, Edificio, Visita, Zona } from "../../types";
 import "../../styles/InfoCliente.css";
 import "../../styles/components/Clientes/ClienteInfo.css";
@@ -50,7 +50,7 @@ const InfoCliente = ({
         setLoading(true);
 
         const detalle: ClienteDetalleResponse =
-          await clientesService.getClienteDetalle(cliente.id);
+          await ClientesService.getClienteDetalle(cliente.id);
 
         const edificioDetalle = detalle?.edificio ?? null;
         const zonaDetalle =
@@ -108,7 +108,7 @@ const InfoCliente = ({
     try {
       setSavingCliente(true);
 
-      const updatedCliente = await clientesService.updateCliente(cliente.id, {
+      const updatedCliente = await ClientesService.updateCliente(cliente.id, {
         nombre: clienteActualizado.nombre,
         apellidos: clienteActualizado.apellidos,
         ...(clienteActualizado.telefono
@@ -138,7 +138,7 @@ const InfoCliente = ({
     try {
       setDeletingCliente(true);
 
-      await clientesService.deleteCliente(clienteInfo.id);
+      await ClientesService.deleteCliente(clienteInfo.id);
 
       onClienteDeleted?.(clienteInfo.id);
       setShowEditForm(false);

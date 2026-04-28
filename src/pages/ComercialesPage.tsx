@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Sidebar from "../layout/Sidebar";
-import { UserService } from "../services/User";
+import { UserService } from "../services/UserService";
 import type { User, UserVisitas, Zona } from "../types";
 import "../styles/Comerciales.css";
 import { useInitialize } from "../hooks/useInitialize";

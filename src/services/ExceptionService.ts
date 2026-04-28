@@ -22,3 +22,18 @@ export class ExceptionService {
     return fallback;
   }
 }
+
+/**
+ * Helper para envolver llamadas a servicios con manejo de errores uniforme
+ * Ejecuta la función y lanza un Error normalizado si falla
+ */
+export async function wrapServiceCall<T>(
+  fn: () => Promise<T>,
+  errorMessage: string
+): Promise<T> {
+  try {
+    return await fn();
+  } catch (error) {
+    throw new Error(ExceptionService.getErrorMessage(error, errorMessage));
+  }
+}
