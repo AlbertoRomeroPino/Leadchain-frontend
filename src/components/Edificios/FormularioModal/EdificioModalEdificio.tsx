@@ -123,7 +123,7 @@ const EdificioModalEdificio = ({
                   type="text"
                   placeholder="Piso/Planta del cliente (opcional)"
                   value={clientePlanta}
-                  onChange={(e) => setClientePlanta(e.target.value.slice(0, 20))}
+                  onChange={(edificio) => setClientePlanta(edificio.target.value.slice(0, 20))}
                   maxLength={20}
                 />
                 <input
@@ -131,7 +131,7 @@ const EdificioModalEdificio = ({
                   type="text"
                   placeholder="Puerta del cliente (opcional)"
                   value={clientePuerta}
-                  onChange={(e) => setClientePuerta(e.target.value.slice(0, 20))}
+                  onChange={(edificio) => setClientePuerta(edificio.target.value.slice(0, 20))}
                   maxLength={20}
                 />
               </div>

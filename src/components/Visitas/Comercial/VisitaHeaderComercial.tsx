@@ -1,8 +1,6 @@
-import React from "react";
-import "../../styles/components/Visitas/VisitasHeader.css";
+import "../../../styles/components/Visitas/VisitasHeader.css";
 
-type VisitasHeaderProps = {
-  userRole?: string;
+type VisitasHeaderComercialProps = {
   search: string;
   statusFilter: string;
   statusOptions: string[];
@@ -11,16 +9,15 @@ type VisitasHeaderProps = {
 };
 
 /**
- * Componente VisitasHeader refactorizado con bloque de retorno explícito.
+ * Componente VisitasHeaderComercial refactorizado con bloque de retorno explícito.
  */
-const VisitasHeader = ({
-  userRole,
+const VisitasHeaderComercial = ({
   search,
   statusFilter,
   statusOptions,
   onSearchChange,
   onStatusChange,
-}: VisitasHeaderProps) => {
+}: VisitasHeaderComercialProps) => {
   // Aquí podrías añadir lógica adicional en el futuro (hooks, variables calculadas, etc.)
 
   return (
@@ -36,7 +33,7 @@ const VisitasHeader = ({
         <div className="visitas-search-row">
           <div className="visitas-search-wrapper">
             <label htmlFor="search-user" className="visitas-search-label">
-              {userRole === "admin" ? "Buscar por usuario" : "Buscar por cliente"}
+              Buscar por cliente
             </label>
             <input
               id="search-user"
@@ -45,9 +42,7 @@ const VisitasHeader = ({
               onChange={(event) => onSearchChange(event.target.value)}
               className="visitas-search-input"
               placeholder={
-                userRole === "admin"
-                  ? "Nombre/Apellido comercial"
-                  : "Nombre/Apellido cliente"
+                  "Nombre/Apellido cliente"
               }
             />
           </div>
@@ -76,4 +71,4 @@ const VisitasHeader = ({
   );
 };
 
-export default VisitasHeader;
+export default VisitasHeaderComercial;

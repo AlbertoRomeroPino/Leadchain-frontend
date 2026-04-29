@@ -3,7 +3,11 @@ import "../../../styles/components/Inicio/InicioComercial/InicioComercial.css";
 import { useAuth } from "../../../context/useAuth";
 import { useInitialize } from "../../../hooks/useInitialize";
 import { InicioService } from "../../../services/InicioService";
-import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../../../components/utils/errorHandler";
+import {
+  showLoadingAlert,
+  showErrorAlert,
+  showSuccessAlert,
+} from "../../../components/utils/errorHandler";
 import type { Cliente, Visita } from "../../../types";
 import ClientesSinVisitar from "./ClientesSinVisitar/ClientesSinVisitar";
 
@@ -20,7 +24,7 @@ const InicioComercial = () => {
 
   // Callback memoizado para cargar datos
   const loadComercialData = useCallback(async () => {
-    if (!user || user.rol !== "comercial" || !user.id_zona) {
+    if (!user || user.rol !== "comercial") {
       return;
     }
 
@@ -35,26 +39,27 @@ const InicioComercial = () => {
 
       // Crear mapa de visitas por cliente (última visita)
       const visitasPorCliente = new Map<number, Visita>();
-      inicioData.visitas.forEach((v) => {
-        if (!visitasPorCliente.has(v.id_cliente)) {
-          visitasPorCliente.set(v.id_cliente, v);
+      inicioData.visitas.forEach((visita) => {
+        if (!visitasPorCliente.has(visita.id_cliente)) {
+          visitasPorCliente.set(visita.id_cliente, visita);
         } else {
-          const actual = visitasPorCliente.get(v.id_cliente)!;
-          if (new Date(v.fecha_hora) > new Date(actual.fecha_hora)) {
-            visitasPorCliente.set(v.id_cliente, v);
+          const actual = visitasPorCliente.get(visita.id_cliente)!;
+          if (new Date(visita.fecha_hora) > new Date(actual.fecha_hora)) {
+            visitasPorCliente.set(visita.id_cliente, visita);
           }
         }
       });
 
       // Crear lista de clientes con info de visita
-      const clientesConVisita: ClienteSinVisita[] = clientesZona.map((c) => ({
-        cliente: c,
-        tieneVisita: visitasPorCliente.has(c.id),
-        ultimaVisita: visitasPorCliente.get(c.id),
-      }));
-
-      setClientes(clientesConVisita);
+      const clientesConVisita: ClienteSinVisita[] = clientesZona.map(
+        (cliente) => ({
+          cliente: cliente,
+          tieneVisita: visitasPorCliente.has(cliente.id),
+          ultimaVisita: visitasPorCliente.get(cliente.id),
+        }),
+      );
       showSuccessAlert("Información cargada");
+      setClientes(clientesConVisita);
     } catch (err) {
       showErrorAlert(err, "Cargar Datos");
       console.error("Error al cargar datos:", err);

@@ -48,13 +48,13 @@ const ComercialesTable = ({
                   comercial={comercialItem}
                   isExpanded={expandedComercialId === comercialItem.id}
                   zonaNombre={
-                    zonas.find((z) => z.id === comercialItem.id_zona)
+                    zonas.find((zona) => zona.id === comercialItem.id_zona)
                       ?.nombre || ""
                   }
                   isSelected={selectedComercialIds.has(comercialItem.id)}
-                  onToggleSelect={(e) => {
-                    e.stopPropagation();
-                    toggleSelectComercial(comercialItem.id, e);
+                  onToggleSelect={(edificio) => {
+                    edificio.stopPropagation();
+                    toggleSelectComercial(comercialItem.id, edificio);
                   }}
                   onToggleExpand={() =>
                     toggleComercialVisitas(comercialItem.id)

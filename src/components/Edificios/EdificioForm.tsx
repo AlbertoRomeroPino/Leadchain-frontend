@@ -56,7 +56,7 @@ const EdificioForm = ({
         <label>Dirección completa</label>
         <input
           value={direccionCompleta}
-          onChange={(e) => setDireccionCompleta(e.target.value)}
+          onChange={(edificio) => setDireccionCompleta(edificio.target.value)}
           required
         />
       </div>
@@ -66,7 +66,7 @@ const EdificioForm = ({
         <input
           type="number"
           value={idZona}
-          onChange={(e) => setIdZona(e.target.value)}
+          onChange={(edificio) => setIdZona(edificio.target.value)}
           required
         />
       </div>
@@ -77,7 +77,7 @@ const EdificioForm = ({
           type="number"
           value={lat}
           step="any"
-          onChange={(e) => setLat(Number(e.target.value))}
+          onChange={(edificio) => setLat(Number(edificio.target.value))}
           required
         />
       </div>
@@ -88,7 +88,7 @@ const EdificioForm = ({
           type="number"
           value={lng}
           step="any"
-          onChange={(e) => setLng(Number(e.target.value))}
+          onChange={(edificio) => setLng(Number(edificio.target.value))}
           required
         />
       </div>
@@ -97,7 +97,7 @@ const EdificioForm = ({
         <label>Tipo</label>
         <input
           value={tipo}
-          onChange={(e) => setTipo(e.target.value)}
+          onChange={(edificio) => setTipo(edificio.target.value)}
           required
         />
       </div>

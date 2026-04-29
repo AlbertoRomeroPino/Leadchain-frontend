@@ -65,18 +65,18 @@ const MapaEdificioPanel = ({
     }
   }, [isOpen, edificio?.id]);
 
-  const handleOverlayMouseDown = (e: React.MouseEvent) => {
-    dragStartPos.current = { x: e.clientX, y: e.clientY };
+  const handleOverlayMouseDown = (edificio: React.MouseEvent) => {
+    dragStartPos.current = { x: edificio.clientX, y: edificio.clientY };
   };
 
-  const handleOverlayMouseUp = (e: React.MouseEvent) => {
+  const handleOverlayMouseUp = (edificio: React.MouseEvent) => {
     const dragDistance = Math.sqrt(
-      Math.pow(e.clientX - dragStartPos.current.x, 2) +
-        Math.pow(e.clientY - dragStartPos.current.y, 2)
+      Math.pow(edificio.clientX - dragStartPos.current.x, 2) +
+        Math.pow(edificio.clientY - dragStartPos.current.y, 2)
     );
 
     // Solo cerrar si no fue un drag (menos de 5px de movimiento)
-    if (dragDistance < 5 && e.target === e.currentTarget) {
+    if (dragDistance < 5 && edificio.target === edificio.currentTarget) {
       onClose();
     }
   };
@@ -101,7 +101,7 @@ const MapaEdificioPanel = ({
       <div
         className="mapa-edificio-panel"
         style={panelStyle}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(edificio) => edificio.stopPropagation()}
       >
         {/* Header */}
         <div className="mapa-edificio-panel-header">

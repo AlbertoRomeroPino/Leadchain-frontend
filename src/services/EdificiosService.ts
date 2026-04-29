@@ -49,19 +49,19 @@ export const EdificiosService = {
     return wrapServiceCall(
       () => {
         const payload = {
-          clientes: clientes.map((c) => ({
-            mode: c.mode,
-            ...(c.mode === "crear" && {
-              nombre: c.nombre,
-              apellidos: c.apellidos,
-              email: c.email,
-              telefono: c.telefono,
+          clientes: clientes.map((cliente) => ({
+            mode: cliente.mode,
+            ...(cliente.mode === "crear" && {
+              nombre: cliente.nombre,
+              apellidos: cliente.apellidos,
+              email: cliente.email,
+              telefono: cliente.telefono,
             }),
-            ...(c.mode === "seleccionar" && {
-              clienteId: c.clienteSinEdificioId,
+            ...(cliente.mode === "seleccionar" && {
+              clienteId: cliente.clienteSinEdificioId,
             }),
-            planta: c.planta,
-            puerta: c.puerta,
+            planta: cliente.planta,
+            puerta: cliente.puerta,
           })),
         };
         return authHttp.post(`/api/edificios/${edificioId}/clientes/adjuntar-varios`, payload).then(r => r.data);

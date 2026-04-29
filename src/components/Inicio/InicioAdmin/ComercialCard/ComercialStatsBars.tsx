@@ -26,7 +26,7 @@ const ComercialStatsBars: React.FC<ComercialStatsBarsProps> = ({
     if (total === 0) return values.map(() => 0);
 
     // Calcular porcentajes sin redondear
-    const porcentajesSinRedondear = values.map((v) => (v / total) * 100);
+    const porcentajesSinRedondear = values.map((visita) => (visita / total) * 100);
 
     // Calcular partes enteras y decimales
     const enteros = porcentajesSinRedondear.map((p) => Math.floor(p));

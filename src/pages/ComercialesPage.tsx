@@ -34,9 +34,9 @@ const Comerciales = () => {
 
   const toggleSelectComercial = (
     id: number,
-    e: React.ChangeEvent<HTMLInputElement>,
+    edificio: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    e.stopPropagation();
+    edificio.stopPropagation();
     setSelectedComercialIds((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
@@ -62,7 +62,7 @@ const Comerciales = () => {
       );
 
       setComerciales((prev) =>
-        prev.filter((c) => !selectedComercialIds.has(c.id)),
+        prev.filter((cliente) => !selectedComercialIds.has(cliente.id)),
       );
       setSelectedComercialIds(new Set());
     } catch (err) {
@@ -102,7 +102,7 @@ const Comerciales = () => {
     if (comercialAEditar) {
       // Modo edición: actualizar el comercial en la lista
       setComerciales((prev) =>
-        prev.map((c) => (c.id === comercial.id ? { ...c, ...comercial } : c)),
+        prev.map((cliente) => (cliente.id === comercial.id ? { ...cliente, ...comercial } : cliente)),
       );
     } else {
       // Modo creación: agregar el nuevo comercial a la lista

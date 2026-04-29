@@ -119,7 +119,7 @@ const ComercialCard = ({ comerciales, visitas, clientes, edificios, zonas }: Com
       ) : (
         <div className="comerciales-grid">
           {comerciales.map((comercial) => {
-            const zonaDelComercial = zonas.find(z => Number(z.id) === Number(comercial.id_zona));
+            const zonaDelComercial = zonas.find(zona => Number(zona.id) === Number(comercial.id_zona));
             return (
               <ComercialCardIndividual
                 key={comercial.id}

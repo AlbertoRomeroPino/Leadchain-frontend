@@ -105,9 +105,33 @@ Abre el navegador en `http://localhost:5173`.
 
 ---
 
+<h2 align="center">Hooks Utilizados</h2>
+
+| **Hook**             | **¿Qué hace? (Resumen)** | **¿Para qué sirve?**                                  | **Ejemplo**                  |
+| -------------------------- | -------------------------------- | ------------------------------------------------------------- | ---------------------------------- |
+| **useState**         | Estado local                     | Guardar datos que cambian y refrescan la pantalla.            | `[user, setUser] = useState()`   |
+| **useEffect**        | Sincronización                  | Ejecutar tareas tras renderizar (APIs, eventos).              | `useEffect(() => { ... }, [])`   |
+| **useCallback**      | Memorizar funciones              | Evitar que una función se recree innecesariamente.           | `useCallback(() => { ... }, [])` |
+| **useMemo**          | Memorizar valores                | Evitar cálculos pesados si no cambian las dependencias.      | `useMemo(() => calc(), [data])`  |
+| **useContext**       | Datos globales                   | Acceder a datos compartidos (auth, tema) sin "prop drilling". | `useContext(AuthContext)`        |
+| **useRef**           | Referencia mutable               | Acceder a elementos del DOM o guardar valores sin renderizar. | `const inputRef = useRef()`      |
+| **useNavigate**      | Navegación                      | Cambiar de página mediante código.                          | `Maps('/dashboard')`             |
+| **useLocation**      | Ubicación                       | Saber en qué ruta estás o qué parámetros lleva la URL.    | `useLocation().pathname`         |
+| **useMap**           | Instancia mapa                   | Controlar directamente la API de Leaflet.                     | `const map = useMap()`           |
+| **useMapEvents**     | Eventos múltiples               | Escuchar varios eventos del mapa (click, zoom, etc.).         | `useMapEvents({ click: ... })`   |
+| **useMapEvent**      | Evento único                    | Escuchar un evento específico del mapa.                      | `useMapEvent('zoom', ...)`       |
+| **useInitialize**    | Montaje (Custom)                 | Ejecutar una carga inicial asíncrona una sola vez.           | `useInitialize(getData)`         |
+| **useCalculateZoom** | Cálculo (Custom)                | Ajustar el nivel de zoom basado en coordenadas.               | `useCalculateZoomFromBounds(b)`  |
+| **useMapBounds**     | Restricciones (Custom)           | Limitar hasta dónde puede moverse el mapa.                   | `useMapBoundsRestrictions(b)`    |
+| **useAuth**          | Auth (Custom)                    | Obtener información del usuario logueado fácilmente.        | `const { user } = useAuth()`     |
+
+---
+
+
+
 <h3 align="center"> Descripción breve </h3>
 
-- `src/auth/` — gestión de sesión y contexto de usuario.
+- `src/auth/ && src/context` — gestión de sesión y contexto de usuario.
 - `src/components/` — componentes reutilizables de la UI.
 - `src/pages/` — vistas principales de la aplicación.
 - `src/services/` — llamadas a la API e interceptores HTTP.
@@ -421,7 +445,7 @@ El frontend incluye un sistema de sesión que renueva el token JWT automáticame
 <h3 align="center">Archivos clave</h3>
 
 - `src/services/https.ts`
-- `src/auth/authProvider.tsx`
+- `src/context/authProvider.tsx`
 - `src/auth/authStorage.ts`
 - `src/services/tokenManager.ts`
 

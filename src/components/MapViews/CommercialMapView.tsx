@@ -56,7 +56,7 @@ const CommercialMapView = ({ userRole, userZonaId }: CommercialMapViewProps) => 
     }
 
     // Buscar la zona del comercial
-    const userZona = zonas.find((z) => z.id === userZonaId);
+    const userZona = zonas.find((zona) => zona.id === userZonaId);
 
     // Validar que existe la zona y tiene área (polygon)
     if (!userZona) {

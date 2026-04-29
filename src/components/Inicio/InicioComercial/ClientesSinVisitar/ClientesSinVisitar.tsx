@@ -44,14 +44,14 @@ const ClientesSinVisitar = ({
 
         const edificiosData: Edificio[] = await EdificiosService.getEdificios();
 
-        const clientesConEdificio = clientesData.map((c) => {
+        const clientesConEdificio = clientesData.map((cliente) => {
           const edificio = edificiosData.find((edificio: Edificio) =>
             Array.isArray(edificio.clientes) &&
-            edificio.clientes.some((cliente: Cliente) => cliente.id === c.cliente.id),
+            edificio.clientes.some((cliente: Cliente) => cliente.id === cliente.id),
           );
 
           return {
-            ...c,
+            ...cliente,
             edificio,
           };
         });
@@ -65,8 +65,8 @@ const ClientesSinVisitar = ({
     [clientesData],
   );
 
-  const clientesSinVisita = clientes.filter((c) => !c.tieneVisita);
-  const clientesConVisita = clientes.filter((c) => c.tieneVisita);
+  const clientesSinVisita = clientes.filter((cliente) => !cliente.tieneVisita);
+  const clientesConVisita = clientes.filter((cliente) => cliente.tieneVisita);
 
   const handleCrearVisita = (clienteId: number) => {
     setClienteSeleccionado(clienteId);
@@ -104,7 +104,7 @@ const ClientesSinVisitar = ({
     // Timeout de seguridad: desbloquear después de 5 segundos si algo salió mal
     const timeoutId = setTimeout(() => {
       const clienteAúnEnLista = clientesSinVisita.some(
-        (c) => c.cliente.id === clienteSeleccionado,
+        (cliente) => cliente.cliente.id === clienteSeleccionado,
       );
 
       // Si el cliente ya no está en la lista, se ha movido a "Visitados"
@@ -118,7 +118,7 @@ const ClientesSinVisitar = ({
   }, [clientesSinVisita, isSaving, clienteSeleccionado]);
 
   const clienteSeleccionadoCompleto = clientes.find(
-    (c) => c.cliente.id === clienteSeleccionado,
+    (cliente) => cliente.cliente.id === clienteSeleccionado,
   )?.cliente ?? null;
 
   return (
@@ -167,7 +167,7 @@ const ClientesSinVisitar = ({
         open={isModalOpen}
         onClose={handleCloseModal}
         onSubmit={handleSubmitVisita}
-        clientes={clientes.map((c) => c.cliente)}
+        clientes={clientes.map((cliente) => cliente.cliente)}
         estados={estados}
         selectedClient={clienteSeleccionadoCompleto}
         mode="create"

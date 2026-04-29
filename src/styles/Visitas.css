@@ -3,17 +3,25 @@
    ========================================================== */
 
 .visitas-page {
-  margin-left: clamp(70px, 8vw, 84px);
-  padding: 20px;
-  width: calc(100vw - clamp(70px, 8vw, 84px));
+  margin-left: clamp(70px, 5vw, 84px); /* Ajustado ligeramente */
+  padding-top: 5px;
+  width: 100%;
+  padding-right: 24px; /* <--- Esto crea el espacio que buscas */
+  padding-left: 24px; /* Opcional: para que quede simétrico */
+  box-sizing: border-box; /* Fundamental para que el padding no añada scroll */
+  max-width: calc(
+    100% - clamp(70px, 5vw, 84px)
+  ); /* Esto mantiene el margen lateral */
+  box-sizing: border-box; /* Asegura que el padding no sume al ancho */
 }
 
-/* Responsive: Tablet */
+/* Responsive: Tablet/Mobile */
 @media (max-width: 900px) {
   .visitas-page {
     margin-left: 0;
     width: 100%;
     padding: 20px 20px 100px 20px;
+    max-width: 100%; /* Resetear para pantallas pequeñas */
   }
 }
 

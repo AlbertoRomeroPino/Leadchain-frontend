@@ -67,7 +67,7 @@ const Zona = () => {
       await ZonaService.updateZona(selectedZona.id, zona);
       const zonasResponse = await ZonaService.getZonasPageData();
       setZonas(zonasResponse);
-      const updatedZona = zonasResponse.find((z: Zona) => z.id === selectedZona.id);
+      const updatedZona = zonasResponse.find((zona: Zona) => zona.id === selectedZona.id);
       if (updatedZona) setSelectedZona(updatedZona);
       setShowCreateForm(false);
       setEditMode(false);

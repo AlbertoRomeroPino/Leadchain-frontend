@@ -231,7 +231,3 @@ import GlovalMap from "../utils/GlovalMap";
 - `src/hooks/useMapBoundsRestrictions.ts` - Hook principal
 - `src/components/MapSetup/MapBoundsSetup.tsx` - Componente wrapper
 - `src/components/MapViews/CommercialMapView.tsx` - Ejemplo de uso
-
----
-
-**Creado con ❤️ para Leaflet 3.0+**

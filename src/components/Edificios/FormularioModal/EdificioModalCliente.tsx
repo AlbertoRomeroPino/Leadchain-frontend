@@ -63,7 +63,7 @@ const EdificioModalCliente = ({
   };
 
   const eliminarCliente = (id: string) => {
-    setClientes(clientes.filter((c) => c.id !== id));
+    setClientes(clientes.filter((cliente) => cliente.id !== id));
     if (expandedClienteId === id) {
       setExpandedClienteId(null);
     }
@@ -71,7 +71,7 @@ const EdificioModalCliente = ({
 
   const actualizarCliente = (id: string, updates: Partial<ClienteBlock>) => {
     setClientes(
-      clientes.map((c) => (c.id === id ? { ...c, ...updates } : c))
+      clientes.map((cliente) => (cliente.id === id ? { ...cliente, ...updates } : cliente))
     );
   };
 
@@ -84,12 +84,12 @@ const EdificioModalCliente = ({
   const getClientesDisponiblesForBloque = (bloqueActualId: string) => {
     const clientesSinEdificioSeleccionadosEnOtrosBloques = new Set(
       clientes
-        .filter((c) => c.id !== bloqueActualId && c.mode === "seleccionar" && c.clienteSinEdificioId)
-        .map((c) => c.clienteSinEdificioId)
+        .filter((cliente) => cliente.id !== bloqueActualId && cliente.mode === "seleccionar" && cliente.clienteSinEdificioId)
+        .map((cliente) => cliente.clienteSinEdificioId)
     );
 
     return clientesSinEdificio.filter(
-      (c) => !clientesSinEdificioSeleccionadosEnOtrosBloques.has(c.id)
+      (cliente) => !clientesSinEdificioSeleccionadosEnOtrosBloques.has(cliente.id)
     );
   };
 
@@ -103,7 +103,7 @@ const EdificioModalCliente = ({
       <select
         className="form-edificio-input"
         value={existingEdificioId}
-        onChange={(e) => setExistingEdificioId(e.target.value ? Number(e.target.value) : "")}
+        onChange={(edificio) => setExistingEdificioId(edificio.target.value ? Number(edificio.target.value) : "")}
       >
         <option value="">Selecciona un edificio</option>
         {edificios.map((ed) => (
@@ -173,7 +173,7 @@ const EdificioModalCliente = ({
                         type="text"
                         placeholder="Nombre cliente"
                         value={cliente.nombre}
-                        onChange={(e) => actualizarCliente(cliente.id, { nombre: e.target.value })}
+                        onChange={(edificio) => actualizarCliente(cliente.id, { nombre: edificio.target.value })}
                         maxLength={50}
                         required
                       />
@@ -182,9 +182,9 @@ const EdificioModalCliente = ({
                         type="text"
                         placeholder="Apellidos cliente (opcional)"
                         value={cliente.apellidos}
-                        onChange={(e) =>
+                        onChange={(edificio) =>
                           actualizarCliente(cliente.id, {
-                            apellidos: e.target.value.slice(0, 100),
+                            apellidos: edificio.target.value.slice(0, 100),
                           })
                         }
                         maxLength={100}
@@ -194,7 +194,7 @@ const EdificioModalCliente = ({
                         type="email"
                         placeholder="Correo electrónico (opcional)"
                         value={cliente.email}
-                        onChange={(e) => actualizarCliente(cliente.id, { email: e.target.value.slice(0, 100) })}
+                        onChange={(edificio) => actualizarCliente(cliente.id, { email: edificio.target.value.slice(0, 100) })}
                         maxLength={100}
                       />
                       <input
@@ -204,9 +204,9 @@ const EdificioModalCliente = ({
                         pattern="[0-9]*"
                         placeholder="Teléfono (opcional)"
                         value={cliente.telefono}
-                        onChange={(e) =>
+                        onChange={(edificio) =>
                           actualizarCliente(cliente.id, {
-                            telefono: e.target.value.replace(/\D/g, "").slice(0, 15),
+                            telefono: edificio.target.value.replace(/\D/g, "").slice(0, 15),
                           })
                         }
                         maxLength={15}
@@ -216,17 +216,17 @@ const EdificioModalCliente = ({
                     <select
                       className="form-edificio-input"
                       value={cliente.clienteSinEdificioId ?? ""}
-                      onChange={(e) =>
+                      onChange={(edificio) =>
                         actualizarCliente(cliente.id, {
-                          clienteSinEdificioId: e.target.value ? Number(e.target.value) : null,
+                          clienteSinEdificioId: edificio.target.value ? Number(edificio.target.value) : null,
                         })
                       }
                       required
                     >
                       <option value="">Selecciona un cliente</option>
-                      {getClientesDisponiblesForBloque(cliente.id).map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {formatClienteNombre(c)} - {c.email || c.telefono || "Sin contacto"}
+                      {getClientesDisponiblesForBloque(cliente.id).map((clienteTMP) => (
+                        <option key={clienteTMP.id} value={clienteTMP.id}>
+                          {formatClienteNombre(clienteTMP)} - {clienteTMP.email || clienteTMP.telefono || "Sin contacto"}
                         </option>
                       ))}
                     </select>
@@ -240,7 +240,7 @@ const EdificioModalCliente = ({
                         type="text"
                         placeholder="Piso/Planta"
                         value={cliente.planta}
-                        onChange={(e) => actualizarCliente(cliente.id, { planta: e.target.value })}
+                        onChange={(edificio) => actualizarCliente(cliente.id, { planta: edificio.target.value })}
                         required
                       />
                       <input
@@ -248,7 +248,7 @@ const EdificioModalCliente = ({
                         type="text"
                         placeholder="Puerta"
                         value={cliente.puerta}
-                        onChange={(e) => actualizarCliente(cliente.id, { puerta: e.target.value })}
+                        onChange={(edificio) => actualizarCliente(cliente.id, { puerta: edificio.target.value })}
                         required
                       />
                     </div>

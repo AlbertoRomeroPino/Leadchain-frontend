@@ -62,9 +62,9 @@ const EdificioInfo = ({
       const clientesBloqueUnicos = Array.from(
         new Map(
           clientesDelBloqueBuffer
-            .map((c) => [
-              `${c.cliente.id}|${c.planta ?? ""}|${c.puerta ?? ""}`,
-              c,
+            .map((cliente) => [
+              `${cliente.cliente.id}|${cliente.planta ?? ""}|${cliente.puerta ?? ""}`,
+              cliente,
             ]),
         ).values(),
       );
@@ -156,7 +156,7 @@ const EdificioInfo = ({
               canManage={canManageEdificio}
               onClienteRemoved={(clienteId) => {
                 setClientesBloque((prev) => 
-                  prev.filter((c) => c.cliente.id !== clienteId)
+                  prev.filter((cliente) => cliente.cliente.id !== clienteId)
                 );
               }}
             />

@@ -36,7 +36,7 @@ const ComercialesRow = ({
           <input
             type="checkbox"
             checked={isSelected}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(edificio) => edificio.stopPropagation()}
             onChange={onToggleSelect}
           />
         </td>
@@ -54,28 +54,28 @@ const ComercialesRow = ({
             <div className="comerciales-list-visitas">
               {comercial.visitas.length ? (
                 <div className="visitas-grid">
-                  {comercial.visitas.map((v: Visita) => (
-                    <div key={v.id} className="visita-card">
+                  {comercial.visitas.map((visita: Visita) => (
+                    <div key={visita.id} className="visita-card">
                       <div className="visita-card-row">
                         <span className="visita-card-label">Fecha:</span>
-                        <span>{new Date(v.fecha_hora).toLocaleString()}</span>
+                        <span>{new Date(visita.fecha_hora).toLocaleString()}</span>
                       </div>
                       <div className="visita-card-row">
                         <span className="visita-card-label">Cliente:</span>
                         <span>
-                          {v.cliente
-                            ? `${v.cliente.nombre} ${v.cliente.apellidos}`
-                            : `ID ${v.id_cliente}`}
+                          {visita.cliente
+                            ? `${visita.cliente.nombre} ${visita.cliente.apellidos}`
+                            : `ID ${visita.id_cliente}`}
                         </span>
                       </div>
                       <div className="visita-card-row">
                         <span className="visita-card-label">Estado:</span>
-                        <span>{v.estado?.etiqueta ?? `#${v.id_estado}`}</span>
+                        <span>{visita.estado?.etiqueta ?? `#${visita.id_estado}`}</span>
                       </div>
-                      {v.observaciones && (
+                      {visita.observaciones && (
                         <div className="visita-card-row">
                           <span className="visita-card-label">Observaciones:</span>
-                          <span>{v.observaciones}</span>
+                          <span>{visita.observaciones}</span>
                         </div>
                       )}
                     </div>

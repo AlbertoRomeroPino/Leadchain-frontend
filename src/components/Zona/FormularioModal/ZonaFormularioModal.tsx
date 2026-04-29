@@ -32,8 +32,8 @@ const MapClickHandler = ({
 }: {
   onMapClick: (lat: number, lng: number) => void;
 }) => {
-  useMapEvent("click", (e) => {
-    onMapClick(e.latlng.lat, e.latlng.lng);
+  useMapEvent("click", (edificio) => {
+    onMapClick(edificio.latlng.lat, edificio.latlng.lng);
   });
   return null;
 };
@@ -84,8 +84,8 @@ const ZonaFormularioModal = ({
     setPuntos([]);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (edificio: React.FormEvent<HTMLFormElement>) => {
+    edificio.preventDefault();
 
     if (!nombreZona.trim()) {
       showInfoAlert("Por favor ingresa un nombre para la zona");
@@ -124,7 +124,7 @@ const ZonaFormularioModal = ({
     <div className="zona-modal-overlay" onClick={onClose}>
       <div
         className="zona-modal-container"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(edificio) => edificio.stopPropagation()}
       >
         <div className="zona-modal-header">
           <h2 className="zona-modal-title">
@@ -152,7 +152,7 @@ const ZonaFormularioModal = ({
               className="zona-input"
               placeholder="Ej: Centro Histórico, Zona Comercial, etc."
               value={nombreZona}
-              onChange={(e) => setNombreZona(e.target.value)}
+              onChange={(edificio) => setNombreZona(edificio.target.value)}
               disabled={loading}
             />
           </div>

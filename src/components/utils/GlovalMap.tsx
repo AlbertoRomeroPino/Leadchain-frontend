@@ -111,7 +111,7 @@ const GlovalMap = ({
   // Obtener el área de la zona del comercial si aplica
   const comercialZoneArea = useMemo(() => {
     if (userRole === "comercial" && userZonaId && zonas.length > 0) {
-      const userZona = zonas.find((z) => z.id === userZonaId);
+      const userZona = zonas.find((zona) => zona.id === userZonaId);
       return userZona?.area ?? null;
     }
     return null;
@@ -267,7 +267,7 @@ const GlovalMap = ({
               clientesCount = edificio.clientes.count;
             }
 
-            const edificioZona = zonasAMostrar.find((z) => z.id === edificio.id_zona);
+            const edificioZona = zonasAMostrar.find((zona) => zona.id === edificio.id_zona);
 
             return (
               <EdificioMarker
