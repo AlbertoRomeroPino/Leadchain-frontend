@@ -127,8 +127,6 @@ Abre el navegador en `http://localhost:5173`.
 
 ---
 
-
-
 <h3 align="center"> Descripción breve </h3>
 
 - `src/auth/ && src/context` — gestión de sesión y contexto de usuario.
@@ -448,6 +446,176 @@ El frontend incluye un sistema de sesión que renueva el token JWT automáticame
 - `src/context/authProvider.tsx`
 - `src/auth/authStorage.ts`
 - `src/services/tokenManager.ts`
+
+---
+
+<h2 align="center"> Gestion de leaflet </h2>
+
+```mermaid
+classDiagram
+    %% ==========================================
+    %% SERVICIOS Y CONTEXTOS EXTERNOS (Hacia dónde apuntan)
+    %% ==========================================
+    class AuthContext {
+        <<Contexto Externo>>
+        +useAuth() Retorna estado global de sesión
+    }
+
+    class InicioService {
+        <<API Backend Externa>>
+        +getMapaInicio()
+        +getDetalleEdificio()
+    }
+  
+    class ReactLeaflet {
+        <<Librería de UI Externa>>
+        +MapContainer
+        +TileLayer
+        +Polygon
+        +Marker
+        +Popup
+    }
+  
+    class LeafletCore {
+        <<Contexto / API de Mapa Externo>>
+        +useMap()
+        +map.fitBounds()
+        +map.setMaxBounds()
+        +map.getBoundsZoom()
+        +map.panInsideBounds()
+    }
+
+    %% ==========================================
+    %% PÁGINA PRINCIPAL (Punto de entrada)
+    %% ==========================================
+    class MapPage {
+        +var user: [Objeto con rol e id_zona desde useAuth]
+        +Renderiza() [Renderizado condicional del Layout y Mapas]
+    }
+  
+    class Sidebar {
+        <<Componente de Interfaz>>
+        +Renderiza() [Menú de navegación lateral]
+    }
+
+    %% ==========================================
+    %% CONTROLADORES (Componentes Inteligentes)
+    %% ==========================================
+    class AdminMapView {
+        +state zonas: Zona[]
+        +state edificios: Edificio[]
+        +const centerCoords: [Centro de Córdoba]
+        +const zoomLevel: [Zoom inicial para toda la ciudad]
+        +const maxBounds: [Limita la vista a Córdoba con un margen]
+        +const minZoomLevel: [Permite a los administradores alejar más la vista]
+        +useInitialize() Llama a la carga de datos
+    }
+  
+    class CommercialMapView {
+        +state zonas: Zona[]
+        +state edificios: Edificio[]
+        +state calculatedZoom: [Zoom calculado dinámicamente]
+        +useInitialize() Llama a la carga de datos y filtra por zona
+        +useMemo [Calcula el centro, el zoom y los límites basados en el polígono]
+    }
+
+    %% ==========================================
+    %% MOTOR VISUAL CENTRAL
+    %% ==========================================
+    class GlovalMap {
+        +const coloresZonas: [Lista de 8 colores hexadecimales]
+        +useMemo zonasAMostrar [Filtra las zonas según el rol]
+        +useMemo edificiosAMostrar [Filtra los edificios según el rol]
+        +useMemo createEdificioIcon [Genera el icono del marcador con el contador]
+        +useMemo comercialZoneArea [Obtiene el área asignada al comercial]
+        +useMemo zonasConConteo [Calcula el total de edificios y clientes]
+        +isEdificioClientesCount() Valida la estructura del contador de clientes
+        +convertirAreaAPoligono() Adapta las coordenadas para la librería Leaflet
+    }
+
+    %% ==========================================
+    %% COMPONENTES DE INTERFAZ Y PANELES
+    %% ==========================================
+    class EdificioMarker {
+        +var clientesCount: [Número total de clientes en el edificio]
+        +var clientesConEdificio: [Lista combinada de clientes y su edificio]
+        +getNombreCompleto() Acorta los nombres que superan los 40 caracteres
+    }
+  
+    class MapaEdificioPanel {
+        +state clientesBloque: [Lista de clientes formateada para mostrar]
+        +state zona: [Datos de la zona correspondiente]
+        +ref dragStartPos: [Detecta si el usuario hizo un clic normal o arrastró el mapa]
+        +useInitialize() Carga los detalles específicos del edificio
+        +handleOverlayMouseDown() Guarda la posición inicial del ratón
+        +handleOverlayMouseUp() Cierra el panel si no fue un movimiento de arrastre
+    }
+
+    %% ==========================================
+    %% COMPONENTES INVISIBLES (Configuradores de Lógica)
+    %% ==========================================
+    class MapView {
+        <<Componente de Configuración>>
+        +Renderiza() nulo
+    }
+  
+    class ZoomCalculator {
+        <<Componente de Configuración>>
+        +Renderiza() nulo
+    }
+
+    %% ==========================================
+    %% HOOKS PERSONALIZADOS (La lógica pesada)
+    %% ==========================================
+    class useMapBoundsRestrictions {
+        <<Hook Personalizado>>
+        +ref debounceTimerRef: [Evita ejecutar cálculos múltiples al mismo tiempo]
+        +calculatePolygonBounds() Calcula de forma óptima los límites matemáticos
+        +ensureInBounds() Retorna automáticamente al usuario al área permitida
+    }
+  
+    class useCalculateZoomFromBounds {
+        <<Hook Personalizado>>
+        +useMemo polygonBounds: [Convierte los puntos a formato de límites de Leaflet]
+        +useCallback handleZoomCalculated: [Evita renderizados innecesarios en la vista]
+    }
+
+    %% ==========================================
+    %% RELACIONES Y DIRECCIONES (Flujo de datos y llamadas)
+    %% ==========================================
+  
+    %% Flujo desde la página principal
+    MapPage ..> AuthContext : Obtiene el usuario desde useAuth()
+    MapPage --> Sidebar : Muestra el menú lateral
+    MapPage --> AdminMapView : Si el rol es distinto a 'comercial'
+    MapPage --> CommercialMapView : Si el rol es igual a 'comercial'
+
+    %% Carga de datos hacia el Backend
+    AdminMapView ..> InicioService : Solicita datos a getMapaInicio()
+    CommercialMapView ..> InicioService : Solicita datos a getMapaInicio()
+    MapaEdificioPanel ..> InicioService : Solicita detalles a getDetalleEdificio()
+  
+    %% Flujo de renderizado principal (Padres a Hijos)
+    AdminMapView --> GlovalMap : Pasa todas las zonas y configuración global
+    CommercialMapView --> GlovalMap : Pasa solo la zona del comercial y límites calculados
+  
+    %% GlovalMap hacia la interfaz y librerías externas
+    GlovalMap --> ReactLeaflet : Construye el mapa base visual
+    GlovalMap --> MapView : Se activa si enableMapBoundsSetup es verdadero
+    GlovalMap --> ZoomCalculator : Se activa si enableZoomCalculator es verdadero
+    GlovalMap --> EdificioMarker : Dibuja cada edificio en el mapa
+  
+    %% Interacción de clics
+    EdificioMarker ..> MapaEdificioPanel : (A través del evento de clic onEdificioClick)
+  
+    %% Inyección de Hooks en los componentes de configuración
+    MapView ..> useMapBoundsRestrictions : Ejecuta la lógica
+    ZoomCalculator ..> useCalculateZoomFromBounds : Ejecuta la lógica
+  
+    %% Interacción de los Hooks con el núcleo del mapa (Leaflet API)
+    useMapBoundsRestrictions ..> LeafletCore : Utiliza map.setMaxBounds() y map.fitBounds()
+    useCalculateZoomFromBounds ..> LeafletCore : Utiliza map.getBoundsZoom()
+```
 
 ---
 

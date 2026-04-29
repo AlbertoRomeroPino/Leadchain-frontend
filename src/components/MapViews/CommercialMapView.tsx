@@ -11,6 +11,14 @@ interface CommercialMapViewProps {
   userZonaId?: number;
 }
 
+// 1. Extraemos la configuración por defecto fuera del componente
+// Esto evita recrear el objeto en cada renderizado
+const DEFAULT_MAP_CONFIG = {
+  centerCoords: [37.8847, -4.7792] as [number, number],
+  zoomLevel: 13,
+  maxBounds: [[37.75, -5.02], [37.99, -4.62]] as LatLngBoundsExpression,
+};
+
 const CommercialMapView = ({ userRole, userZonaId }: CommercialMapViewProps) => {
   const [zonas, setZonas] = useState<Zona[]>([]);
   const [edificios, setEdificios] = useState<Edificio[]>([]);
@@ -20,21 +28,16 @@ const CommercialMapView = ({ userRole, userZonaId }: CommercialMapViewProps) => 
     try {
       showLoadingAlert("Cargando mapa...");
 
-      // Cargar datos del mapa
       const mapData = await InicioService.getMapaInicio();
       setZonas(mapData.zonas);
 
-      // Extraer solo los edificios de la zona del comercial
-      const edificiosZona: Edificio[] = [];
-      mapData.zonas.forEach((zona) => {
-        if (zona.id === userZonaId && zona.edificios && Array.isArray(zona.edificios)) {
-          zona.edificios.forEach((edificio) => {
-            edificiosZona.push(edificio as Edificio);
-          });
-        }
-      });
-
-      setEdificios(edificiosZona);
+      // 2. Optimización O(1) vs O(n^2): En lugar de iterar TODAS las zonas, 
+      // buscamos directamente la del comercial.
+      const userZona = mapData.zonas.find((zona) => zona.id === userZonaId);
+      
+      if (userZona?.edificios && Array.isArray(userZona.edificios)) {
+        setEdificios(userZona.edificios as Edificio[]);
+      }
 
       showSuccessAlert("Información cargada");
     } catch (err) {
@@ -43,68 +46,40 @@ const CommercialMapView = ({ userRole, userZonaId }: CommercialMapViewProps) => 
     }
   });
 
-  // Calcular configuración de mapa basada en el área (polygon) de la zona del comercial
-  const { centerCoords, zoomLevel, maxBounds } = useMemo(() => {
-    // Validar que tenemos una zona ID y que haya zonas cargadas
-    if (!userZonaId || !zonas || zonas.length === 0) {
-      return {
-        centerCoords: [37.8847, -4.7792] as [number, number],
-        zoomLevel: 13,
-        maxBounds: [[37.75, -5.02], [37.99, -4.62]] as LatLngBoundsExpression,
-        minZoomLevel: 11,
-      };
-    }
+  // 3. Calculamos la configuración espacial
+  const spatialConfig = useMemo(() => {
+    if (!userZonaId || !zonas || zonas.length === 0) return DEFAULT_MAP_CONFIG;
 
-    // Buscar la zona del comercial
     const userZona = zonas.find((zona) => zona.id === userZonaId);
+    if (!userZona?.area?.length) return DEFAULT_MAP_CONFIG;
 
-    // Validar que existe la zona y tiene área (polygon)
-    if (!userZona) {
-      console.warn(`Zona con ID ${userZonaId} no encontrada`);
-      return {
-        centerCoords: [37.8847, -4.7792] as [number, number],
-        zoomLevel: 13,
-        maxBounds: [[37.75, -5.02], [37.99, -4.62]] as LatLngBoundsExpression,
-      };
-    }
+    // 4. Optimización de memoria y CPU: Un solo recorrido (reduce)
+    // Evitamos hacer .map() dos veces y usar el operador spread (...)
+    const bounds = userZona.area.reduce(
+      (acc, p) => ({
+        minLat: Math.min(acc.minLat, p.lat),
+        maxLat: Math.max(acc.maxLat, p.lat),
+        minLng: Math.min(acc.minLng, p.lng),
+        maxLng: Math.max(acc.maxLng, p.lng),
+      }),
+      { minLat: Infinity, maxLat: -Infinity, minLng: Infinity, maxLng: -Infinity }
+    );
 
-    if (!userZona.area || userZona.area.length === 0) {
-      console.warn(`Zona ${userZonaId} no tiene área definida`);
-      return {
-        centerCoords: [37.8847, -4.7792] as [number, number],
-        zoomLevel: 13,
-        maxBounds: [[37.75, -5.02], [37.99, -4.62]] as LatLngBoundsExpression,
-      };
-    }
-
-    // Calcular bounds del área (polygon)
-    const lats = userZona.area.map((p) => p.lat);
-    const lngs = userZona.area.map((p) => p.lng);
-
-    const minLat = Math.min(...lats);
-    const maxLat = Math.max(...lats);
-    const minLng = Math.min(...lngs);
-    const maxLng = Math.max(...lngs);
-
-    // Centro del polígono
-    const centerLat = (maxLat + minLat) / 2;
-    const centerLng = (maxLng + minLng) / 2;
-
-    // Buffer para visualización (~1.5 km en Córdoba)
+    const centerLat = (bounds.maxLat + bounds.minLat) / 2;
+    const centerLng = (bounds.maxLng + bounds.minLng) / 2;
     const buffer = 0.015;
-
-    // Crear bounds con buffer
-    const boundsWithBuffer: LatLngBoundsExpression = [
-      [minLat - buffer, minLng - buffer],
-      [maxLat + buffer, maxLng + buffer],
-    ];
 
     return {
       centerCoords: [centerLat, centerLng] as [number, number],
-      zoomLevel: calculatedZoom?.initialZoom ?? 13,
-      maxBounds: boundsWithBuffer,
+      maxBounds: [
+        [bounds.minLat - buffer, bounds.minLng - buffer],
+        [bounds.maxLat + buffer, bounds.maxLng + buffer],
+      ] as LatLngBoundsExpression,
     };
-  }, [userZonaId, zonas, calculatedZoom]);
+  }, [userZonaId, zonas]); // 5. Eliminamos `calculatedZoom` de las dependencias
+
+  // 6. Derivamos el zoom fuera del useMemo para evitar recalcular polígonos
+  const currentZoomLevel = calculatedZoom?.initialZoom ?? DEFAULT_MAP_CONFIG.zoomLevel;
 
   return (
     <GlovalMap
@@ -112,9 +87,9 @@ const CommercialMapView = ({ userRole, userZonaId }: CommercialMapViewProps) => 
       edificios={edificios}
       userRole={userRole}
       userZonaId={userZonaId}
-      centerCoords={centerCoords}
-      zoomLevel={zoomLevel}
-      customMaxBounds={maxBounds}
+      centerCoords={spatialConfig.centerCoords}
+      zoomLevel={currentZoomLevel}
+      customMaxBounds={spatialConfig.maxBounds}
       title="Mapa de tu Zona"
       enableMapBoundsSetup={true}
       mapPaddingPixels={50}

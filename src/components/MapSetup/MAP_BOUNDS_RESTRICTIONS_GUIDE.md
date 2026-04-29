@@ -231,3 +231,43 @@ import GlovalMap from "../utils/GlovalMap";
 - `src/hooks/useMapBoundsRestrictions.ts` - Hook principal
 - `src/components/MapSetup/MapBoundsSetup.tsx` - Componente wrapper
 - `src/components/MapViews/CommercialMapView.tsx` - Ejemplo de uso
+
+
+```mermaid
+graph TD
+    User((Usuario)) --> MP[MapPage]
+  
+    subgraph "Nivel 2: Controladores (Datos)"
+        MP -- Rol Admin --> AMV[AdminMapView]
+        MP -- Rol Comercial --> CMV[CommercialMapView]
+        AMV -. Llamada Axios .-> API[(InicioService / API)]
+        CMV -. Llamada Axios .-> API
+    end
+
+    subgraph "Nivel 3: Motor Visual"
+        AMV -- Pasa Todo --> GM[GlovalMap]
+        CMV -- Pasa Zona --> GM
+    end
+
+    subgraph "Nivel 4: Leaflet (Componentes)"
+        GM --> Hooks[Reglas de Cámara]
+        Hooks --> MV[MapView]
+        Hooks --> ZC[ZoomCalculator]
+      
+        GM --> Visuals[Elementos Gráficos]
+        Visuals --> TL[TileLayer Base]
+        Visuals --> Poly[Polígonos Zonas]
+        Visuals --> EM[EdificioMarker]
+    end
+
+    subgraph "Nivel 5: UI Superpuesta"
+        EM -. Click Rápido .-> Pop[Popup Leaflet]
+        EM -. Click Detalle .-> Panel[MapaEdificioPanel]
+    end
+
+    %% Estilos
+    style User fill:#f9fafb,stroke:#d1d5db,stroke-width:2px
+    style MP fill:#eff6ff,stroke:#3b82f6,stroke-width:2px
+    style GM fill:#fdf4ff,stroke:#d946ef,stroke-width:2px
+    style API fill:#f0fdf4,stroke:#22c55e,stroke-width:2px
+```
