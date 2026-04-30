@@ -1,13 +1,11 @@
-import { ExceptionService } from "./ExceptionService";
+import { wrapServiceCall } from "./ExceptionService";
 import { authHttp } from "./https";
 
 export const EstadoVisitaService = {
-    async getEstadosVisita() {
-        try {
-            const response = await authHttp.get("/api/estados-visita");
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, "Error al obtener los estados de visita"));
-        }
-    },
+  async getEstadosVisita() {
+    return wrapServiceCall(
+      () => authHttp.get("/api/estados-visita").then(r => r.data),
+      "Error al obtener los estados de visita"
+    );
+  },
 };

@@ -1,50 +1,40 @@
-import type { Zona } from "../types/zonas/Zona";
-import { ExceptionService } from "./ExceptionService";
+import type { Zona } from "../types";
+import { wrapServiceCall } from "./ExceptionService";
 import { authHttp } from "./https";
 
-
 export const ZonaService = {
-    async getZonasPageData() {
-        try {
-            const response = await authHttp.get("/api/zonas/pagina/datos");
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, "Error al obtener los datos de las zonas"));
-        }
-    },
+  async getZonasPageData() {
+    return wrapServiceCall(
+      () => authHttp.get("/api/zonas/pagina/datos").then(r => r.data),
+      "Error al obtener los datos de las zonas"
+    );
+  },
 
-    async getZonas() {
-        try {
-            const response = await authHttp.get("/api/zonas");
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, "Error al obtener las zonas"));
-        }
-    },
+  async getZonas(): Promise<Zona[]> {
+    return wrapServiceCall(
+      () => authHttp.get<Zona[]>("/api/zonas").then(r => r.data),
+      "Error al obtener las zonas"
+    );
+  },
 
-    async createZona(zona: Omit<Zona, "id" | "created_at" | "updated_at">) {
-        try {
-            const response = await authHttp.post("/api/zonas", zona);
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, "Error al crear la zona"));
-        }
-    },
+  async createZona(zona: Omit<Zona, "id" | "created_at" | "updated_at">): Promise<Zona> {
+    return wrapServiceCall(
+      () => authHttp.post<Zona>("/api/zonas", zona).then(r => r.data),
+      "Error al crear la zona"
+    );
+  },
 
-    async updateZona(id: number, zona: Omit<Zona, "id" | "created_at" | "updated_at">) {
-        try {
-            const response = await authHttp.put(`/api/zonas/${id}`, zona);
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, `Error al actualizar la zona con ID ${id}`));
-        }
-    },
+  async updateZona(id: number, zona: Omit<Zona, "id" | "created_at" | "updated_at">): Promise<Zona> {
+    return wrapServiceCall(
+      () => authHttp.put<Zona>(`/api/zonas/${id}`, zona).then(r => r.data),
+      `Error al actualizar la zona con ID ${id}`
+    );
+  },
 
-    async deleteZona(id: number) {
-        try {
-            await authHttp.delete(`/api/zonas/${id}`);
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, `Error al eliminar la zona con ID ${id}`));
-        }
-    },
+  async deleteZona(id: number): Promise<void> {
+    return wrapServiceCall(
+      () => authHttp.delete(`/api/zonas/${id}`).then(() => undefined),
+      `Error al eliminar la zona con ID ${id}`
+    );
+  },
 };

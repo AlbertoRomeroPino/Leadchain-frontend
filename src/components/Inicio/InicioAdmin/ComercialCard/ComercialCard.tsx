@@ -1,11 +1,7 @@
 import { useState } from "react";
 import "../../../../styles/components/Inicio/InicioAdmin/ComercialCard/ComercialCard.css";
 import { useInitialize } from "../../../../hooks/useInitialize";
-import type { User } from "../../../../types/users/User";
-import type { Visita } from "../../../../types/visitas/Visita";
-import type { Cliente } from "../../../../types/clientes/Cliente";
-import type { Edificio } from "../../../../types/edificios/Edificio";
-import type { Zona } from "../../../../types/zonas/Zona";
+import type { User, Visita, Cliente, Edificio, Zona} from "../../../../types";
 import ComercialCardIndividual from "./ComercialCardIndividual";
 
 export interface ComercialCardProps {
@@ -123,7 +119,7 @@ const ComercialCard = ({ comerciales, visitas, clientes, edificios, zonas }: Com
       ) : (
         <div className="comerciales-grid">
           {comerciales.map((comercial) => {
-            const zonaDelComercial = zonas.find(z => Number(z.id) === Number(comercial.id_zona));
+            const zonaDelComercial = zonas.find(zona => Number(zona.id) === Number(comercial.id_zona));
             return (
               <ComercialCardIndividual
                 key={comercial.id}

@@ -1,5 +1,4 @@
-import type { Edificio } from "../../../types/edificios/Edificio";
-import type { Zona } from "../../../types/zonas/Zona";
+import type { Edificio, Zona } from "../../../types";
 import "../../../styles/components/Clientes/Info/InfoClienteEdificioCard.css";
 
 interface InfoClienteEdificioCardProps {

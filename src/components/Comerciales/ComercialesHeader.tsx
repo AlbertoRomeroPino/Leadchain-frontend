@@ -1,4 +1,4 @@
-import type { UserVisitas } from '../../types/users/User';
+import type { UserVisitas } from '../../types';
 import { Trash, UserPlus2, UserRoundCog } from 'lucide-react';
 import '../../styles/components/Comerciales/ComercialesHeader.css';
 
@@ -29,7 +29,7 @@ const ComercialesHeader = ({
               className="comerciales-create-button"
               onClick={() => {
                 const comercialId = Array.from(selectedComercialIds)[0];
-                const comercial = comerciales.find((c) => c.id === comercialId);
+                const comercial = comerciales.find((cliente) => cliente.id === comercialId);
                 if (comercial) {
                   setComercialAEditar(comercial);
                   setShowCreateForm(true);

@@ -1,4 +1,4 @@
-import type { AuthResponse, LoginCredentials, RegisterData, User } from "../types/users/User";
+import type { AuthResponse, LoginCredentials, RegisterData, User } from "../types";
 import { authHttp, publicHttp } from "./https";
 
 function normalizeAuthResponse(payload: unknown): AuthResponse {

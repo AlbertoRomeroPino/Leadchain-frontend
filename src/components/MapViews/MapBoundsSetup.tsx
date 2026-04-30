@@ -1,5 +1,5 @@
 import { useMapBoundsRestrictions } from "../../hooks/useMapBoundsRestrictions";
-import type { GeoPoint } from "../../types/shared/GeoPoint";
+import type { GeoPoint } from "../../types";
 
 interface MapBoundsSetupProps {
   /**

@@ -1,6 +1,5 @@
 import React from "react";
-import type { Zona } from "../../types/zonas/Zona";
-import type { UserVisitas } from "../../types/users/User";
+import type { Zona, UserVisitas } from "../../types";
 import ComercialesRow from "./ComercialesRow";
 import "../../styles/components/Comerciales/ComercialesTable.css";
 
@@ -49,13 +48,13 @@ const ComercialesTable = ({
                   comercial={comercialItem}
                   isExpanded={expandedComercialId === comercialItem.id}
                   zonaNombre={
-                    zonas.find((z) => z.id === comercialItem.id_zona)
+                    zonas.find((zona) => zona.id === comercialItem.id_zona)
                       ?.nombre || ""
                   }
                   isSelected={selectedComercialIds.has(comercialItem.id)}
-                  onToggleSelect={(e) => {
-                    e.stopPropagation();
-                    toggleSelectComercial(comercialItem.id, e);
+                  onToggleSelect={(edificio) => {
+                    edificio.stopPropagation();
+                    toggleSelectComercial(comercialItem.id, edificio);
                   }}
                   onToggleExpand={() =>
                     toggleComercialVisitas(comercialItem.id)

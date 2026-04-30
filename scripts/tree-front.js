@@ -60,7 +60,6 @@ const readTree = (dir, prefix, isLast, options, parentRelative = "") => {
     const isLastItem = index === items.length - 1;
     const connector = isLastItem ? "└── " : "├── ";
     const relativePath = path.join(parentRelative, dirent.name);
-    console.log(`${prefix}${connector}${dirent.name}`);
     if (dirent.isDirectory()) {
       const nextPrefix = prefix + (isLastItem ? "    " : "│   ");
       readTree(path.join(dir, dirent.name), nextPrefix, isLastItem, options, relativePath);
@@ -71,7 +70,6 @@ const readTree = (dir, prefix, isLast, options, parentRelative = "") => {
 const main = () => {
   const options = parseArgs();
   const rootName = path.basename(options.root);
-  console.log(`${options.root}`);
   readTree(options.root, "", true, options, "");
 };
 

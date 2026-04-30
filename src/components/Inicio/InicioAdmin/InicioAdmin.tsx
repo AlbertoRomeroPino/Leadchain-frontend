@@ -1,15 +1,11 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import "../../../styles/components/Inicio/InicioAdmin/InicioAdmin.css";
-import { useAuth } from "../../../auth/useAuth";
+import { useAuth } from "../../../context/useAuth";
 import { useInitialize } from "../../../hooks/useInitialize";
 import ComercialCard from "./ComercialCard/ComercialCard";
 import { InicioService } from "../../../services/InicioService";
 import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../../utils/errorHandler";
-import type { User } from "../../../types/users/User";
-import type { Visita } from "../../../types/visitas/Visita";
-import type { Cliente } from "../../../types/clientes/Cliente";
-import type { Edificio } from "../../../types/edificios/Edificio";
-import type { Zona } from "../../../types/zonas/Zona";
+import type { User, Visita, Cliente, Edificio, Zona } from "../../../types";
 
 interface AdminDashboardState {
   comerciales: User[];
@@ -29,7 +25,8 @@ const InicioAdmin = () => {
     zonas: [],
   });
 
-  useInitialize(async () => {
+  // Memoizar el callback para que sea estable entre renders
+  const loadDashboard = useCallback(async () => {
     if (!user || user.rol !== "admin") {
       return;
     }
@@ -57,7 +54,10 @@ const InicioAdmin = () => {
       showErrorAlert(error, "Cargar Tablero");
       console.error("Error al cargar dashboard admin:", error);
     }
-  }, [user?.id]);
+  }, [user]);
+
+  // El callback estable asegura que el effect corra solo cuando user.id cambia
+  useInitialize(loadDashboard);
 
   return (
     <div className="inicio-admin">

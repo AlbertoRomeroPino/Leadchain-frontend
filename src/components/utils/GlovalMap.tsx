@@ -2,16 +2,16 @@ import { MapContainer, Polygon, Rectangle, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../../styles/components/utils/GlovalMap.css";
 import MapView from "../MapSetup/MapView";
-import EdificioMarker from "../MapViews/EdificioMarker";import ZoomCalculator from "../MapSetup/ZoomCalculator";import {
+import EdificioMarker from "../MapViews/EdificioMarker";
+import ZoomCalculator from "../MapSetup/ZoomCalculator";
+import {
   CORDOBA_BOUNDS,
   CORDOBA_CENTER,
   CORDOBA_MAP_CONFIG,
   CORDOBA_OUTER_RING,
   CORDOBA_HOLE,
 } from "./cordobaMapConfig";
-import type { Zona } from "../../types/zonas/Zona";
-import type { Edificio } from "../../types/edificios/Edificio";
-import type { GeoPoint } from "../../types/shared/GeoPoint";
+import type { Zona, Edificio, GeoPoint } from "../../types";
 import type { LatLngExpression, LatLngBoundsExpression } from "leaflet";
 import { useMemo } from "react";
 import L from "leaflet";
@@ -34,6 +34,53 @@ interface GlovalMapProps {
   onEdificioClick?: (edificio: Edificio) => void;
 }
 
+const iconCache: Record<number, L.DivIcon> = {};
+
+const getOrCreateIcon = (clientesCount = 0) => {
+  if (iconCache[clientesCount]) {
+    return iconCache[clientesCount];
+  }
+
+  const label = clientesCount > 99 ? "99+" : String(clientesCount);
+  const newIcon = L.divIcon({
+    html: `
+      <div class="edificio-pin-icon">
+        <span>${label}</span>
+        <div class="edificio-pin-tail"></div>
+      </div>
+    `,
+    className: "edificio-pin-marker",
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -35],
+  });
+
+  iconCache[clientesCount] = newIcon;
+  return newIcon;
+};
+
+// 1. EXTRAÍDO FUERA: Constantes que nunca cambian
+const COLORES_ZONAS = [
+  "#3b82f6", "#ef4444", "#10b981", "#f59e0b",
+  "#8b5cf6", "#ec4899", "#06b6d4", "#f97316",
+];
+
+// 2. EXTRAÍDO FUERA: Funciones puras y validadores de tipos
+type EdificioClientesCount = { count: number };
+
+const isEdificioClientesCount = (value: unknown): value is EdificioClientesCount => {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "count" in value &&
+    typeof (value as Record<string, unknown>).count === "number"
+  );
+};
+
+const convertirAreaAPoligono = (area: GeoPoint[]): LatLngExpression[] => {
+  return area.map((punto) => [punto.lat, punto.lng]);
+};
+
 const GlovalMap = ({
   zonas = [],
   edificios = [],
@@ -50,105 +97,60 @@ const GlovalMap = ({
   enableZoomCalculator = false,
   onZoomCalculated,
 }: GlovalMapProps) => {
-  // Filtrar zonas según el rol del usuario
+
+  // Filtros principales (Memoizados)
   const zonasAMostrar = useMemo(() => {
-    if (!zonas || zonas.length === 0) return [];
-
-    if (userRole === "comercial" && userZonaId) {
-      return zonas.filter((zona) => zona.id === userZonaId);
-    }
-
-    return zonas;
+    if (!zonas.length) return [];
+    return userRole === "comercial" && userZonaId
+      ? zonas.filter((zona) => zona.id === userZonaId)
+      : zonas;
   }, [zonas, userRole, userZonaId]);
 
-  // Filtrar edificios según el rol del usuario
   const edificiosAMostrar = useMemo(() => {
-    if (!edificios || edificios.length === 0) return [];
-
-    if (userRole === "comercial" && userZonaId) {
-      return edificios.filter((edif) => edif.id_zona === userZonaId);
-    }
-
-    return edificios;
+    if (!edificios.length) return [];
+    return userRole === "comercial" && userZonaId
+      ? edificios.filter((edif) => edif.id_zona === userZonaId)
+      : edificios;
   }, [edificios, userRole, userZonaId]);
 
-  // Crear icono personalizado para edificios con número de clientes
-  type EdificioClientesCount = { count: number };
-
-  const isEdificioClientesCount = (
-    value: unknown,
-  ): value is EdificioClientesCount => {
-    return (
-      typeof value === "object" &&
-      value !== null &&
-      "count" in value &&
-      typeof (value as Record<string, unknown>).count === "number"
-    );
-  };
-
-  const createEdificioIcon = useMemo(() => {
-    return (clientesCount = 0) => {
-      const label = clientesCount > 99 ? "99+" : String(clientesCount);
-
-      return L.divIcon({
-        html: `
-          <div class="edificio-pin-icon">
-            <span>${label}</span>
-            <div class="edificio-pin-tail"></div>
-          </div>
-        `,
-        className: "edificio-pin-marker",
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -35],
-      });
-    };
-  }, []);
-
-  // Convertir puntos GeoPoint a LatLngExpression para Leaflet
-  const convertirAreaAPoligono = (area: GeoPoint[]): LatLngExpression[] => {
-    return area.map((punto) => [punto.lat, punto.lng]);
-  };
-
-  // Obtener el área de la zona del comercial si aplica
-  const comercialZoneArea = useMemo(() => {
-    if (userRole === "comercial" && userZonaId && zonas.length > 0) {
-      const userZona = zonas.find((z) => z.id === userZonaId);
-      return userZona?.area ?? null;
-    }
-    return null;
-  }, [userRole, userZonaId, zonas]);
-
-  // Calcular conteo de edificios y clientes por zona
-  const zonasConConteo = useMemo(() => {
-    return zonasAMostrar.map((zona) => {
-      const edificiosCount = zona.edificios?.length ?? 0;
-      const clientesCount = zona.edificios?.reduce((total, edificio) => {
-        if (!edificio.clientes || edificio.clientes.length === 0) {
-          return total;
-        }
-        return total + edificio.clientes.length;
-      }, 0) ?? 0;
-
-      return {
-        zona,
-        edificiosCount,
-        clientesCount,
-      };
-    });
+  // 3. OPTIMIZACIÓN CRÍTICA O(1): Diccionario de Zonas
+  // En lugar de hacer un .find() por cada edificio, creamos un mapa de acceso instantáneo
+  const zonasLookup = useMemo(() => {
+    return zonasAMostrar.reduce((acc, zona) => {
+      acc[zona.id] = zona;
+      return acc;
+    }, {} as Record<number, Zona>);
   }, [zonasAMostrar]);
 
-  // Colores para las zonas
-  const coloresZonas = [
-    "#3b82f6", // azul
-    "#ef4444", // rojo
-    "#10b981", // verde
-    "#f59e0b", // ámbar
-    "#8b5cf6", // púrpura
-    "#ec4899", // rosa
-    "#06b6d4", // cyan
-    "#f97316", // naranja
-  ];
+  
+
+  // 5. SIMPLIFICACIÓN: Aprovechamos el filtro previo para no volver a buscar en el array
+  const comercialZoneArea = useMemo(() => {
+    if (userRole === "comercial" && zonasAMostrar.length > 0) {
+      return zonasAMostrar[0].area ?? null;
+    }
+    return null;
+  }, [userRole, zonasAMostrar]);
+
+  // Pre-calcular conteos, polígonos y opciones visuales para no hacerlo en el return
+  const zonasProcesadas = useMemo(() => {
+    return zonasAMostrar.map((zona, index) => {
+      const edificiosCount = zona.edificios?.length ?? 0;
+      const clientesCount = zona.edificios?.reduce((total, edificio) => {
+        return total + (edificio.clientes?.length || 0);
+      }, 0) ?? 0;
+
+      const poligono = zona.area ? convertirAreaAPoligono(zona.area) : [];
+      const colorZona = COLORES_ZONAS[index % COLORES_ZONAS.length];
+      
+      const isComercialView = userRole === "comercial" && userZonaId === zona.id;
+      const pathOptions = isComercialView
+        ? { color: "#dc2626", weight: 5, fillColor: "transparent", fillOpacity: 0, dashArray: "5, 5" }
+        : { color: colorZona, weight: 2, fillColor: colorZona, fillOpacity: 0.25 };
+
+      return { zona, edificiosCount, clientesCount, poligono, pathOptions };
+    });
+  }, [zonasAMostrar, userRole, userZonaId]);
 
   return (
     <div className="gloval-map-wrapper">
@@ -177,7 +179,6 @@ const GlovalMap = ({
           boxZoom={true}
           className="gloval-map-canvas"
         >
-          {/* Configurar vista y restricciones de navegación según el rol */}
           {enableMapBoundsSetup && (
             <MapView
               userRole={userRole}
@@ -187,7 +188,6 @@ const GlovalMap = ({
             />
           )}
 
-          {/* Calcular zoom automáticamente basado en los bounds de la zona */}
           {enableZoomCalculator && (
             <ZoomCalculator
               zoneArea={comercialZoneArea}
@@ -197,57 +197,24 @@ const GlovalMap = ({
 
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-          {/* Mostrar borde y oscurecimiento de Córdoba solo para admins */}
           {userRole !== "comercial" && (
             <>
-              {/* Oscurecimiento de áreas fuera de Córdoba */}
               <Polygon
                 positions={[CORDOBA_OUTER_RING, CORDOBA_HOLE]}
-                pathOptions={{
-                  color: "transparent",
-                  fillColor: "#0f0a0a",
-                  fillOpacity: 0.45,
-                }}
+                pathOptions={{ color: "transparent", fillColor: "#0f0a0a", fillOpacity: 0.45 }}
                 interactive={false}
               />
-
-              {/* Borde de Córdoba */}
               <Rectangle
                 bounds={CORDOBA_BOUNDS}
-                pathOptions={{
-                  color: "#dc2626",
-                  weight: 3,
-                  fillOpacity: 0,
-                }}
+                pathOptions={{ color: "#dc2626", weight: 3, fillOpacity: 0 }}
                 interactive={false}
               />
             </>
           )}
 
-          {/* Renderizar zonas */}
-          {zonasConConteo.map(({ zona }, index) => {
-            if (!zona.area || zona.area.length === 0) return null;
-
-            const poligono = convertirAreaAPoligono(zona.area);
-            const colorZona = coloresZonas[index % coloresZonas.length];
-
-            // Estilos diferentes según el rol
-            const isComercialView = userRole === "comercial" && userZonaId === zona.id;
-            const pathOptions = isComercialView
-              ? {
-                  color: "#dc2626",
-                  weight: 5,
-                  fillColor: "transparent",
-                  fillOpacity: 0,
-                  dashArray: "5, 5",
-                }
-              : {
-                  color: colorZona,
-                  weight: 2,
-                  fillColor: colorZona,
-                  fillOpacity: 0.25,
-                };
-
+          {/* Renderizado limpio y directo de zonas */}
+          {zonasProcesadas.map(({ zona, poligono, pathOptions }) => {
+            if (poligono.length === 0) return null;
             return (
               <Polygon
                 key={zona.id}
@@ -258,7 +225,7 @@ const GlovalMap = ({
             );
           })}
 
-          {/* Renderizar marcadores de edificios */}
+          {/* Renderizado de edificios utilizando diccionario y caché */}
           {edificiosAMostrar.map((edificio) => {
             if (!edificio.ubicacion) return null;
 
@@ -269,14 +236,15 @@ const GlovalMap = ({
               clientesCount = edificio.clientes.count;
             }
 
-            const edificioZona = zonasAMostrar.find((z) => z.id === edificio.id_zona);
+            // Búsqueda instantánea en O(1) en lugar de un .find()
+            const edificioZona = zonasLookup[edificio.id_zona];
 
             return (
               <EdificioMarker
                 key={`edificio-${edificio.id}`}
                 edificio={edificio}
                 zona={edificioZona}
-                icon={createEdificioIcon(clientesCount)}
+                icon={getOrCreateIcon(clientesCount)}
               />
             );
           })}
@@ -285,6 +253,5 @@ const GlovalMap = ({
     </div>
   );
 };
-
 
 export default GlovalMap;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import type { Cliente } from '../../../types/clientes/Cliente'
+import type { Cliente } from '../../../types';
 import { EdificiosService } from '../../../services/EdificiosService'
 import { showErrorAlert, showSuccessAlert } from '../../utils/errorHandler';
 

@@ -1,4 +1,4 @@
-import type { Zona } from "../../types/zonas/Zona";
+import type { Zona } from "../../types";
 import "../../styles/components/Zona/ZonaDetails.css";
 
 interface ZonaDetailsProps {

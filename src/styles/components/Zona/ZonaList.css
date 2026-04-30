@@ -9,7 +9,8 @@
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   margin-bottom: 24px;
-  margin-left: clamp(70px, 8vw, 84px);
+  margin-left: clamp(100px, 8vw, 84px);
+  margin-right: 20px;
   padding: 0;
 }
 
@@ -71,7 +72,8 @@
 /* Responsive */
 @media (max-width: 900px) {
   .zona-container {
-    margin-left: 0;
+    margin-left: 20px;
+    margin-right: 20px;
   }
 
   .zona-table th,
@@ -83,7 +85,8 @@
 
 @media (max-width: 600px) {
   .zona-container {
-    margin-left: 0;
+    margin-left: 20px;
+    margin-right: 20px;
   }
 
   .zona-table {

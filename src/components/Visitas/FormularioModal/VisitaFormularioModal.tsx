@@ -1,7 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
-import type { Cliente } from "../../../types/clientes/Cliente";
-import type { EstadoVisita } from "../../../types/visitas/EstadoVisita";
-import { clientesService } from "../../../services/ClientesService";
+import type { Cliente, EstadoVisita } from "../../../types";
+import { ClientesService } from "../../../services/ClientesService";
 import "../../../styles/components/Visitas/FormularioModal/VisitaFormularioModal.css";
 
 export type VisitaFormValues = {
@@ -113,7 +112,7 @@ const VisitaFormularioModal = ({
 
     let cancelled = false;
 
-    clientesService
+    ClientesService
       .getClienteById(clientId)
       .then((cliente) => {
         if (cancelled) return;

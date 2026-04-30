@@ -56,7 +56,7 @@ const EdificioModalMapa = ({
   setLng,
 }: EdificioModalMapaProps) => {
   const selectedZona = useMemo(
-    () => zonas.find((z) => z.id === idZona),
+    () => zonas.find((zona) => zona.id === idZona),
     [idZona, zonas],
   );
   const zonaArea = useMemo(() => selectedZona?.area ?? [], [selectedZona]);
@@ -181,11 +181,11 @@ const EdificioModalMapa = ({
           }}
         />
 
-        {zonas.find((z) => z.id === idZona)?.area?.length ? (
+        {zonas.find((zona) => zona.id === idZona)?.area?.length ? (
           <Polygon
             positions={
               zonas
-                .find((z) => z.id === idZona)
+                .find((zona) => zona.id === idZona)
                 ?.area?.map((p) => [p.lat, p.lng] as [number, number]) || []
             }
             pathOptions={{

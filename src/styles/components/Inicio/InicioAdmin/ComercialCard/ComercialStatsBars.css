@@ -50,3 +50,12 @@
   transition: width 0.3s ease;
   min-width: 2px;
 }
+
+/* Source 4 - ComercialStatsBars.css */
+.comercial-stats-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto !important; /* Empuja el bloque al final de la card */
+  padding-top: 16px;
+}

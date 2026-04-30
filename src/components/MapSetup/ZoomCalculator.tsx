@@ -1,5 +1,5 @@
 import { useCalculateZoomFromBounds } from "../../hooks/useCalculateZoomFromBounds";
-import type { GeoPoint } from "../../types/shared/GeoPoint";
+import type { GeoPoint } from "../../types";
 
 interface ZoomCalculatorProps {
   /**

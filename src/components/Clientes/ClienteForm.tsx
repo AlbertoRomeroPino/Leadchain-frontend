@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { ClienteInput } from "../../types/clientes/Cliente";
+import { useState, useCallback, memo } from "react";
+import type { ClienteInput } from "../../types";
 import "../../styles/components/Clientes/ClienteForm.css";
 import { showErrorAlert } from "../utils/errorHandler";
 
@@ -11,44 +11,59 @@ interface FormClienteProps {
   initialValues?: Partial<ClienteInput>;
 }
 
-const FormCliente = ({
+// 1. OPTIMIZACIÓN: memo() para evitar re-renderizados si el padre cambia pero las props de este form no.
+const FormCliente = memo(({
   onSubmit,
   onCancel,
   loading = false,
   mode = "create",
   initialValues,
 }: FormClienteProps) => {
-  const [nombre, setNombre] = useState(initialValues?.nombre ?? "");
-  const [apellidos, setApellidos] = useState(initialValues?.apellidos ?? "");
-  const [telefono, setTelefono] = useState(initialValues?.telefono ?? "");
-  const [email, setEmail] = useState(initialValues?.email ?? "");
-
   const isEditMode = mode === "edit";
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  // 2. OPTIMIZACIÓN: Estado unificado. 
+  // En lugar de 4 useStates distintos, usamos un solo objeto. Es más limpio y escala mejor.
+  const [formData, setFormData] = useState({
+    nombre: initialValues?.nombre ?? "",
+    apellidos: initialValues?.apellidos ?? "",
+    telefono: initialValues?.telefono ?? "",
+    email: initialValues?.email ?? "",
+  });
+
+  // 3. OPTIMIZACIÓN: Manejador de eventos genérico y estabilizado (useCallback)
+  // Reemplaza las 4 funciones anónimas en los onChange del return.
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      // Aplicamos el filtro de números para el teléfono directamente aquí
+      [name]: name === "telefono" ? value.replace(/\D/g, "").slice(0, 15) : value,
+    }));
+  }, []);
+
+  // 4. OPTIMIZACIÓN: useCallback para estabilizar el envío
+  const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const trimmedNombre = nombre.trim();
-    const trimmedApellidos = apellidos.trim();
+    const trimmedNombre = formData.nombre.trim();
+    const trimmedApellidos = formData.apellidos.trim();
 
     const payload = {
       nombre: trimmedNombre,
       apellidos: trimmedApellidos === "" ? "Sin apellidos" : trimmedApellidos,
-      telefono: telefono.trim() || undefined,
-      email: email.trim() || undefined,
+      telefono: formData.telefono.trim() || undefined,
+      email: formData.email.trim() || undefined,
     };
 
     const errors: string[] = [];
-    const nombreTrim = payload.nombre;
-    const apellidosTrim = trimmedApellidos;
 
-    if (!nombreTrim) {
+    if (!trimmedNombre) {
       errors.push("Nombre es requerido");
-    } else if (nombreTrim.length > 50) {
+    } else if (trimmedNombre.length > 50) {
       errors.push("Nombre no puede tener más de 50 caracteres");
     }
 
-    if (apellidosTrim.length > 100) {
+    if (trimmedApellidos.length > 100) {
       errors.push("Apellidos no puede tener más de 100 caracteres");
     }
 
@@ -60,12 +75,10 @@ const FormCliente = ({
     await onSubmit(payload);
 
     if (!isEditMode) {
-      setNombre("");
-      setApellidos("");
-      setTelefono("");
-      setEmail("");
+      // Reseteo limpio del objeto completo
+      setFormData({ nombre: "", apellidos: "", telefono: "", email: "" });
     }
-  };
+  }, [formData, isEditMode, onSubmit]);
 
   return (
     <form className="form-cliente" onSubmit={handleSubmit}>
@@ -76,35 +89,39 @@ const FormCliente = ({
       <input
         className="form-cliente-input"
         type="text"
+        name="nombre" // Añadido atributo name para el handleChange dinámico
         placeholder="Nombre"
-        value={nombre}
-        onChange={(event) => setNombre(event.target.value)}
+        value={formData.nombre}
+        onChange={handleChange}
         maxLength={50}
         required
       />
       <input
         className="form-cliente-input"
         type="text"
+        name="apellidos"
         placeholder="Apellidos (opcional)"
-        value={apellidos}
-        onChange={(event) => setApellidos(event.target.value)}
+        value={formData.apellidos}
+        onChange={handleChange}
         maxLength={100}
       />
       <input
         className="form-cliente-input"
         type="email"
+        name="email"
         placeholder="Correo electrónico"
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
+        value={formData.email}
+        onChange={handleChange}
       />
       <input
         className="form-cliente-input"
         type="tel"
+        name="telefono"
         inputMode="numeric"
         pattern="[0-9]*"
         placeholder="Teléfono"
-        value={telefono}
-        onChange={(event) => setTelefono(event.target.value.replace(/\D/g, "").slice(0, 15))}
+        value={formData.telefono}
+        onChange={handleChange}
         maxLength={15}
       />
 
@@ -124,6 +141,8 @@ const FormCliente = ({
       </div>
     </form>
   );
-};
+});
+
+FormCliente.displayName = "FormCliente";
 
 export default FormCliente;

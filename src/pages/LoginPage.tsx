@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import type { LoginCredentials } from "../types/users/User";
+import type { LoginCredentials } from "../types";
 import type { AxiosError } from "axios";
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../context/useAuth";
 import { authService } from "../services/authService";
 import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../components/utils/errorHandler";
 import "../styles/Login.css";
@@ -89,7 +89,7 @@ const Login = () => {
               type="email"
               placeholder="Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(edificio) => setEmail(edificio.target.value)}
               autoComplete="username"
               required
             />
@@ -101,7 +101,7 @@ const Login = () => {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(edificio) => setPassword(edificio.target.value)}
               autoComplete="current-password"
               required
             />

@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import "../../../styles/components/Inicio/InicioComercial/InicioComercial.css";
-import { useAuth } from "../../../auth/useAuth";
+import { useAuth } from "../../../context/useAuth";
+import { useInitialize } from "../../../hooks/useInitialize";
 import { InicioService } from "../../../services/InicioService";
-import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../../../components/utils/errorHandler";
-import type { Cliente } from "../../../types/clientes/Cliente";
-import type { Visita } from "../../../types/visitas/Visita";
+import {
+  showLoadingAlert,
+  showErrorAlert,
+  showSuccessAlert,
+} from "../../../components/utils/errorHandler";
+import type { Cliente, Visita } from "../../../types";
 import ClientesSinVisitar from "./ClientesSinVisitar/ClientesSinVisitar";
 
 interface ClienteSinVisita {
@@ -18,51 +22,52 @@ const InicioComercial = () => {
   const [clientes, setClientes] = useState<ClienteSinVisita[]>([]);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  useEffect(() => {
-    if (!user || user.rol !== "comercial" || !user.id_zona) {
+  // Callback memoizado para cargar datos
+  const loadComercialData = useCallback(async () => {
+    if (!user || user.rol !== "comercial") {
       return;
     }
 
-    const cargarDatos = async () => {
-      try {
-        showLoadingAlert("Cargando inicio...");
+    try {
+      showLoadingAlert("Cargando inicio...");
 
-        // Una sola petición consolida todos los datos necesarios
-        const inicioData = await InicioService.getComercialInicio();
+      // Una sola petición consolida todos los datos necesarios
+      const inicioData = await InicioService.getComercialInicio();
 
-        // Extraer clientes de los edificios
-        const clientesZona = inicioData.clientes;
+      // Extraer clientes de los edificios
+      const clientesZona = inicioData.clientes;
 
-        // Crear mapa de visitas por cliente (última visita)
-        const visitasPorCliente = new Map<number, Visita>();
-        inicioData.visitas.forEach((v) => {
-          if (!visitasPorCliente.has(v.id_cliente)) {
-            visitasPorCliente.set(v.id_cliente, v);
-          } else {
-            const actual = visitasPorCliente.get(v.id_cliente)!;
-            if (new Date(v.fecha_hora) > new Date(actual.fecha_hora)) {
-              visitasPorCliente.set(v.id_cliente, v);
-            }
+      // Crear mapa de visitas por cliente (última visita)
+      const visitasPorCliente = new Map<number, Visita>();
+      inicioData.visitas.forEach((visita) => {
+        if (!visitasPorCliente.has(visita.id_cliente)) {
+          visitasPorCliente.set(visita.id_cliente, visita);
+        } else {
+          const actual = visitasPorCliente.get(visita.id_cliente)!;
+          if (new Date(visita.fecha_hora) > new Date(actual.fecha_hora)) {
+            visitasPorCliente.set(visita.id_cliente, visita);
           }
-        });
+        }
+      });
 
-        // Crear lista de clientes con info de visita
-        const clientesConVisita: ClienteSinVisita[] = clientesZona.map((c) => ({
-          cliente: c,
-          tieneVisita: visitasPorCliente.has(c.id),
-          ultimaVisita: visitasPorCliente.get(c.id),
-        }));
+      // Crear lista de clientes con info de visita
+      const clientesConVisita: ClienteSinVisita[] = clientesZona.map(
+        (cliente) => ({
+          cliente: cliente,
+          tieneVisita: visitasPorCliente.has(cliente.id),
+          ultimaVisita: visitasPorCliente.get(cliente.id),
+        }),
+      );
+      showSuccessAlert("Información cargada");
+      setClientes(clientesConVisita);
+    } catch (err) {
+      showErrorAlert(err, "Cargar Datos");
+      console.error("Error al cargar datos:", err);
+    }
+  }, [user]);
 
-        setClientes(clientesConVisita);
-        showSuccessAlert("Información cargada");
-      } catch (err) {
-        showErrorAlert(err, "Cargar Datos");
-        console.error("Error al cargar datos:", err);
-      }
-    };
-
-    cargarDatos();
-  }, [user, refreshTrigger]);
+  // Ejecutar cuando user o refreshTrigger cambien
+  useInitialize(loadComercialData, [user, refreshTrigger]);
 
   const handleVisitaCreada = () => {
     setRefreshTrigger((prev) => prev + 1);

@@ -1,9 +1,5 @@
-import type { Zona } from "../types/zonas/Zona";
-import type { Edificio } from "../types/edificios/Edificio";
-import type { Cliente } from "../types/clientes/Cliente";
-import type { Visita } from "../types/visitas/Visita";
-import type { User } from "../types/users/User";
-import { ExceptionService } from "./ExceptionService";
+import type { Zona, Edificio, Cliente, Visita, User } from "../types";
+import { wrapServiceCall } from "./ExceptionService";
 import { authHttp } from "./https";
 
 export interface InicioComercialData {
@@ -37,19 +33,10 @@ export const InicioService = {
    * Una sola petición retorna: edificios, clientes, visitas y estados de visita
    */
   async getComercialInicio(): Promise<InicioComercialData> {
-    try {
-      const { data } = await authHttp.get<InicioComercialData>(
-        "/api/inicio/comercial"
-      );
-      return data;
-    } catch (error) {
-      throw new Error(
-        ExceptionService.getErrorMessage(
-          error,
-          "Error al obtener datos del inicio comercial"
-        )
-      );
-    }
+    return wrapServiceCall(
+      () => authHttp.get<InicioComercialData>("/api/inicio/comercial").then(r => r.data),
+      "Error al obtener datos del inicio comercial"
+    );
   },
 
   /**
@@ -57,19 +44,10 @@ export const InicioService = {
    * Una sola petición retorna: usuarios, visitas, clientes, edificios y estados
    */
   async getAdminInicio(): Promise<InicioAdminData> {
-    try {
-      const { data } = await authHttp.get<InicioAdminData>(
-        "/api/inicio/admin"
-      );
-      return data;
-    } catch (error) {
-      throw new Error(
-        ExceptionService.getErrorMessage(
-          error,
-          "Error al obtener datos del inicio admin"
-        )
-      );
-    }
+    return wrapServiceCall(
+      () => authHttp.get<InicioAdminData>("/api/inicio/admin").then(r => r.data),
+      "Error al obtener datos del inicio admin"
+    );
   },
 
   /**
@@ -77,17 +55,10 @@ export const InicioService = {
    * Una sola petición retorna: zonas y edificios
    */
   async getMapaInicio(): Promise<InicioMapaData> {
-    try {
-      const { data } = await authHttp.get<InicioMapaData>("/api/zonas/mapa");
-      return data;
-    } catch (error) {
-      throw new Error(
-        ExceptionService.getErrorMessage(
-          error,
-          "Error al obtener datos del mapa"
-        )
-      );
-    }
+    return wrapServiceCall(
+      () => authHttp.get<InicioMapaData>("/api/zonas/mapa").then(r => r.data),
+      "Error al obtener datos del mapa"
+    );
   },
 
   /**
@@ -95,18 +66,9 @@ export const InicioService = {
    * Una sola petición retorna: edificio, zona y clientes
    */
   async getDetalleEdificio(edificioId: number): Promise<DetalleEdificioData> {
-    try {
-      const { data } = await authHttp.get<DetalleEdificioData>(
-        `/api/edificios/${edificioId}/detalle`
-      );
-      return data;
-    } catch (error) {
-      throw new Error(
-        ExceptionService.getErrorMessage(
-          error,
-          "Error al obtener detalle del edificio"
-        )
-      );
-    }
+    return wrapServiceCall(
+      () => authHttp.get<DetalleEdificioData>(`/api/edificios/${edificioId}/detalle`).then(r => r.data),
+      "Error al obtener detalle del edificio"
+    );
   },
 };

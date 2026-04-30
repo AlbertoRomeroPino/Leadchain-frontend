@@ -1,96 +1,72 @@
 import { authHttp } from "./https";
-import { ExceptionService } from "./ExceptionService";
-import type {
-  EdificioInput,
-  EdificioClienteBlock,
-} from "../types/edificios/Edificio";
-
+import { wrapServiceCall } from "./ExceptionService";
+import type { EdificioInput, EdificioClienteBlock } from "../types";
 
 export const EdificiosService = {
+  async getEdificios() {
+    return wrapServiceCall(
+      () => authHttp.get("/api/edificios").then(r => r.data),
+      "Error al obtener edificios"
+    );
+  },
 
-    async getEdificios() {
-        try {
-            const response = await authHttp.get("/api/edificios");
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, "Error al obtener edificios"));
-        }
-    },
+  async getEdificioDetalle(id: number) {
+    return wrapServiceCall(
+      () => authHttp.get(`/api/edificios/${id}/detalle`).then(r => r.data),
+      `Error al obtener detalles del edificio con ID ${id}`
+    );
+  },
 
-    async getEdificioDetalle(id: number) {
-        try {
-            const response = await authHttp.get(`/api/edificios/${id}/detalle`);
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, `Error al obtener detalles del edificio con ID ${id}`));
-        }
-    },
+  async createEdificio(edificio: EdificioInput) {
+    return wrapServiceCall(
+      () => authHttp.post("/api/edificios", edificio).then(r => r.data),
+      "Error al crear edificio"
+    );
+  },
 
-    async createEdificio(edificio: EdificioInput) {
-        try {
-            const response = await authHttp.post("/api/edificios", edificio);
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, "Error al crear edificio"));
-        }
-    },
+  async updateEdificio(id: number, edificio: EdificioInput) {
+    return wrapServiceCall(
+      () => authHttp.put(`/api/edificios/${id}`, edificio).then(r => r.data),
+      `Error al actualizar edificio con ID ${id}`
+    );
+  },
 
-    async updateEdificio(id: number, edificio: EdificioInput) {
-        try {
-            const response = await authHttp.put(`/api/edificios/${id}`, edificio);
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, `Error al actualizar edificio con ID ${id}`));
-        }
-    },
+  async deleteEdificio(id: number): Promise<void> {
+    return wrapServiceCall(
+      () => authHttp.delete(`/api/edificios/${id}`).then(() => undefined),
+      `Error al eliminar edificio con ID ${id}`
+    );
+  },
 
-    async deleteEdificio(id: number) {
-        try {
-            await authHttp.delete(`/api/edificios/${id}`);
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, `Error al eliminar edificio con ID ${id}`));
-        }
-    },
+  async detachCliente(edificioId: number, clienteId: number) {
+    return wrapServiceCall(
+      () => authHttp.delete(`/api/edificios/${edificioId}/clientes/${clienteId}`).then(r => r.data),
+      "Error al desadjuntar cliente"
+    );
+  },
 
-    async detachCliente(edificioId: number, clienteId: number) {
-        try {
-            const response = await authHttp.delete(`/api/edificios/${edificioId}/clientes/${clienteId}`);
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, "Error al desadjuntar cliente"));
-        }
-    },
-
-    async attachMultipleClientes(
-        edificioId: number,
-        clientes: EdificioClienteBlock[],
-    ) {
-        try {
-            const payload = {
-                clientes: clientes.map((c) => ({
-                    mode: c.mode,
-                    ...(c.mode === "crear" && {
-                        nombre: c.nombre,
-                        apellidos: c.apellidos,
-                        email: c.email,
-                        telefono: c.telefono,
-                    }),
-                    ...(c.mode === "seleccionar" && {
-                        clienteId: c.clienteSinEdificioId,
-                    }),
-                    planta: c.planta,
-                    puerta: c.puerta,
-                })),
-            };
-
-            const response = await authHttp.post(
-                `/api/edificios/${edificioId}/clientes/adjuntar-varios`,
-                payload
-            );
-            return response.data;
-        } catch (error) {
-            throw new Error(ExceptionService.getErrorMessage(error, "Error al adjuntar múltiples clientes"));
-        }
-    },
-
-}
+  async attachMultipleClientes(edificioId: number, clientes: EdificioClienteBlock[]) {
+    return wrapServiceCall(
+      () => {
+        const payload = {
+          clientes: clientes.map((cliente) => ({
+            mode: cliente.mode,
+            ...(cliente.mode === "crear" && {
+              nombre: cliente.nombre,
+              apellidos: cliente.apellidos,
+              email: cliente.email,
+              telefono: cliente.telefono,
+            }),
+            ...(cliente.mode === "seleccionar" && {
+              clienteId: cliente.clienteSinEdificioId,
+            }),
+            planta: cliente.planta,
+            puerta: cliente.puerta,
+          })),
+        };
+        return authHttp.post(`/api/edificios/${edificioId}/clientes/adjuntar-varios`, payload).then(r => r.data);
+      },
+      "Error al adjuntar múltiples clientes"
+    );
+  },
+};

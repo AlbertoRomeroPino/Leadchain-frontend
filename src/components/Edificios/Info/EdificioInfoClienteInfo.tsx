@@ -1,5 +1,5 @@
 import "../../../styles/components/Edificios/Info/EdificioInfoClienteCard.css";
-import type { Cliente } from "../../../types/clientes/Cliente";
+import type { Cliente } from "../../../types";
 
 interface EdificioInfoClienteInfoProps {
   cliente: Cliente;

@@ -1,6 +1,6 @@
 import { ArrowLeft, MapMinus, Pencil } from "lucide-react";
 import "../../styles/components/Zona/ZonaInfo.css";
-import type { Zona } from "../../types/zonas/Zona";
+import type { Zona } from "../../types";
 import ZonaDetails from "./ZonaDetails";
 import ZonaMap from "./ZonaMap";
 

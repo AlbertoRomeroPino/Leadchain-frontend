@@ -1,22 +1,14 @@
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../context/useAuth";
 import { Navigate, Outlet } from "react-router-dom";
+import type { User } from "../types";
 
-export const IsAdmin = () => {
-  const { user } = useAuth();
-
-  if (!user || user.rol !== "admin") {
-    return <Navigate to="/Inicio" replace />;
-  }
-
-  return <Outlet />;
+// Factory para crear guards de rol genéricos
+const createRoleGuard = (requiredRole: User["rol"]) => {
+  return function RoleGuard() {
+    const { user } = useAuth();
+    return user?.rol === requiredRole ? <Outlet /> : <Navigate to="/Inicio" replace />;
+  };
 };
 
-export const IsComercial = () => {
-  const { user } = useAuth();
-  
-  if (!user || user.rol !== "comercial") {
-    return <Navigate to="/Inicio" replace />;
-  }
-  
-  return <Outlet />;
-};
+export const IsAdmin = createRoleGuard("admin");
+export const IsComercial = createRoleGuard("comercial");

@@ -1,5 +1,6 @@
+import { memo } from "react";
 import { useMapBoundsRestrictions } from "../../hooks/useMapBoundsRestrictions";
-import type { GeoPoint } from "../../types/shared/GeoPoint";
+import type { GeoPoint } from "../../types";
 
 interface MapViewProps {
   /**
@@ -26,21 +27,10 @@ interface MapViewProps {
 }
 
 /**
- * Componente que configura la vista y restricciones del mapa
+ * Componente memoizado que configura la vista y restricciones del mapa
  * Debe colocarse dentro de MapContainer
- *
- * Responsabilidades:
- * - Aplicar restricciones de navegación según el rol
- * - Configurar encuadre inicial con padding
- * - Aplicar límites de movimiento (maxBounds)
- *
- * Ejemplo de uso:
- * <MapContainer ...>
- *   <MapView userRole="comercial" zoneArea={zone.area} />
- *   <TileLayer ... />
- * </MapContainer>
  */
-const MapView = ({
+const MapView = memo(({
   userRole = "admin",
   zoneArea = null,
   paddingPixels = 50,
@@ -55,8 +45,10 @@ const MapView = ({
   });
 
   // Este componente no renderiza nada visual
-  // Solo configura la lógica del mapa a través del hook
   return null;
-};
+});
+
+// Ayuda a las herramientas de desarrollo de React a identificar el componente
+MapView.displayName = "MapView";
 
 export default MapView;

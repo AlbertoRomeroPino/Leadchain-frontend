@@ -3,13 +3,24 @@ import GlovalMap from "../utils/GlovalMap";
 import { InicioService } from "../../services/InicioService";
 import { useInitialize } from "../../hooks/useInitialize";
 import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../utils/errorHandler";
-import type { Zona } from "../../types/zonas/Zona";
-import type { Edificio } from "../../types/edificios/Edificio";
+import type { Zona, Edificio } from "../../types";
 import type { LatLngBoundsExpression } from "leaflet";
 
 interface AdminMapViewProps {
   userRole?: string;
 }
+
+// 1. Extraemos la configuración estática fuera del componente
+// Esto evita que estas variables se recreen en la memoria cada vez que React renderiza
+const ADMIN_MAP_CONFIG = {
+  centerCoords: [37.8847, -4.7792] as [number, number], // Centro de Córdoba
+  zoomLevel: 12, // Zoom inicial para toda la ciudad
+  minZoomLevel: 11, // Admins pueden hacer zoom out más
+  maxBounds: [
+    [37.75, -5.02],
+    [37.99, -4.62],
+  ] as LatLngBoundsExpression, // Limitar a Córdoba con buffer
+};
 
 const AdminMapView = ({ userRole }: AdminMapViewProps) => {
   const [zonas, setZonas] = useState<Zona[]>([]);
@@ -23,15 +34,11 @@ const AdminMapView = ({ userRole }: AdminMapViewProps) => {
       const mapData = await InicioService.getMapaInicio();
       setZonas(mapData.zonas);
 
-      // Extraer todos los edificios de todas las zonas
-      const todosEdificios: Edificio[] = [];
-      mapData.zonas.forEach((zona) => {
-        if (zona.edificios && Array.isArray(zona.edificios)) {
-          zona.edificios.forEach((edificio) => {
-            todosEdificios.push(edificio as Edificio);
-          });
-        }
-      });
+      // 2. Optimización con flatMap: Extraer y aplanar en un solo paso
+      // Reemplaza el doble forEach, siendo más rápido y limpio
+      const todosEdificios = mapData.zonas.flatMap((zona) => 
+        Array.isArray(zona.edificios) ? (zona.edificios as Edificio[]) : []
+      );
 
       setEdificios(todosEdificios);
 
@@ -42,24 +49,15 @@ const AdminMapView = ({ userRole }: AdminMapViewProps) => {
     }
   });
 
-  // Configuración para admin: ver toda la ciudad
-  const centerCoords: [number, number] = [37.8847, -4.7792]; // Centro de Córdoba
-  const zoomLevel = 12; // Zoom inicial para toda la ciudad
-  const maxBounds: LatLngBoundsExpression = [
-    [37.75, -5.02],
-    [37.99, -4.62],
-  ]; // Limitar a Córdoba con buffer
-  const minZoomLevel = 11; // Admins pueden hacer zoom out más
-
   return (
     <GlovalMap
       zonas={zonas}
       edificios={edificios}
       userRole={userRole}
-      centerCoords={centerCoords}
-      zoomLevel={zoomLevel}
-      minZoomLevel={minZoomLevel}
-      customMaxBounds={maxBounds}
+      centerCoords={ADMIN_MAP_CONFIG.centerCoords}
+      zoomLevel={ADMIN_MAP_CONFIG.zoomLevel}
+      minZoomLevel={ADMIN_MAP_CONFIG.minZoomLevel}
+      customMaxBounds={ADMIN_MAP_CONFIG.maxBounds}
       title="Mapa de Todas las Zonas"
     />
   );
