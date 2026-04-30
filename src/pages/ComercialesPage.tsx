@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Sidebar from "../layout/Sidebar";
 import { UserService } from "../services/UserService";
 import type { User, UserVisitas, Zona } from "../types";
@@ -16,27 +16,26 @@ import ComercialesFormModal from "../components/Comerciales/ComercialesFormModal
 
 const Comerciales = () => {
   const [comerciales, setComerciales] = useState<UserVisitas[]>([]);
-  const [expandedComercialId, setExpandedComercialId] = useState<number | null>(
-    null,
-  );
-  const [selectedComercialIds, setSelectedComercialIds] = useState<Set<number>>(
-    new Set(),
-  );
+  const [expandedComercialId, setExpandedComercialId] = useState<number | null>(null);
+  const [selectedComercialIds, setSelectedComercialIds] = useState<Set<number>>(new Set());
   const [comercialAEditar, setComercialAEditar] = useState<User | null>(null);
   const [zonas, setZonas] = useState<Zona[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const error: string | null = null;  // No longer tracking errors individually
+  
+  const error: string | null = null;
 
-  const toggleComercialVisitas = (id: number) => {
+  // OPTIMIZACIÓN 1: useCallback para estabilizar las funciones de UI
+  const toggleComercialVisitas = useCallback((id: number) => {
     setExpandedComercialId((prev) => (prev === id ? null : id));
-  };
+  }, []);
 
-  const toggleSelectComercial = (
+  // OPTIMIZACIÓN 2: Limpieza de nombre de variable (adiós "edificio") y useCallback
+  const toggleSelectComercial = useCallback((
     id: number,
-    edificio: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    edificio.stopPropagation();
+    e.stopPropagation();
     setSelectedComercialIds((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
@@ -46,12 +45,11 @@ const Comerciales = () => {
       }
       return newSet;
     });
-  };
+  }, []);
 
-  const handleDeleteComerciales = async () => {
-    if (selectedComercialIds.size === 0) {
-      return;
-    }
+  // OPTIMIZACIÓN 3: Estabilizar la función de borrado
+  const handleDeleteComerciales = useCallback(async () => {
+    if (selectedComercialIds.size === 0) return;
 
     try {
       setIsLoading(true);
@@ -70,18 +68,14 @@ const Comerciales = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedComercialIds]);
 
   useInitialize(async () => {
     try {
       showLoadingAlert("Cargando comerciales...");
 
-      // Una sola petición consolida comerciales con visitas anidadas y zonas
       const data = await UserService.getComercialesAMiCargo();
-
-      // Las visitas ya están anidadas en cada comercial con cliente y estado incluidos
-      const comercialesConVisitas: UserVisitas[] =
-        data.comerciales as UserVisitas[];
+      const comercialesConVisitas: UserVisitas[] = data.comerciales as UserVisitas[];
 
       setZonas(data.zonas);
       setComerciales(comercialesConVisitas);
@@ -94,25 +88,23 @@ const Comerciales = () => {
     }
   });
 
-  const handleCreateComercialSuccess = (comercial: User) => {
-    // Cerrar modal
+  // OPTIMIZACIÓN 4: Estabilizar la función de éxito
+  const handleCreateComercialSuccess = useCallback((comercial: User) => {
     setShowCreateForm(false);
     setComercialAEditar(null);
 
-    if (comercialAEditar) {
-      // Modo edición: actualizar el comercial en la lista
-      setComerciales((prev) =>
-        prev.map((cliente) => (cliente.id === comercial.id ? { ...cliente, ...comercial } : cliente)),
-      );
-    } else {
-      // Modo creación: agregar el nuevo comercial a la lista
-      const nuevoComercialConVisitas: UserVisitas = {
-        ...comercial,
-        visitas: [],
-      };
-      setComerciales((prev) => [...prev, nuevoComercialConVisitas]);
-    }
-  };
+    setComerciales((prev) => {
+      const isEdit = prev.some((c) => c.id === comercial.id);
+      if (isEdit) {
+        return prev.map((cliente) => 
+          cliente.id === comercial.id ? { ...cliente, ...comercial } : cliente
+        );
+      } else {
+        const nuevoComercialConVisitas: UserVisitas = { ...comercial, visitas: [] };
+        return [...prev, nuevoComercialConVisitas];
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -144,6 +136,7 @@ const Comerciales = () => {
           toggleSelectComercial={toggleSelectComercial}
           toggleComercialVisitas={toggleComercialVisitas}
         />
+        
         <ComercialesFormModal
           showCreateForm={showCreateForm}
           setShowCreateForm={setShowCreateForm}
@@ -154,8 +147,6 @@ const Comerciales = () => {
           handleCreateComercialSuccess={handleCreateComercialSuccess}
         />
       </main>
-
-      
     </>
   );
 };

@@ -1,4 +1,3 @@
-import React from "react";
 import "../../styles/components/Visitas/VisitasHeader.css";
 
 type VisitasHeaderProps = {

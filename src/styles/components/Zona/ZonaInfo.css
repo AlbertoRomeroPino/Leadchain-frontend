@@ -6,6 +6,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-left: 90px;
 }
 
 .zona-info-empty {
@@ -66,7 +67,8 @@
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   padding: 0;
-  margin: 0;
+  margin-left: 90px;
+  margin-right: 15px;
 }
 
 .zona-info-back-button {
@@ -144,6 +146,11 @@
     min-height: 40px;
     padding: 8px 14px;
     font-size: 0.9rem;
+  }
+
+  .zona-info-actions{
+    margin-left: 0px;
+    margin-right: 0px;
   }
 
   .zona-action-button {

@@ -26,24 +26,34 @@ const ClientesAdminView = () => {
   const canCreateCliente = useMemo(() => true, []);
 
   const refreshClientes = useCallback(async () => {
-    if (!user?.id) return;
+  if (!user?.id) return;
 
-    try {
-      showLoadingAlert("Cargando clientes...");
+  try {
+    showLoadingAlert("Cargando clientes...");
 
-      const [clientesConEdificio, sinEdificio] = await Promise.all([
-        ClientesService.getClientes(),
-        ClientesService.getClientesSinEdificio(),
-      ]);
+    // Obtenemos ambas listas en paralelo
+    const [todosLosClientes, sinEdificio] = await Promise.all([
+      ClientesService.getClientes(),
+      ClientesService.getClientesSinEdificio(),
+    ]);
 
-      setClientes(clientesConEdificio);
-      setClientesSinEdificio(sinEdificio);
+    // Creamos un conjunto (Set) con las IDs de los que NO tienen edificio 
+    // Esto hace que la búsqueda sea ultra rápida
+    const idsSinEdificio = new Set(sinEdificio.map(c => c.id));
 
-      showSuccessAlert("Información cargada");
-    } catch (err) {
-      showErrorAlert(err, "Cargar Clientes");
-    }
-  }, [user?.id]);
+    // Filtramos la lista completa: 
+    // "Solo deja pasar a los clientes cuya ID NO esté en el grupo de los sin edificio"
+    const soloConEdificio = todosLosClientes.filter(cliente => !idsSinEdificio.has(cliente.id));
+
+    // Actualizamos los estados
+    setClientes(soloConEdificio);
+    setClientesSinEdificio(sinEdificio);
+
+    showSuccessAlert("Información cargada");
+  } catch (err) {
+    showErrorAlert(err, "Cargar Clientes");
+  }
+}, [user?.id]);
 
   useInitialize(refreshClientes);
 

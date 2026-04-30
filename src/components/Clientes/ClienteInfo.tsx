@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import { ClientesService } from "../../services/ClientesService";
 import type { Cliente, ClienteDetalleResponse, Edificio, Visita, Zona } from "../../types";
 import "../../styles/InfoCliente.css";
@@ -19,7 +19,7 @@ interface InfoClienteProps {
   onBack?: () => void;
 }
 
-const InfoCliente = ({
+const InfoCliente = memo(({
   cliente,
   onClienteUpdated,
   onClienteDeleted,
@@ -27,19 +27,19 @@ const InfoCliente = ({
 }: InfoClienteProps) => {
   const { user } = useAuth();
   const canManageCliente = user?.rol === "admin";
+  
   const [loading, setLoading] = useState(true);
   const [showEditForm, setShowEditForm] = useState(false);
   const [savingCliente, setSavingCliente] = useState(false);
+  const [deletingCliente, setDeletingCliente] = useState(false);
+  
   const [clienteInfo, setClienteInfo] = useState<Cliente>(cliente);
   const [edificio, setEdificio] = useState<Edificio | null>(null);
   const [zona, setZona] = useState<Zona | null>(null);
   const [ultimaVisita, setUltimaVisita] = useState<Visita | null>(null);
   const [totalVisitas, setTotalVisitas] = useState(0);
-  const [ultimoEstado, setUltimoEstado] = useState("–");
-  const [ultimoUsuario, setUltimoUsuario] = useState("–");
-  const alertShownRef = useRef(false);
-  const [deletingCliente, setDeletingCliente] = useState(false);
 
+  // Sincronizar prop con estado local
   useEffect(() => {
     setClienteInfo(cliente);
   }, [cliente]);
@@ -49,74 +49,52 @@ const InfoCliente = ({
       try {
         setLoading(true);
 
-        const detalle: ClienteDetalleResponse =
-          await ClientesService.getClienteDetalle(cliente.id);
+        const detalle: ClienteDetalleResponse = await ClientesService.getClienteDetalle(cliente.id);
 
-        const edificioDetalle = detalle?.edificio ?? null;
-        const zonaDetalle =
-          (edificioDetalle?.zona as Zona | null | undefined) ?? null;
-        const total = detalle?.visitas?.total ?? 0;
-        const ultima = (detalle?.visitas?.ultima as Visita | null) ?? null;
+        setEdificio(detalle?.edificio ?? null);
+        setZona((detalle?.edificio?.zona as Zona | null | undefined) ?? null);
+        setTotalVisitas(detalle?.visitas?.total ?? 0);
+        setUltimaVisita((detalle?.visitas?.ultima as Visita | null) ?? null);
 
-        setEdificio(edificioDetalle);
-        setZona(zonaDetalle);
-        setTotalVisitas(total);
-        setUltimaVisita(ultima);
-
-        if (!ultima) {
-          setUltimoEstado("–");
-          setUltimoUsuario("–");
-        } else {
-          const nombreUsuario =
-            `${ultima.usuario?.nombre ?? ""} ${ultima.usuario?.apellidos ?? ""}`.trim();
-          setUltimoEstado(
-            ultima.estado?.etiqueta ?? `Estado #${ultima.id_estado}`,
-          );
-          setUltimoUsuario(nombreUsuario || `Usuario #${ultima.id_usuario}`);
-        }
-
-        if (!alertShownRef.current) {
-          alertShownRef.current = true;
-        }
       } catch {
         setEdificio(null);
         setZona(null);
         setTotalVisitas(0);
         setUltimaVisita(null);
-        setUltimoEstado("–");
-        setUltimoUsuario("–");
-        if (!alertShownRef.current) {
-          alertShownRef.current = true;
-        }
       } finally {
         setLoading(false);
       }
     },
-    [cliente.id, onClienteUpdated]
+    // Eliminamos onClienteUpdated de las dependencias para evitar peticiones redundantes
+    [cliente.id] 
   );
 
-  const handleUpdateCliente = async (clienteActualizado: {
+  // OPTIMIZACIÓN: Calculados al vuelo, sin usar useState
+  const ultimoEstado = ultimaVisita 
+    ? (ultimaVisita.estado?.etiqueta ?? `Estado #${ultimaVisita.id_estado}`) 
+    : "–";
+
+  const ultimoUsuario = ultimaVisita 
+    ? (`${ultimaVisita.usuario?.nombre ?? ""} ${ultimaVisita.usuario?.apellidos ?? ""}`.trim() || `Usuario #${ultimaVisita.id_usuario}`) 
+    : "–";
+
+  // OPTIMIZACIÓN: useCallback para estabilizar las funciones
+  const handleUpdateCliente = useCallback(async (clienteActualizado: {
     nombre: string;
     apellidos: string;
     telefono?: string;
     email?: string;
   }) => {
-    if (!canManageCliente) {
-      return;
-    }
+    if (!canManageCliente) return;
 
     try {
       setSavingCliente(true);
 
-      const updatedCliente = await ClientesService.updateCliente(cliente.id, {
+      const updatedCliente = await ClientesService.updateCliente(clienteInfo.id, {
         nombre: clienteActualizado.nombre,
         apellidos: clienteActualizado.apellidos,
-        ...(clienteActualizado.telefono
-          ? { telefono: clienteActualizado.telefono }
-          : {}),
-        ...(clienteActualizado.email
-          ? { email: clienteActualizado.email }
-          : {}),
+        ...(clienteActualizado.telefono ? { telefono: clienteActualizado.telefono } : {}),
+        ...(clienteActualizado.email ? { email: clienteActualizado.email } : {}),
         id_usuario_asignado: null,
       });
 
@@ -128,31 +106,25 @@ const InfoCliente = ({
     } finally {
       setSavingCliente(false);
     }
-  };
+  }, [canManageCliente, clienteInfo.id, onClienteUpdated]);
 
-  const handleDeleteCliente = async () => {
-    if (!canManageCliente) {
-      return;
-    }
+  const handleDeleteCliente = useCallback(async () => {
+    if (!canManageCliente) return;
 
     try {
       setDeletingCliente(true);
-
       await ClientesService.deleteCliente(clienteInfo.id);
-
+      
       onClienteDeleted?.(clienteInfo.id);
       setShowEditForm(false);
     } catch (err) {
       showErrorAlert(err, "Eliminar");
-      const message =
-        err instanceof Error ? err.message : "Error al eliminar cliente";
+      const message = err instanceof Error ? err.message : "Error al eliminar cliente";
 
-      if (
-        message.includes("No query results for model [App\\Models\\Cliente]")
-      ) {
+      // Si el error dice que ya no existe en BD, lo tratamos como éxito
+      if (message.includes("No query results for model [App\\Models\\Cliente]")) {
         onClienteDeleted?.(clienteInfo.id);
         setShowEditForm(false);
-
         return;
       }
 
@@ -166,7 +138,7 @@ const InfoCliente = ({
     } finally {
       setDeletingCliente(false);
     }
-  };
+  }, [canManageCliente, clienteInfo.id, onClienteDeleted]);
 
   return (
     <>
@@ -212,6 +184,8 @@ const InfoCliente = ({
       )}
     </>
   );
-};
+});
+
+InfoCliente.displayName = "InfoCliente";
 
 export default InfoCliente;

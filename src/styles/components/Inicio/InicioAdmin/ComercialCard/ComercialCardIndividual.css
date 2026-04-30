@@ -100,6 +100,67 @@
   color: #fca5a5;
 }
 
+/* Source 3 - ComercialCardIndividual.css */
+.comercial-card-individual {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important; /* Ocupa todo el alto que le da el grid */
+  padding: 20px;
+}
+
+.comercial-card-header {
+  /* Espacio fijo para el encabezado (Nombre + Zona) */
+  min-height: 90px !important; 
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+}
+
+.comercial-card-name {
+  /* El truco del Pato Mareado: reserva espacio para 2 líneas siempre */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.8em !important; 
+  line-height: 1.4em;
+  margin: 0;
+}
+
+.comercial-card-body {
+  flex: 1 !important; /* Absorbe el espacio sobrante */
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.comercial-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  /* IMPORTANTE: permite que el contenedor se encoja para que el 
+     truncado del nombre y la zona funcione correctamente */
+  min-width: 0 !important; 
+}
+
+.comercial-card-zone {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: rgba(220, 38, 38, 0.2);
+  border: 1px solid #dc2626;
+  border-radius: 4px;
+  padding: 6px 12px;
+  text-align: center;
+  
+  /* NUEVAS REGLAS PARA EVITAR DESBORDAMIENTO */
+  max-width: 160px !important; /* Limita el ancho del badge */
+  white-space: nowrap !important; /* Mantiene el texto en una línea */
+  overflow: hidden !important; /* Esconde lo que sobra */
+  text-overflow: ellipsis !important; /* Añade los "..." al final */
+}
+
 /* ==========================================================
    RESPONSIVE DESIGN
    ========================================================== */
