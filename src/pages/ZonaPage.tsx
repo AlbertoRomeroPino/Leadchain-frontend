@@ -10,6 +10,7 @@ import ZonaInfo from "../components/Zona/ZonaInfo";
 import ZonaList from "../components/Zona/ZonaList";
 import "leaflet/dist/leaflet.css";
 import "../styles/Zona.css";
+import { showErrorAlert, showSuccessAlert } from "../components/utils/errorHandler";
 
 const Zona = () => {
   const [zonas, setZonas] = useState<Zona[]>([]);
@@ -133,13 +134,12 @@ const Zona = () => {
         setZonas(zonasResponse);
         setSelectedZona(null);
 
-        // Opcional: Si tienes una función para alertas de éxito
-        // showSuccessAlert("Zona eliminada correctamente");
+      
+        showSuccessAlert("Zona eliminada correctamente");
         
       } catch (error) {
         console.error("Error al eliminar zona:", error);
-        // Opcional: Si tienes una función para mostrar el error visualmente
-        // showErrorAlert(error, "Eliminar Zona");
+        showErrorAlert(error, "Eliminar Zona");
       } finally {
         setCreatingZona(false);
       }
