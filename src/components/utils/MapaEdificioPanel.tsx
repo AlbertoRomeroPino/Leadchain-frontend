@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import type { Cliente, Zona, Edificio } from "../../types";
 import { InicioService } from "../../services/InicioService";
 import { useInitialize } from "../../hooks/useInitialize";
@@ -13,6 +13,7 @@ interface MapaEdificioPanelProps {
   userRole?: string;
 }
 
+// 1. Restaurada la interfaz necesaria para el formateo de datos
 interface ClienteEnEdificio {
   cliente: Cliente;
   planta: string | null;
@@ -24,13 +25,15 @@ interface MousePosition {
   y: number;
 }
 
-const MapaEdificioPanel = ({
+// 2. Mantenemos el memo() para evitar re-renderizados fantasma al mover el mapa
+const MapaEdificioPanel = memo(({
   edificio,
   isOpen,
   onClose,
   pixelCoords,
   userRole = "admin",
 }: MapaEdificioPanelProps) => {
+  // 3. Restaurado el estado con el tipo ClienteEnEdificio
   const [clientesBloque, setClientesBloque] = useState<ClienteEnEdificio[]>([]);
   const [zona, setZona] = useState<Zona | null>(null);
   const dragStartPos = useRef<MousePosition>({ x: 0, y: 0 });
@@ -45,14 +48,15 @@ const MapaEdificioPanel = ({
     try {
       showLoadingAlert("Cargando datos del edificio...");
 
-      // Panel ligero: solo zona y clientes
       const panelData = await InicioService.getDetalleEdificio(edificio.id);
       setZona(panelData.zona || null);
 
-      // Procesar clientes del edificio
+      // 4. Restaurado el mapeo de datos exacto que solicitaste
+      // Nota: Si TS se queja de 'planta' o 'puerta' aquí, 
+      // puedes tipar 'cliente' como '(cliente: any) =>' temporalmente
       const clientesFormateados: ClienteEnEdificio[] = (
         panelData.clientes || []
-      ).map((cliente) => ({
+      ).map((cliente: Cliente & { planta?: string | null; puerta?: string | null }) => ({
         cliente,
         planta: cliente.planta || null,
         puerta: cliente.puerta || null,
@@ -65,18 +69,18 @@ const MapaEdificioPanel = ({
     }
   }, [isOpen, edificio?.id]);
 
-  const handleOverlayMouseDown = (edificio: React.MouseEvent) => {
-    dragStartPos.current = { x: edificio.clientX, y: edificio.clientY };
+  const handleOverlayMouseDown = (e: React.MouseEvent) => {
+    dragStartPos.current = { x: e.clientX, y: e.clientY };
   };
 
-  const handleOverlayMouseUp = (edificio: React.MouseEvent) => {
-    const dragDistance = Math.sqrt(
-      Math.pow(edificio.clientX - dragStartPos.current.x, 2) +
-        Math.pow(edificio.clientY - dragStartPos.current.y, 2)
+  const handleOverlayMouseUp = (e: React.MouseEvent) => {
+    // 5. Mantenemos la optimización de Math.hypot nativo (más rápido)
+    const dragDistance = Math.hypot(
+      e.clientX - dragStartPos.current.x,
+      e.clientY - dragStartPos.current.y
     );
 
-    // Solo cerrar si no fue un drag (menos de 5px de movimiento)
-    if (dragDistance < 5 && edificio.target === edificio.currentTarget) {
+    if (dragDistance < 5 && e.target === e.currentTarget) {
       onClose();
     }
   };
@@ -101,9 +105,8 @@ const MapaEdificioPanel = ({
       <div
         className="mapa-edificio-panel"
         style={panelStyle}
-        onClick={(edificio) => edificio.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="mapa-edificio-panel-header">
           <h2 className="mapa-edificio-panel-title">Detalles del Edificio</h2>
           <button className="mapa-edificio-panel-close" onClick={onClose}>
@@ -111,9 +114,7 @@ const MapaEdificioPanel = ({
           </button>
         </div>
 
-        {/* Contenido */}
         <div className="mapa-edificio-panel-content">
-          {/* Información del edificio */}
           <div className="mapa-edificio-section">
             <h3 className="mapa-edificio-section-title">Información</h3>
             <div className="mapa-edificio-info">
@@ -136,7 +137,6 @@ const MapaEdificioPanel = ({
             </div>
           </div>
 
-          {/* Clientes */}
           <div className="mapa-edificio-section">
             <h3 className="mapa-edificio-section-title">
               Clientes ({clientesBloque.length})
@@ -146,9 +146,10 @@ const MapaEdificioPanel = ({
               <div className="mapa-edificio-empty">No hay clientes</div>
             ) : (
               <ul className="mapa-edificio-clientes-list">
+                {/* 6. Restaurado el renderizado desestructurado */}
                 {clientesBloque.map(({ cliente, planta, puerta }) => (
                   <li
-                    key={`cliente-${cliente.id}-${planta}-${puerta}`}
+                    key={`cliente-detalle-${cliente.id}`}
                     className="mapa-edificio-cliente-item"
                   >
                     <div className="mapa-edificio-cliente-nombre">
@@ -174,6 +175,8 @@ const MapaEdificioPanel = ({
       </div>
     </div>
   );
-};
+});
+
+MapaEdificioPanel.displayName = "MapaEdificioPanel";
 
 export default MapaEdificioPanel;

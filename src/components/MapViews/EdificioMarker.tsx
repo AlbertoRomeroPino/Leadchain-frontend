@@ -1,13 +1,20 @@
 import { memo } from "react";
 import { Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import type { Edificio, Cliente, Zona} from "../../types";
+import type { Edificio, Cliente, Zona } from "../../types";
 
 interface EdificioMarkerProps {
   edificio: Edificio;
   zona?: Zona | null;
   icon: L.DivIcon;
 }
+
+// Función de formateo extraída (Hoisting)
+const getNombreCompleto = (cliente: Cliente) => {
+  const nombre = `${cliente.nombre ?? ""} ${cliente.apellidos ?? ""}`.trim();
+  if (nombre.length <= 40) return nombre;
+  return `${nombre.slice(0, 37).trimEnd()}...`;
+};
 
 /**
  * Componente memoizado para cada marcador de edificio
@@ -16,35 +23,27 @@ interface EdificioMarkerProps {
 const EdificioMarker = memo(({ edificio, zona, icon }: EdificioMarkerProps) => {
   if (!edificio.ubicacion) return null;
 
-  // Obtener el conteo de clientes - puede ser array u objeto con count
   let clientesCount = 0;
 
+  // Evaluando directamente, TypeScript entiende que aquí dentro SÍ es un array
   if (Array.isArray(edificio.clientes)) {
     clientesCount = edificio.clientes.length;
-  } else if (edificio.clientes && typeof edificio.clientes === 'object' && 'count' in edificio.clientes) {
+  } else if (
+    edificio.clientes &&
+    typeof edificio.clientes === "object" &&
+    "count" in edificio.clientes
+  ) {
     clientesCount = (edificio.clientes as { count: number }).count;
   }
 
-  const clientesConEdificio = Array.isArray(edificio.clientes)
-    ? edificio.clientes.map((cliente: Cliente & { planta?: string | null; puerta?: string | null }) => ({
-        cliente,
-        edificio,
-      }))
+  // Extraemos la lista de clientes asegurando el tipo directamente en la evaluación
+  const clientesList = Array.isArray(edificio.clientes)
+    ? (edificio.clientes as (Cliente & { planta?: string | null; puerta?: string | null })[])
     : [];
 
-  const getNombreCompleto = (cliente: Cliente) => {
-    const nombre = `${cliente.nombre ?? ""} ${cliente.apellidos ?? ""}`.trim();
-    if (nombre.length <= 40) return nombre;
-    return `${nombre.slice(0, 37).trimEnd()}...`;
-  };
-
   return (
-    <Marker
-      key={`edificio-${edificio.id}`}
-      position={[edificio.ubicacion.lat, edificio.ubicacion.lng]}
-      icon={icon}
-    >
-      <Popup 
+    <Marker position={[edificio.ubicacion.lat, edificio.ubicacion.lng]} icon={icon}>
+      <Popup
         className="custom-popup"
         autoPan={true}
         autoPanPadding={[50, 100]}
@@ -63,19 +62,19 @@ const EdificioMarker = memo(({ edificio, zona, icon }: EdificioMarkerProps) => {
             <strong>Zona:</strong> {zona?.nombre ?? "No encontrada"}
           </p>
           <div className="popup-list">
-            {clientesConEdificio.map((item, idx) => (
+            {clientesList.map((cliente, idx) => (
               <div
-                key={`${item.cliente.id}-${item.edificio.id}-${idx}`}
+                key={`cliente-${cliente.id || idx}-edif-${edificio.id}`}
                 className="popup-item"
               >
                 <div>
                   <p className="popup-client-name">
-                    {getNombreCompleto(item.cliente)}
+                    {getNombreCompleto(cliente)}
                   </p>
                   <p className="popup-client-details">
-                    Piso: {item.cliente.planta ?? "N/A"} • Puerta: {item.cliente.puerta ?? "N/A"}
+                    Piso: {cliente.planta ?? "N/A"} • Puerta: {cliente.puerta ?? "N/A"}
                     <br />
-                    Tel: {item.cliente.telefono ?? "N/A"}
+                    Tel: {cliente.telefono ?? "N/A"}
                   </p>
                 </div>
               </div>
