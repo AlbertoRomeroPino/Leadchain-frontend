@@ -10,6 +10,7 @@ import EdificioInfoDetailsCard from "./Info/EdificioInfoDetailsCard";
 import EdificioInfoClienteCard from "./Info/EdificioInfoClienteCard";
 import EdificioInfoMapCard from "./Info/EdificioInfoMapCard";
 import EdificioCreateModal from "./EdificioCreateModal";
+import { showSuccessAlert } from "../utils/errorHandler";
 
 interface EdificioInfoProps {
   edificio: Edificio;
@@ -105,21 +106,37 @@ const EdificioInfo = memo(({
   }, [edificio.id]);
 
   // OPTIMIZACIÓN 3: useCallback para estabilizar todas las funciones que se pasan a los hijos.
-  const handleDeleteEdificio = useCallback(async () => {
-    if (!canManageEdificio) return;
+  const handleDeleteEdificio = useCallback(() => {
+  // 1. Verificación de permisos inmediata
+  if (!canManageEdificio) return;
 
-    setDeletingEdificio(true);
-    try {
-      await EdificiosService.deleteEdificio(edificioInfo.id);
-      setTimeout(() => {
-        onEdificioDeleted?.(edificioInfo.id);
-      }, 500);
-    } catch (error) {
-      console.error("Error al eliminar edificio:", error);
-    } finally {
-      setDeletingEdificio(false);
-    }
-  }, [canManageEdificio, edificioInfo.id, onEdificioDeleted]);
+  // 2. Disparamos la alerta personalizada
+  showStatusAlert({
+    title: "¿Deseas eliminar este edificio?",
+    description: `Esta acción eliminará definitivamente el edificio "${edificioInfo.direccion_completa || ''}" y no se puede deshacer.`,
+    type: "action",
+    actionLabel: "Sí, eliminar",
+    onAction: async () => {
+      try {
+        setDeletingEdificio(true);
+        
+        await EdificiosService.deleteEdificio(edificioInfo.id);
+
+        // Mantenemos tu pequeño delay para asegurar que la UI se limpie suavemente
+        setTimeout(() => {
+          onEdificioDeleted?.(edificioInfo.id);
+        }, 500);
+
+      } catch (error) {
+        console.error("Error al eliminar edificio:", error);
+        // Aquí podrías añadir un showStatusAlert de tipo error si falla el servidor
+      } finally {
+        setDeletingEdificio(false);
+      }
+      showSuccessAlert("Edificio eliminado", 2000);
+    },
+  });
+}, [canManageEdificio, edificioInfo.id, edificioInfo.direccion_completa, onEdificioDeleted]);
 
   const handleUpdateEdificio = useCallback(async (id: number, payload: EdificioInput) => {
     setUpdatingEdificio(true);

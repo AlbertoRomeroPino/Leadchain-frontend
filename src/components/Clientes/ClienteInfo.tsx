@@ -5,12 +5,13 @@ import "../../styles/InfoCliente.css";
 import "../../styles/components/Clientes/ClienteInfo.css";
 import { useAuth } from "../../context/useAuth";
 import { useInitialize } from "../../hooks/useInitialize";
-import { showErrorAlert } from "../utils/errorHandler";
+import { showErrorAlert, showSuccessAlert } from "../utils/errorHandler";
 import InfoClienteToolbar from "./Info/InfoClienteToolbar";
 import InfoClienteDatosCard from "./Info/InfoClienteDatosCard";
 import InfoClienteEdificioCard from "./Info/InfoClienteEdificioCard";
 import InfoClienteVisitasCard from "./Info/InfoClienteVisitasCard";
 import InfoClienteEditModal from "./Info/InfoClienteEditModal";
+import showStatusAlert from "../utils/StatusAlert";
 
 interface InfoClienteProps {
   cliente: Cliente;
@@ -108,37 +109,58 @@ const InfoCliente = memo(({
     }
   }, [canManageCliente, clienteInfo.id, onClienteUpdated]);
 
-  const handleDeleteCliente = useCallback(async () => {
-    if (!canManageCliente) return;
+  const handleDeleteCliente = useCallback(() => {
+  if (!canManageCliente) return;
 
-    try {
-      setDeletingCliente(true);
-      await ClientesService.deleteCliente(clienteInfo.id);
-      
-      onClienteDeleted?.(clienteInfo.id);
-      setShowEditForm(false);
-    } catch (err) {
-      showErrorAlert(err, "Eliminar");
-      const message = err instanceof Error ? err.message : "Error al eliminar cliente";
-
-      // Si el error dice que ya no existe en BD, lo tratamos como éxito
-      if (message.includes("No query results for model [App\\Models\\Cliente]")) {
+  showStatusAlert({
+    title: "¿Deseas eliminar este cliente?",
+    description: `Esta acción eliminará permanentemente a "${clienteInfo.nombre || 'este cliente'}" y no se puede deshacer.`,
+    type: "action",
+    actionLabel: "Sí, eliminar",
+    onAction: async () => {
+      try {
+        setDeletingCliente(true);
+        await ClientesService.deleteCliente(clienteInfo.id);
+        
+        // Flujo normal de éxito
         onClienteDeleted?.(clienteInfo.id);
         setShowEditForm(false);
-        return;
-      }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Error al eliminar cliente";
 
-      if (
-        message.toLowerCase().includes("visita") ||
-        message.toLowerCase().includes("foreign key") ||
-        message.toLowerCase().includes("constraint")
-      ) {
-        return;
+        // 1. Si el error dice que ya no existe en BD, lo tratamos como éxito (ya se cumplió el objetivo)
+        if (message.includes("No query results for model [App\\Models\\Cliente]")) {
+          onClienteDeleted?.(clienteInfo.id);
+          setShowEditForm(false);
+          return;
+        }
+
+        // 2. Errores de integridad (tiene visitas o restricciones de DB)
+        if (
+          message.toLowerCase().includes("visita") ||
+          message.toLowerCase().includes("foreign key") ||
+          message.toLowerCase().includes("constraint")
+        ) {
+          showErrorAlert(err, "No se puede eliminar: El cliente tiene datos vinculados.");
+          return;
+        }
+
+        // 3. Error genérico
+        showErrorAlert(err, "Eliminar");
+        console.error("Error al eliminar cliente:", err);
+      } finally {
+        setDeletingCliente(false);
       }
-    } finally {
-      setDeletingCliente(false);
-    }
-  }, [canManageCliente, clienteInfo.id, onClienteDeleted]);
+      showSuccessAlert("Cliente eliminado", 2000);
+    },
+  });
+}, [
+  canManageCliente, 
+  clienteInfo.id, 
+  clienteInfo.nombre, 
+  onClienteDeleted, 
+  setShowEditForm, 
+]);
 
   return (
     <>

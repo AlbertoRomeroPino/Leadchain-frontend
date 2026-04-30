@@ -102,25 +102,50 @@ const Zona = () => {
   };
 
   const handleDeleteZona = async () => {
-    if (!selectedZona) return;
-    if (
-      window.confirm(
-        `¿Estás seguro de que deseas eliminar la zona "${selectedZona.nombre}"? Esta acción eliminará todos los edificios y datos asociados.`
-      )
-    ) {
+  if (!selectedZona) return;
+
+  // 1. Validación previa: Si tiene edificios, mostramos error y paramos la ejecución.
+  if (selectedZona.edificios && selectedZona.edificios.length > 0) {
+    showStatusAlert({
+      type: "error",
+      title: "No se puede eliminar la zona",
+      description: "La zona tiene edificios asociados. Elimina los edificios primero.",
+      duration: 4000,
+    });
+    return;
+  }
+
+  // 2. Si pasa la validación, disparamos la alerta de confirmación (tipo "action").
+  showStatusAlert({
+    title: `¿Deseas eliminar la zona "${selectedZona.nombre}"?`,
+    description: "Esta acción eliminará todos los datos asociados y no se puede deshacer.",
+    type: "action",
+    actionLabel: "Sí, eliminar",
+    onAction: async () => {
       try {
         setCreatingZona(true);
+        
+        // Ejecución de la eliminación
         await ZonaService.deleteZona(selectedZona.id);
+        
+        // Refresco de datos
         const zonasResponse = await ZonaService.getZonasPageData();
         setZonas(zonasResponse);
         setSelectedZona(null);
-      } catch {
-        // Error al eliminar zona
+
+        // Opcional: Si tienes una función para alertas de éxito
+        // showSuccessAlert("Zona eliminada correctamente");
+        
+      } catch (error) {
+        console.error("Error al eliminar zona:", error);
+        // Opcional: Si tienes una función para mostrar el error visualmente
+        // showErrorAlert(error, "Eliminar Zona");
       } finally {
         setCreatingZona(false);
       }
-    }
-  };
+    },
+  });
+};
 
   // Obtener edificios de la zona seleccionada (ahora vienen dentro de la zona)
   const selectedEdificios = useMemo(() => {
