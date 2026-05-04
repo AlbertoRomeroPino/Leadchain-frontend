@@ -9,6 +9,7 @@ import {
   showSuccessAlert,
   showLoadingAlert,
 } from "../components/utils/errorHandler";
+import showStatusAlert from "../components/utils/StatusAlert";
 import ComercialesHeader from "../components/Comerciales/ComercialesHeader";
 import ComercialesStatus from "../components/Comerciales/ComercialesStatus";
 import ComercialesTable from "../components/Comerciales/ComercialesTable";
@@ -47,27 +48,36 @@ const Comerciales = () => {
     });
   }, []);
 
-  // OPTIMIZACIÓN 3: Estabilizar la función de borrado
+  // OPTIMIZACIÓN 3: Estabilizar la función de borrado con confirmación
   const handleDeleteComerciales = useCallback(async () => {
     if (selectedComercialIds.size === 0) return;
 
-    try {
-      setIsLoading(true);
-      await Promise.all(
-        Array.from(selectedComercialIds).map((id) =>
-          UserService.deleteUser(id),
-        ),
-      );
+    showStatusAlert({
+      title: "¿Deseas eliminar estos comerciales?",
+      description: `Se eliminarán ${selectedComercialIds.size} comercial(es) y sus visitas asociadas. Esta acción no se puede deshacer.`,
+      type: "action",
+      actionLabel: "Sí, eliminar",
+      onAction: async () => {
+        try {
+          setIsLoading(true);
+          await Promise.all(
+            Array.from(selectedComercialIds).map((id) =>
+              UserService.deleteUser(id),
+            ),
+          );
 
-      setComerciales((prev) =>
-        prev.filter((cliente) => !selectedComercialIds.has(cliente.id)),
-      );
-      setSelectedComercialIds(new Set());
-    } catch (err) {
-      showErrorAlert(err, "Eliminar Comerciales");
-    } finally {
-      setIsLoading(false);
-    }
+          setComerciales((prev) =>
+            prev.filter((cliente) => !selectedComercialIds.has(cliente.id)),
+          );
+          setSelectedComercialIds(new Set());
+          showSuccessAlert("Comercial(es) eliminado(s) correctamente");
+        } catch (err) {
+          showErrorAlert(err, "Eliminar Comerciales");
+        } finally {
+          setIsLoading(false);
+        }
+      },
+    });
   }, [selectedComercialIds]);
 
   useInitialize(async () => {
