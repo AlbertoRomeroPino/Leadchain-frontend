@@ -79,8 +79,27 @@ export function getSimplifiedErrorMessage(error: unknown): string {
 }
 
 /**
+ * Extrae el mensaje específico del error del backend
+ * Prioriza el campo 'error' sobre el mensaje genérico
+ */
+function getBackendErrorMessage(error: unknown): string | null {
+  if (typeof error === "object" && error !== null && "response" in error) {
+    const axiosError = error as {
+      response?: { data?: { error?: string; message?: string } };
+    };
+
+    // Retornar el campo 'error' si existe (mensaje específico del backend)
+    if (axiosError.response?.data?.error) {
+      return axiosError.response.data.error;
+    }
+  }
+
+  return null;
+}
+
+/**
  * Muestra un error de forma simplificada usando StatusAlert
- * No muestra mensajes técnicos complejos
+ * Prioriza mensajes específicos del backend
  * Nota: Sileo aplica Title Case a los títulos, por eso usamos títulos cortos
  */
 export function showErrorAlert(
@@ -88,9 +107,9 @@ export function showErrorAlert(
   customTitle?: string,
   duration = 4000
 ) {
-  const message = getSimplifiedErrorMessage(error);
-  // Si no hay título custom, usar "Error" (una palabra, se ve bien con Title Case)
-  // Si hay, esperamos que sea corto (ej: "Guardar" o "Eliminar", no "Error al guardar datos")
+  // Intentar obtener el mensaje específico del backend
+  const backendError = getBackendErrorMessage(error);
+  const message = backendError || getSimplifiedErrorMessage(error);
   const title = customTitle || "Error";
 
   showStatusAlert({

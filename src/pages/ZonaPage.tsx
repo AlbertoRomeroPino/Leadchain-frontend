@@ -72,8 +72,9 @@ const Zona = () => {
       if (updatedZona) setSelectedZona(updatedZona);
       setShowCreateForm(false);
       setEditMode(false);
-    } catch {
-      // Error al actualizar zona
+      showSuccessAlert("Zona actualizada correctamente");
+    } catch (error) {
+      showErrorAlert(error, "No se puede actualizar la zona");
     } finally {
       setCreatingZona(false);
     }
