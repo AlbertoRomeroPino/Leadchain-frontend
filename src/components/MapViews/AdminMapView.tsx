@@ -63,4 +63,30 @@ const AdminMapView = ({ userRole }: AdminMapViewProps) => {
   );
 };
 
+{/* <GlovalMap
+      // [Zona[]] - Datos geoespaciales (Polígonos) procesados desde PostGIS.
+      zonas={zonas}
+
+      // [Edificio[]] - Puntos de interés (Markers) aplanados para renderizado masivo.
+      edificios={edificios}
+
+      // [String] - Define permisos de edición/lectura según el perfil del usuario.
+      userRole={userRole}
+
+      // [[number, number]] - Coordenadas iniciales de la cámara (Córdoba).
+      centerCoords={ADMIN_MAP_CONFIG.centerCoords}
+
+      // [Number] - Nivel de escala inicial (12 = Nivel de ciudad).
+      zoomLevel={ADMIN_MAP_CONFIG.zoomLevel}
+
+      // [Number] - Límite de alejamiento para evitar desorientación del usuario.
+      minZoomLevel={ADMIN_MAP_CONFIG.minZoomLevel}
+
+      // [LatLngBounds] - Restricción de navegación; impide salir del área de trabajo.
+      customMaxBounds={ADMIN_MAP_CONFIG.maxBounds}
+
+      // [String] - Identificador visual del módulo.
+      title="Mapa de Todas las Zonas"
+    /> */}
+
 export default AdminMapView;

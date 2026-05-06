@@ -33,6 +33,7 @@ const EdificioInfoMapCard = memo(({
           edificios={edificiosArray}
           zonas={zonasArray}
           userRole={userRole}
+          showTitle={false}
         />
       </div>
       
