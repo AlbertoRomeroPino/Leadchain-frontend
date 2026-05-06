@@ -1,6 +1,6 @@
 import { MapContainer, Polygon, Rectangle, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import "../../styles/components/utils/GlovalMap.css";
+import "../../styles/components/utils/GlobalMap.css";
 import MapView from "../MapSetup/MapView";
 import EdificioMarker from "../MapViews/EdificioMarker";
 import ZoomCalculator from "../MapSetup/ZoomCalculator";
@@ -16,7 +16,7 @@ import type { LatLngExpression, LatLngBoundsExpression } from "leaflet";
 import { useMemo } from "react";
 import L from "leaflet";
 
-interface GlovalMapProps {
+interface GlobalMapProps {
   zonas?: Zona[];
   edificios?: Edificio[];
   userRole?: string;
@@ -82,7 +82,7 @@ const convertirAreaAPoligono = (area: GeoPoint[]): LatLngExpression[] => {
   return area.map((punto) => [punto.lat, punto.lng]);
 };
 
-const GlovalMap = ({
+const GlobalMap = ({
   zonas = [],
   edificios = [],
   userRole = "admin",
@@ -98,7 +98,7 @@ const GlovalMap = ({
   mapExpansionFactor = 1.2,
   enableZoomCalculator = false,
   onZoomCalculated,
-}: GlovalMapProps) => {
+}: GlobalMapProps) => {
 
   // Filtros principales (Memoizados)
   const zonasAMostrar = useMemo(() => {
@@ -258,4 +258,4 @@ const GlovalMap = ({
   );
 };
 
-export default GlovalMap;
+export default GlobalMap;

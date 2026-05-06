@@ -190,7 +190,7 @@ const EdificioInfo = memo(({
         <EdificioInfoMapCard
           edificio={edificioInfo}
           zona={zona}
-          userRole={user?.rol} // Opcional, si GlovalMap lo necesita para restringir la vista
+          userRole={user?.rol} // Opcional, si GlobalMap lo necesita para restringir la vista
         />
 
         {showEditForm && (

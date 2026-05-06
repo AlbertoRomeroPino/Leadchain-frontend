@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import GlovalMap from "../utils/GlovalMap";
+import GlobalMap from "../utils/GlobalMap";
 import { InicioService } from "../../services/InicioService";
 import { useInitialize } from "../../hooks/useInitialize";
 import { showLoadingAlert, showErrorAlert, showSuccessAlert } from "../utils/errorHandler";
@@ -82,7 +82,7 @@ const CommercialMapView = ({ userRole, userZonaId }: CommercialMapViewProps) => 
   const currentZoomLevel = calculatedZoom?.initialZoom ?? DEFAULT_MAP_CONFIG.zoomLevel;
 
   return (
-    <GlovalMap
+    <GlobalMap
       zonas={zonas}
       edificios={edificios}
       userRole={userRole}

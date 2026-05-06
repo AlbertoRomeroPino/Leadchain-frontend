@@ -249,7 +249,7 @@ Leadchain-frontend
 │   │   ├── utils
 │   │   │   ├── cordobaMapConfig.ts
 │   │   │   ├── errorHandler.ts
-│   │   │   ├── GlovalMap.tsx
+│   │   │   ├── globalMap.tsx
 │   │   │   ├── MapaEdificioPanel.tsx
 │   │   │   └── StatusAlert.tsx
 │   │   ├── Visitas
@@ -361,7 +361,7 @@ Leadchain-frontend
 │   │   │   ├── utils
 │   │   │   │   ├── CommercialZoneInfo.css
 │   │   │   │   ├── CommercialZoneMap.css
-│   │   │   │   ├── GlovalMap.css
+│   │   │   │   ├── globalMap.css
 │   │   │   │   ├── MapaEdificioPanel.css
 │   │   │   │   └── StatusAlert.css
 │   │   │   ├── Visitas
@@ -522,7 +522,7 @@ classDiagram
     %% ==========================================
     %% MOTOR VISUAL CENTRAL
     %% ==========================================
-    class GlovalMap {
+    class globalMap {
         +const coloresZonas: [Lista de 8 colores hexadecimales]
         +useMemo zonasAMostrar [Filtra las zonas según el rol]
         +useMemo edificiosAMostrar [Filtra los edificios según el rol]
@@ -596,14 +596,14 @@ classDiagram
     MapaEdificioPanel ..> InicioService : Solicita detalles a getDetalleEdificio()
   
     %% Flujo de renderizado principal (Padres a Hijos)
-    AdminMapView --> GlovalMap : Pasa todas las zonas y configuración global
-    CommercialMapView --> GlovalMap : Pasa solo la zona del comercial y límites calculados
+    AdminMapView --> globalMap : Pasa todas las zonas y configuración global
+    CommercialMapView --> globalMap : Pasa solo la zona del comercial y límites calculados
   
-    %% GlovalMap hacia la interfaz y librerías externas
-    GlovalMap --> ReactLeaflet : Construye el mapa base visual
-    GlovalMap --> MapView : Se activa si enableMapBoundsSetup es verdadero
-    GlovalMap --> ZoomCalculator : Se activa si enableZoomCalculator es verdadero
-    GlovalMap --> EdificioMarker : Dibuja cada edificio en el mapa
+    %% globalMap hacia la interfaz y librerías externas
+    globalMap --> ReactLeaflet : Construye el mapa base visual
+    globalMap --> MapView : Se activa si enableMapBoundsSetup es verdadero
+    globalMap --> ZoomCalculator : Se activa si enableZoomCalculator es verdadero
+    globalMap --> EdificioMarker : Dibuja cada edificio en el mapa
   
     %% Interacción de clics
     EdificioMarker ..> MapaEdificioPanel : (A través del evento de clic onEdificioClick)

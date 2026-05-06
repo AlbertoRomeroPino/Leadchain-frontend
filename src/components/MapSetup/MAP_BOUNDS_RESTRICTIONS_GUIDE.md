@@ -114,7 +114,7 @@ export const CommercialMapView = ({ userRole, zoneArea }) => {
 import { useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import MapBoundsSetup from "../components/MapSetup/MapBoundsSetup";
-import GlovalMap from "../utils/GlovalMap";
+import globalMap from "../utils/globalMap";
 
 const CommercialMapView = ({ userRole, userZonaId }) => {
   const [zona, setZona] = useState(null);
@@ -192,16 +192,16 @@ Los logs en consola muestran:
 }
 ```
 
-## Integración con GlovalMap
+## Integración con globalMap
 
-Si usas GlovalMap, puedes encapsularlo:
+Si usas globalMap, puedes encapsularlo:
 
 ```tsx
-import GlovalMap from "../utils/GlovalMap";
+import globalMap from "../utils/globalMap";
 
-// GlovalMap renderiza MapContainer internamente
-// Necesitas modificar GlovalMap para aceptar:
-// <GlovalMap
+// globalMap renderiza MapContainer internamente
+// Necesitas modificar globalMap para aceptar:
+// <globalMap
 //   userRole="comercial"
 //   zoneArea={zona.area}
 //   enableMapBoundsSetup={true}
@@ -245,7 +245,7 @@ graph TD
     end
 
     subgraph "Nivel 3: Motor Visual"
-        AMV -- Pasa Todo --> GM[GlovalMap]
+        AMV -- Pasa Todo --> GM[globalMap]
         CMV -- Pasa Zona --> GM
     end
 
