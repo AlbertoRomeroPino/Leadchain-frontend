@@ -22,6 +22,7 @@ interface GlovalMapProps {
   userRole?: string;
   userZonaId?: number;
   title?: string;
+  showTitle?: boolean;
   centerCoords?: [number, number];
   zoomLevel?: number;
   minZoomLevel?: number;
@@ -87,6 +88,7 @@ const GlovalMap = ({
   userRole = "admin",
   userZonaId,
   title = "Mapa de Córdoba",
+  showTitle = true,
   centerCoords = CORDOBA_CENTER,
   zoomLevel = CORDOBA_MAP_CONFIG.zoom,
   minZoomLevel = CORDOBA_MAP_CONFIG.minZoom,
@@ -154,14 +156,16 @@ const GlovalMap = ({
 
   return (
     <div className="gloval-map-wrapper">
-      <div className="gloval-map-header">
-        <h2 className="gloval-map-title">{title}</h2>
-        {zonasAMostrar.length > 0 && userRole !== "comercial" && (
-          <p className="gloval-map-info">
-            Mostrando {zonasAMostrar.length} zona{zonasAMostrar.length !== 1 ? "s" : ""}
-          </p>
-        )}
-      </div>
+      {showTitle && (
+        <div className="gloval-map-header">
+          <h2 className="gloval-map-title">{title}</h2>
+          {zonasAMostrar.length > 0 && userRole !== "comercial" && (
+            <p className="gloval-map-info">
+              Mostrando {zonasAMostrar.length} zona{zonasAMostrar.length !== 1 ? "s" : ""}
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="gloval-map-canvas-wrapper">
         <MapContainer
