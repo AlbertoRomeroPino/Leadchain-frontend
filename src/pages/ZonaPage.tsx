@@ -10,7 +10,10 @@ import ZonaInfo from "../components/Zona/ZonaInfo";
 import ZonaList from "../components/Zona/ZonaList";
 import "leaflet/dist/leaflet.css";
 import "../styles/Zona.css";
-import { showErrorAlert, showSuccessAlert } from "../components/utils/errorHandler";
+import {
+  showErrorAlert,
+  showSuccessAlert,
+} from "../components/utils/errorHandler";
 
 const Zona = () => {
   const [zonas, setZonas] = useState<Zona[]>([]);
@@ -46,7 +49,10 @@ const Zona = () => {
     }
   });
 
-  const handleCreateZona = async (zona: { nombre: string; area: GeoPoint[] }) => {
+  const handleCreateZona = async (zona: {
+    nombre: string;
+    area: GeoPoint[];
+  }) => {
     try {
       setCreatingZona(true);
       await ZonaService.createZona(zona);
@@ -61,14 +67,19 @@ const Zona = () => {
     }
   };
 
-  const handleUpdateZona = async (zona: { nombre: string; area: GeoPoint[] }) => {
+  const handleUpdateZona = async (zona: {
+    nombre: string;
+    area: GeoPoint[];
+  }) => {
     if (!selectedZona) return;
     try {
       setCreatingZona(true);
       await ZonaService.updateZona(selectedZona.id, zona);
       const zonasResponse = await ZonaService.getZonasPageData();
       setZonas(zonasResponse);
-      const updatedZona = zonasResponse.find((zona: Zona) => zona.id === selectedZona.id);
+      const updatedZona = zonasResponse.find(
+        (zona: Zona) => zona.id === selectedZona.id,
+      );
       if (updatedZona) setSelectedZona(updatedZona);
       setShowCreateForm(false);
       setEditMode(false);
@@ -80,7 +91,10 @@ const Zona = () => {
     }
   };
 
-  const handleFormSubmit = async (zona: { nombre: string; area: GeoPoint[] }) => {
+  const handleFormSubmit = async (zona: {
+    nombre: string;
+    area: GeoPoint[];
+  }) => {
     if (editMode && selectedZona) {
       await handleUpdateZona(zona);
     } else {
@@ -106,45 +120,25 @@ const Zona = () => {
   const handleDeleteZona = async () => {
     if (!selectedZona) return;
 
-    // 1. Validación previa: Si tiene edificios, mostramos error y paramos la ejecución.
     if (selectedZona.edificios && selectedZona.edificios.length > 0) {
       showStatusAlert({
         type: "error",
         title: "No se puede eliminar la zona",
-        description: "La zona tiene edificios asociados. Elimina los edificios primero.",
+        description: "La zona tiene edificios asociados.",
         duration: 4000,
       });
       return;
     }
 
-    // 2. Si pasa la validación, disparamos la alerta de confirmación (tipo "action").
-    showStatusAlert({
-      title: `¿Deseas eliminar la zona "${selectedZona.nombre}"?`,
-      description: "Esta acción eliminará todos los datos asociados y no se puede deshacer.",
-      type: "action",
-      actionLabel: "Sí, eliminar",
-      onAction: async () => {
-        try {
-          setCreatingZona(true);
-          
-          // Ejecución de la eliminación
-          await ZonaService.deleteZona(selectedZona.id);
-          
-          // Refresco de datos
-          const zonasResponse = await ZonaService.getZonasPageData();
-          setZonas(zonasResponse);
-          setSelectedZona(null);
-          
-          showSuccessAlert("Zona eliminada correctamente");
-          
-        } catch (error) {
-          console.error("Error al eliminar zona:", error);
-          showErrorAlert(error, "Eliminar Zona");
-        } finally {
-          setCreatingZona(false);
-        }
-      },
-    });
+    try {
+      await ZonaService.deleteZona(selectedZona.id);
+      const zonasResponse = await ZonaService.getZonasPageData();
+      setZonas(zonasResponse);
+      setSelectedZona(null);
+      showSuccessAlert("Zona eliminada correctamente");
+    } catch (error) {
+      showErrorAlert(error, "Eliminar Zona");
+    }
   };
 
   // Obtener edificios de la zona seleccionada (ahora vienen dentro de la zona)
