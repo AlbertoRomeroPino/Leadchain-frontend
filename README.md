@@ -1,460 +1,270 @@
 <h1 align="center">
-  <a href="#">Leadchain Frontend</a>
+  <a href="https://github.com/AlbertoRomeroPino/Leadchain-frontend" style="text-decoration: none; color: inherit;">Leadchain Frontend</a>
 </h1>
 
-<h3 align="center">Frontend React para la gestión de clientes, edificios, visitas y zonas geolocalizadas.</h3>
+<h3 align="center">Aplicación React para la gestión integral de rutas comerciales, edificios, clientes y visitas geolocalizadas.</h3>
 
 <p align="center">
   <a href="https://github.com/AlbertoRomeroPino/Leadchain-frontend">
-    <img alt="Frontend Repo" src="https://img.shields.io/badge/Frontend-Repo-blue?style=for-the-badge&logo=github&logoColor=white">
-  </a>
-  <a href="https://github.com/AlbertoRomeroPino/Leadchain-backend">
-    <img alt="Backend API Repo" src="https://img.shields.io/badge/Backend-API%20Repo-black?style=for-the-badge&logo=github&logoColor=white">
+    <img alt="Frontend Repo" src="https://img.shields.io/badge/Frontend-Repo-red?style=for-the-badge&logo=github&logoColor=white">
   </a>
 </p>
 
 <p align="center">
-  <a href="#acerca">Acerca</a> •
-  <a href="#caracteristicas">Características</a> •
-  <a href="#como-funciona">Cómo funciona</a> •
-  <a href="#tecnologias">Tecnologías</a> •
-  <a href="#estructura-del-proyecto">Estructura</a> •
-  <a href="#scripts">Scripts</a> •
-  <a href="#autenticacion">Autenticacion</a> •
-  <a href="#autor">Autor</a>
+  <a href="https://github.com/AlbertoRomeroPino/Leadchain.git">
+    <img alt="Docker Repo" src="https://img.shields.io/badge/Repositorio-Docker-blue?style=for-the-badge&logo=github&logoColor=white">
+  </a>
+  <a href="https://github.com/AlbertoRomeroPino/Leadchain-backend">
+    <img alt="Backend Repo" src="https://img.shields.io/badge/Backend-API%20Repo-black?style=for-the-badge&logo=github&logoColor=white">
+  </a>
 </p>
 
-<h2 align="center" id="acerca"> Acerca </h2>
+<h4 align="center">Frameworks, lenguajes y herramientas usadas</h4>
 
-Leadchain Frontend es la aplicación cliente de un proyecto TFG para la gestión de rutas comerciales y visitas técnicas. Incluye autenticación por token, roles de usuario, mapas interactivos y paneles de control para clientes, edificios, zonas y comerciales.
+<div align="center">
+  <img src="https://skillicons.dev/icons?i=react,vite,ts,js,css,html,github,markdown&theme=dark" height="50" />
+</div>
 
-- API Rest: [repositorio backend](https://github.com/AlbertoRomeroPino/Leadchain-backend.git)
-- Frontend: [Repositorio Frontend](https://github.com/AlbertoRomeroPino/Leadchain-frontend.git)
+<h4 align="center">Librerías de mapas y notificaciones</h4>
 
----
-
-<h2 align="center" id="caracteristicas">Características</h2>
-
-- [X] Login con token JWT y almacenamiento de sesión
-- [X] Renovación automática de token cuando expira
-- [X] Gestión de clientes con detalle y edición
-- [X] Gestión de edificios con ubicación geográfica
-- [X] Gestión de zonas con polígonos sobre el mapa
-- [X] Visualización de visitas y asignación por comercial
-- [X] Control de acceso según roles (`admin` / `comercial`)
-- [X] Mapa delimitado a Córdoba con restricciones de área
-- [X] API Axios con interceptores para refresh y manejo de errores
+<p align="center"> 
+  <a href="https://leafletjs.com/">
+    <img alt="Leaflet" src="https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=Leaflet&logoColor=white">
+  </a>
+  <a href="https://sileo.aaryan.design/docs/styling">
+    <img alt="Sileo" src="https://img.shields.io/badge/✨_Sileo-18181B?style=for-the-badge">
+  </a>
+</p>
 
 ---
 
-<h2 align="center" id="como-funciona">Cómo funciona</h2>
+<h2 align="center" id="acerca">Acerca del Proyecto </h2>
 
-El proyecto está dividido en dos partes:
+**Leadchain** es la aplicación cliente (SPA) desarrollada como Trabajo de Fin de Grado (TFG) orientada a la optimización de rutas comerciales y la gestión integral de visitas técnicas en campo.
 
-1. Backend (API con Laravel)
-2. Frontend (esta aplicación React)
+Diseñada bajo una arquitectura modular en React, la plataforma proporciona herramientas geoespaciales y de gestión en tiempo real, adaptando su interfaz de forma dinámica según el perfil del usuario.
 
-Este repositorio contiene solo el frontend. El backend debe ejecutarse para que la app funcione correctamente.
+<h3 align="center">Características Principales</h3>
 
-<h3 align="center">Requisitos previos</h3>
+* **Cartografía Interactiva Avanzada:** Renderizado dinámico de polígonos (zonas), marcadores (edificios) y cálculo de límites territoriales integrando la API de Leaflet.
+* **Control de Acceso y Seguridad:** Autenticación de estado continuo mediante tokens JWT y enrutamiento protegido basado en roles (RBAC) para perfiles de `Administrador` y `Comercial`.
+* **Paneles de Control (Dashboards):** Interfaces optimizadas para la administración centralizada del CRUD de clientes, inmuebles, zonas de actuación y métricas de rendimiento de la fuerza de ventas.
 
-Antes de empezar necesitas tener instalado:
+---
 
-- [Git](https://git-scm.com)
-- [Node.js](https://nodejs.org/)
-- [npm](https://www.npmjs.com/)
+<h2 align="center" id="puesta-en-marcha">Puesta en Marcha </h2>
 
-<h3 align="center">Ejecutar la aplicación web (Frontend)</h3>
+Leadchain opera bajo una arquitectura cliente-servidor. Este repositorio aloja exclusivamente la capa de presentación (SPA en React), diseñada para consumir de forma asíncrona los *endpoints* de la API RESTful.
+
+> ⚠️ **Requisito Crítico:** Para el flujo operativo completo de la aplicación (incluyendo el sistema de *login* y la carga de datos geoespaciales), es indispensable tener en ejecución el [repositorio del Backend (Laravel)](https://github.com/AlbertoRomeroPino/Leadchain-backend).
+
+<h3 align="center">Requisitos del Entorno</h3>
+
+Asegúrate de contar con las siguientes herramientas instaladas en tu sistema operativo antes de proceder:
+
+- [Git](https://git-scm.com) para el control de versiones.
+- [Node.js](https://nodejs.org/) (se recomienda v18 o superior) como entorno de ejecución.
+- [npm](https://www.npmjs.com/) como gestor de dependencias.
+
+<h3 align="center">Guía de Instalación Local</h3>
+
+Ejecuta la siguiente secuencia de comandos en tu terminal para levantar el entorno de desarrollo:
 
 ```bash
-# Clona este repositorio
+# 1. Clona el repositorio en tu equipo local
 git clone https://github.com/AlbertoRomeroPino/Leadchain-frontend.git
 
-# Accede a la carpeta del proyecto
+# 2. Accede al directorio raíz del proyecto
 cd leadchain-frontend
 
-# Instala las dependencias
+# 3. Instala las dependencias definidas en el package.json
 npm install
 
-# Inicia la aplicación en modo desarrollo
+# 4. Inicia el servidor de desarrollo optimizado con Vite
 npm run dev
 ```
 
-Abre el navegador en `http://localhost:5173`.
+---
 
-> Nota: Se necesita tener lanzado el backend para que funcione el login
+<h2 align="center" id="tecnologias"> Stack Tecnológico </h2>
+
+El desarrollo de la aplicación se fundamenta en un ecosistema moderno, priorizando el tipado estricto, la modularidad de los componentes y el rendimiento tanto en la compilación como en el lado del cliente.
+
+| Categoría Arquitectónica    | Tecnologías Implementadas                             | Propósito en el Proyecto                                                                                              |
+| :---------------------------- | :----------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| **Core y Entorno**      | **React** + **TypeScript**, **Vite** | Construcción declarativa de la UI con tipado estático seguro y empaquetado de alta velocidad (HMR).                  |
+| **Enrutamiento**        | **React Router Dom**                             | Gestión de la navegación en la SPA y control de acceso en rutas protegidas (RBAC).                                   |
+| **Capa de Red**         | **Axios**                                        | Cliente HTTP configurado con interceptores para la gestión y renovación automatizada de tokens JWT.                  |
+| **Motor Cartográfico** | **Leaflet**, **React Leaflet**             | Integración del Sistema de Información Geográfica (SIG) para el renderizado interactivo de polígonos y marcadores. |
+| **Interfaz (UI) y UX**  | **Sileo**, **Lucide React**                | Sistema de notificaciones no intrusivas (Toasts) y librería de iconografía vectorial escalable.                      |
+| **Calidad de Código**  | **ESLint**                                       | Análisis estático continuo para garantizar la consistencia del código y el cumplimiento de estándares.             |
 
 ---
 
-<h2 align="center" id="tecnologias">Tecnologías</h2>
+<h2 align="center" id="hooks">Referencia de Hooks Utilizados </h2>
 
-<h4 align="center">Plataforma </h4>
+El proyecto hace un uso extensivo de componentes funcionales. A continuación se detallan los *Hooks* clave que orquestan el estado, el ciclo de vida y la lógica de negocio, organizados por su origen:
 
-- **React** + **TypeScript**
-- **Vite**
+<h3 align="center">Hooks Nativos de React</h3>
+Gestión del estado interno y optimización del ciclo de vida de los componentes.
 
-<h4 align="center">Librerías principales </h4>
+| Hook                      | Propósito Arquitectónico | Caso de Uso en Leadchain                                                                        | Ejemplo de Implementación                           |
+| :------------------------ | :------------------------- | :---------------------------------------------------------------------------------------------- | :--------------------------------------------------- |
+| **`useState`**    | Estado Local               | Almacenar datos mutables que requieren re-renderizar la vista (ej. modales, formularios).       | `const [data, setData] = useState<Type>()`         |
+| **`useEffect`**   | Efectos Secundarios        | Llamadas a la API (fetch), suscripciones a eventos o manipulación manual del DOM.              | `useEffect(() => { loadData() }, [])`              |
+| **`useCallback`** | Memorización de Funciones | Evitar recrear funciones en cada render para no romper la optimización de componentes hijos.   | `const handleClick = useCallback(() => {...}, [])` |
+| **`useMemo`**     | Memorización de Valores   | Almacenar el resultado de cálculos costosos (ej. filtrado de marcadores en el mapa).           | `const marcadores = useMemo(() => filter(x), [x])` |
+| **`useContext`**  | Estado Global              | Consumir datos compartidos (sesión de usuario) evitando el*prop drilling* entre componentes. | `const ctx = useContext(AuthContext)`              |
+| **`useRef`**      | Referencia Mutable         | Mantener identificadores de temporizadores (*debounce*) o acceder directamente a nodos DOM.   | `const timerRef = useRef<NodeJS.Timeout>()`        |
 
-- **React Router Dom**
-- **Axios**
-- **Leaflet**
-- **React Leaflet**
-- **Lucide React**
-- **ESLint**
-- **Sileo**
+<h3 align="center">Hooks del Ecosistema (Router & Leaflet)</h3>
+Integración con librerías externas para navegación y control cartográfico.
 
----
+| Hook                       | Librería     | Propósito Arquitectónico                                                                   | Ejemplo de Implementación                             |
+| :------------------------- | :------------ | :------------------------------------------------------------------------------------------- | :----------------------------------------------------- |
+| **`useNavigate`**  | React Router  | Redirección programática (ej. enviar al login tras expirar la sesión).                    | `const navigate = useNavigate(); navigate('/ruta');` |
+| **`useLocation`**  | React Router  | Extraer la ruta actual o parámetros de la URL para adaptar la vista.                        | `const { pathname } = useLocation();`                |
+| **`useMap`**       | React Leaflet | Acceso imperativo a la instancia base del mapa para forzar movimientos o zoom.               | `const map = useMap(); map.fitBounds(b);`            |
+| **`useMapEvents`** | React Leaflet | Escuchar interacciones del usuario directamente sobre el lienzo del mapa (clics, arrastres). | `useMapEvents({ click: (e) => {...} });`             |
 
-<h2 align="center">Hooks Utilizados</h2>
+<h3 align="center">Custom Hooks (Lógica de Negocio)</h3>
+Hooks personalizados creados para abstraer la lógica compleja y limpiar los componentes visuales.
 
-| **Hook**             | **¿Qué hace? (Resumen)** | **¿Para qué sirve?**                                  | **Ejemplo**                  |
-| -------------------------- | -------------------------------- | ------------------------------------------------------------- | ---------------------------------- |
-| **useState**         | Estado local                     | Guardar datos que cambian y refrescan la pantalla.            | `[user, setUser] = useState()`   |
-| **useEffect**        | Sincronización                  | Ejecutar tareas tras renderizar (APIs, eventos).              | `useEffect(() => { ... }, [])`   |
-| **useCallback**      | Memorizar funciones              | Evitar que una función se recree innecesariamente.           | `useCallback(() => { ... }, [])` |
-| **useMemo**          | Memorizar valores                | Evitar cálculos pesados si no cambian las dependencias.      | `useMemo(() => calc(), [data])`  |
-| **useContext**       | Datos globales                   | Acceder a datos compartidos (auth, tema) sin "prop drilling". | `useContext(AuthContext)`        |
-| **useRef**           | Referencia mutable               | Acceder a elementos del DOM o guardar valores sin renderizar. | `const inputRef = useRef()`      |
-| **useNavigate**      | Navegación                      | Cambiar de página mediante código.                          | `Maps('/dashboard')`             |
-| **useLocation**      | Ubicación                       | Saber en qué ruta estás o qué parámetros lleva la URL.    | `useLocation().pathname`         |
-| **useMap**           | Instancia mapa                   | Controlar directamente la API de Leaflet.                     | `const map = useMap()`           |
-| **useMapEvents**     | Eventos múltiples               | Escuchar varios eventos del mapa (click, zoom, etc.).         | `useMapEvents({ click: ... })`   |
-| **useMapEvent**      | Evento único                    | Escuchar un evento específico del mapa.                      | `useMapEvent('zoom', ...)`       |
-| **useInitialize**    | Montaje (Custom)                 | Ejecutar una carga inicial asíncrona una sola vez.           | `useInitialize(getData)`         |
-| **useCalculateZoom** | Cálculo (Custom)                | Ajustar el nivel de zoom basado en coordenadas.               | `useCalculateZoomFromBounds(b)`  |
-| **useMapBounds**     | Restricciones (Custom)           | Limitar hasta dónde puede moverse el mapa.                   | `useMapBoundsRestrictions(b)`    |
-| **useAuth**          | Auth (Custom)                    | Obtener información del usuario logueado fácilmente.        | `const { user } = useAuth()`     |
+| Custom Hook                    | Responsabilidad                                                                                                                      |
+| :----------------------------- | :----------------------------------------------------------------------------------------------------------------------------------- |
+| **`useAuth`**          | Simplifica el acceso al contexto de autenticación, devolviendo directamente el usuario logueado, su rol y estado.                   |
+| **`useInitialize`**    | Orquesta la carga de datos asíncrona inicial, previniendo condiciones de carrera (*race conditions*) en el montaje.               |
+| **`useCalculateZoom`** | Algoritmo matemático que determina dinámicamente el nivel de zoom óptimo basándose en las coordenadas de un polígono.           |
+| **`useMapBounds`**     | Implementa restricciones de navegación (*debounce*), forzando a la cámara a regresar si el usuario se sale de la zona permitida. |
 
 ---
 
-<h3 align="center"> Descripción breve </h3>
+<h3 align="center">Arquitectura de Directorios (Resumen) </h3>
 
-- `src/auth/ && src/context` — gestión de sesión y contexto de usuario.
-- `src/components/` — componentes reutilizables de la UI.
-- `src/pages/` — vistas principales de la aplicación.
-- `src/services/` — llamadas a la API e interceptores HTTP.
-- `src/utils/` — utilidades generales.
-- `scripts/tree-front.js` — comando para mostrar la estructura del frontend.
+El proyecto sigue una estructura modular basada en funcionalidades (*Feature-Driven*), separando claramente la capa de presentación de la lógica de negocio y la capa de red.
+
+| Directorio / Archivo                                 | Responsabilidad Principal                                                                                                                                 |
+| :--------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`src/auth/`** & **`src/context/`** | **Core de Autenticación:** Gestión del estado global de la sesión, almacenamiento seguro de tokens y validación de acceso (Context API).        |
+| **`src/components/`**                        | **Módulos UI:** Componentes presentacionales aislados y reutilizables, agrupados lógicamente por entidad de negocio (Clientes, Edificios, Zonas). |
+| **`src/pages/`**                             | **Vistas de Alto Nivel:** Componentes contenedores (*Smart Components*) que orquestan el enrutamiento y el montaje de los componentes UI.         |
+| **`src/services/`**                          | **Capa de Red:** Servicios que encapsulan las llamadas a la API, la configuración del cliente HTTP (Axios) y la lógica de los interceptores.      |
+| **`src/utils/`**                             | **Herramientas Compartidas:** Funciones puras, configuraciones estáticas de los mapas, manejadores de errores y formateadores comunes.             |
+| **`scripts/tree-front.js`**                  | **Herramientas Dev:** Script de utilidad de Node.js diseñado para generar y mapear el árbol de dependencias y directorios del proyecto.           |
 
 ---
 
-<h2 align="center" id="scripts">Scripts</h2>
+<h2 align="center" id="scripts">Comandos y Scripts </h2>
 
-* `npm run dev`: Inicia el entorno de desarrollo en `http://localhost:5173`.
-* `npm run build`: Genera el build para producción.
-* `npm run tree`: Muestra la estructura de directorios filtrando archivos innecesarios.
+El archivo `package.json` expone una serie de comandos preconfigurados para orquestar el ciclo de vida del desarrollo, la compilación y la documentación del proyecto.
 
-<h3 align="center">npm run tree</h3>
+| Comando CLI                 | Descripción de la Tarea                                                                                                                         |
+| :-------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`npm run dev`**   | Levanta el servidor de desarrollo local de Vite con*Hot Module Replacement* (HMR). Expone la aplicación en `http://localhost:5173`.         |
+| **`npm run build`** | Transpila, optimiza y minifica el código fuente (React/TypeScript) generando los*assets* estáticos listos para el despliegue en producción. |
+| **`npm run tree`**  | Ejecuta la herramienta de utilería interna (`tree-front.js`) para mapear y visualizar la jerarquía del código fuente.                       |
 
-Este comando imprime un árbol de directorios del frontend con exclusiones configurables.
+<h3 align="center">Uso de la herramienta <code>npm run tree</code></h3>
+
+Este script personalizado ha sido diseñado para facilitar la auditoría y documentación de la arquitectura. Imprime un árbol de directorios en la consola, permitiendo la inyección de argumentos para excluir rutas no deseadas (como binarios o dependencias).
+
+**1. Ejecución estándar:**
+Mapea todo el directorio (aplicando las exclusiones base por defecto).
 
 ```bash
 npm run tree
 ```
 
-Para excluir solo los iconos de `public/icons`:
+**2. Exclusión mediante flag específico:**
+Filtra rápidamente la carpeta de iconos visuales para limpiar el output.
 
 ```bash
 npm run tree -- --exclude-icons
 ```
 
-Para excluir elementos adicionales:
+**3. Exclusión dinámica mediante parámetros:**
+Permite pasar una lista de rutas (separadas por comas) que el algoritmo ignorará durante el mapeo.
 
 ```bash
-npm run tree -- --exclude=public/icons,archivo-extra
+npm run tree -- --exclude=public/icons,ruta/al/archivo-extra,otra-carpeta
 ```
 
 ---
 
-<h2 align="center" id="estructura-del-proyecto">Estructura del proyecto</h2>
-
-```text
-Leadchain-frontend
-├── public
-│   └── icons
-│       ├── leadchain-logo.png
-│       └── Logo.svg
-├── scripts
-│   └── tree-front.js
-├── src
-│   ├── auth
-│   │   ├── AuthContext.ts
-│   │   ├── authProvider.tsx
-│   │   ├── authStorage.ts
-│   │   └── useAuth.ts
-│   ├── components
-│   │   ├── Clientes
-│   │   │   ├── Info
-│   │   │   │   ├── InfoClienteDatosCard.tsx
-│   │   │   │   ├── InfoClienteEdificioCard.tsx
-│   │   │   │   ├── InfoClienteEditModal.tsx
-│   │   │   │   ├── InfoClienteToolbar.tsx
-│   │   │   │   └── InfoClienteVisitasCard.tsx
-│   │   │   ├── ClienteForm.tsx
-│   │   │   ├── ClienteInfo.tsx
-│   │   │   ├── ClientesConEdificioTable.tsx
-│   │   │   ├── ClientesCreateModal.tsx
-│   │   │   ├── ClientesHeader.tsx
-│   │   │   ├── ClientesSinEdificioTable.tsx
-│   │   │   └── ClienteTabla.tsx
-│   │   ├── Comerciales
-│   │   │   ├── ComercialesForm.tsx
-│   │   │   ├── ComercialesFormModal.tsx
-│   │   │   ├── ComercialesHeader.tsx
-│   │   │   ├── ComercialesRow.tsx
-│   │   │   ├── ComercialesStatus.tsx
-│   │   │   └── ComercialesTable.tsx
-│   │   ├── Edificios
-│   │   │   ├── FormularioModal
-│   │   │   │   ├── EdificioModalCliente.tsx
-│   │   │   │   ├── EdificioModalEdificio.tsx
-│   │   │   │   ├── EdificioModalMapa.tsx
-│   │   │   │   └── EdificioModalPestaña.tsx
-│   │   │   ├── Info
-│   │   │   │   ├── EdificioInfoClienteCard.tsx
-│   │   │   │   ├── EdificioInfoClienteInfo.tsx
-│   │   │   │   ├── EdificioInfoDetailsCard.tsx
-│   │   │   │   ├── EdificioInfoMapCard.tsx
-│   │   │   │   └── EdificioInfoToolbar.tsx
-│   │   │   ├── EdificioCreateModal.tsx
-│   │   │   ├── EdificioForm.tsx
-│   │   │   ├── EdificioHeader.tsx
-│   │   │   ├── EdificioInfo.tsx
-│   │   │   └── EdificioTabla.tsx
-│   │   ├── Inicio
-│   │   │   ├── InicioAdmin
-│   │   │   │   ├── ComercialCard
-│   │   │   │   │   ├── ComercialCard.tsx
-│   │   │   │   │   ├── ComercialCardIndividual.tsx
-│   │   │   │   │   └── ComercialStatsBars.tsx
-│   │   │   │   └── InicioAdmin.tsx
-│   │   │   └── InicioComercial
-│   │   │       ├── ClientesSinVisitar
-│   │   │       │   ├── ClienteConVisitaCard.tsx
-│   │   │       │   ├── ClienteSinVisitaCard.tsx
-│   │   │       │   ├── ClientesSinVisitar.tsx
-│   │   │       │   └── ClientesStats.tsx
-│   │   │       └── InicioComercial.tsx
-│   │   ├── MapSetup
-│   │   │   ├── MAP_BOUNDS_RESTRICTIONS_GUIDE.md
-│   │   │   ├── MapView.tsx
-│   │   │   └── ZoomCalculator.tsx
-│   │   ├── MapViews
-│   │   │   ├── AdminMapView.tsx
-│   │   │   ├── CommercialMapView.tsx
-│   │   │   ├── EdificioMarker.tsx
-│   │   │   └── MapBoundsSetup.tsx
-│   │   ├── sidebar
-│   │   │   └── MenuButtons.tsx
-│   │   ├── utils
-│   │   │   ├── cordobaMapConfig.ts
-│   │   │   ├── errorHandler.ts
-│   │   │   ├── globalMap.tsx
-│   │   │   ├── MapaEdificioPanel.tsx
-│   │   │   └── StatusAlert.tsx
-│   │   ├── Visitas
-│   │   │   ├── Admin
-│   │   │   │   ├── VisitaCardAdmin.tsx
-│   │   │   │   └── VisitasAdminGrid.tsx
-│   │   │   ├── Comercial
-│   │   │   │   ├── VisitaCardComercial.tsx
-│   │   │   │   └── VisitasComercialGrid.tsx
-│   │   │   ├── FormularioModal
-│   │   │   │   └── VisitaFormularioModal.tsx
-│   │   │   └── VisitasHeader.tsx
-│   │   └── Zona
-│   │       ├── FormularioModal
-│   │       │   └── ZonaFormularioModal.tsx
-│   │       ├── ZonaDetails.tsx
-│   │       ├── ZonaHeader.tsx
-│   │       ├── ZonaInfo.tsx
-│   │       ├── ZonaList.tsx
-│   │       └── ZonaMap.tsx
-│   ├── guards
-│   │   ├── ProtectedRoute.tsx
-│   │   └── RolRoutes.tsx
-│   ├── hooks
+```bash
+Leadchain-frontend/
+├── public/
+│   └── icons/                 # Logo de la aplicación
+├── scripts/
+│   └── tree-front.js          # CLI custom para mapear el proyecto
+├── src/
+│   ├── auth/                  # Contexto y lógica de sesión (JWT)
+│   ├── components/            # Componentes UI agrupados por dominio
+│   │   ├── Clientes/
+│   │   ├── Comerciales/
+│   │   ├── Edificios/
+│   │   ├── Inicio/            # Dashboards (Admin/Comercial)
+│   │   ├── MapViews/          # Vistas cartográficas modulares
+│   │   ├── Visitas/
+│   │   └── Zona/
+│   ├── guards/                # HOCs para protección de rutas (RBAC)
+│   ├── hooks/                 # Custom Hooks de lógica de negocio
 │   │   ├── useCalculateZoomFromBounds.ts
 │   │   ├── useInitialize.ts
 │   │   └── useMapBoundsRestrictions.ts
-│   ├── layout
-│   │   └── Sidebar.tsx
-│   ├── pages
-│   │   ├── ClientesPage.tsx
-│   │   ├── ComercialesPage.tsx
-│   │   ├── EdificiosPage.tsx
-│   │   ├── InicioPage.tsx
-│   │   ├── LoginPage.tsx
-│   │   ├── MapPage.tsx
-│   │   ├── NotFoundBSODPage.tsx
-│   │   ├── VisitasPage.tsx
-│   │   └── ZonaPage.tsx
-│   ├── services
-│   │   ├── authService.ts
-│   │   ├── ClientesService.ts
-│   │   ├── EdificiosService.ts
-│   │   ├── EstadoVisitaService.ts
-│   │   ├── ExceptionService.ts
-│   │   ├── https.ts
-│   │   ├── InicioService.ts
-│   │   ├── tokenManager.ts
-│   │   ├── User.ts
-│   │   ├── UserService.ts
-│   │   ├── VisitasService.ts
-│   │   └── ZonaService.ts
-│   ├── styles
-│   │   ├── components
-│   │   │   ├── Clientes
-│   │   │   │   ├── Info
-│   │   │   │   │   ├── InfoClienteDatosCard.css
-│   │   │   │   │   ├── InfoClienteEdificioCard.css
-│   │   │   │   │   ├── InfoClienteEditModal.css
-│   │   │   │   │   ├── InfoClienteToolbar.css
-│   │   │   │   │   └── InfoClienteVisitasCard.css
-│   │   │   │   ├── ClienteForm.css
-│   │   │   │   ├── ClienteInfo.css
-│   │   │   │   ├── ClientesConEdificioTable.css
-│   │   │   │   ├── ClientesCreateModal.css
-│   │   │   │   ├── ClientesHeader.css
-│   │   │   │   ├── ClientesSinEdificioTable.css
-│   │   │   │   └── ClienteTabla.css
-│   │   │   ├── Comerciales
-│   │   │   │   ├── ComercialesForm.css
-│   │   │   │   ├── ComercialesFormModal.css
-│   │   │   │   ├── ComercialesHeader.css
-│   │   │   │   ├── ComercialesRow.css
-│   │   │   │   ├── ComercialesStatus.css
-│   │   │   │   └── ComercialesTable.css
-│   │   │   ├── Edificios
-│   │   │   │   ├── FormularioModal
-│   │   │   │   │   ├── EdificioModalCliente.css
-│   │   │   │   │   ├── EdificioModalEdificio.css
-│   │   │   │   │   ├── EdificioModalMapa.css
-│   │   │   │   │   └── EdificioModalPestaña.css
-│   │   │   │   ├── Info
-│   │   │   │   │   ├── EdificioInfoClienteCard.css
-│   │   │   │   │   ├── EdificioInfoDetailsCard.css
-│   │   │   │   │   ├── EdificioInfoMapCard.css
-│   │   │   │   │   └── EdificioInfoToolbar.css
-│   │   │   │   ├── EdificioCreateModal.css
-│   │   │   │   ├── EdificioForm.css
-│   │   │   │   ├── EdificioHeader.css
-│   │   │   │   ├── EdificioInfo.css
-│   │   │   │   └── EdificioTabla.css
-│   │   │   ├── Inicio
-│   │   │   │   ├── InicioAdmin
-│   │   │   │   │   ├── ComercialCard
-│   │   │   │   │   │   ├── ComercialCard.css
-│   │   │   │   │   │   ├── ComercialCardIndividual.css
-│   │   │   │   │   │   └── ComercialStatsBars.css
-│   │   │   │   │   └── InicioAdmin.css
-│   │   │   │   └── InicioComercial
-│   │   │   │       ├── ClientesSinVisitar
-│   │   │   │       │   ├── ClienteConVisitaCard.css
-│   │   │   │       │   ├── ClienteSinVisitaCard.css
-│   │   │   │       │   ├── ClientesSinVisitar.css
-│   │   │   │       │   └── ClientesStats.css
-│   │   │   │       └── InicioComercial.css
-│   │   │   ├── sidebar
-│   │   │   │   ├── MenuButtons.css
-│   │   │   │   └── Sidebar.css
-│   │   │   ├── utils
-│   │   │   │   ├── CommercialZoneInfo.css
-│   │   │   │   ├── CommercialZoneMap.css
-│   │   │   │   ├── globalMap.css
-│   │   │   │   ├── MapaEdificioPanel.css
-│   │   │   │   └── StatusAlert.css
-│   │   │   ├── Visitas
-│   │   │   │   ├── Admin
-│   │   │   │   │   ├── VisitaCardAdmin.css
-│   │   │   │   │   └── VisitasAdminGrid.css
-│   │   │   │   ├── Comercial
-│   │   │   │   │   ├── VisitaCardComercial.css
-│   │   │   │   │   └── VisitasComercialGrid.css
-│   │   │   │   ├── FormularioModal
-│   │   │   │   │   └── VisitaFormularioModal.css
-│   │   │   │   └── VisitasHeader.css
-│   │   │   └── Zona
-│   │   │       ├── FormularioModal
-│   │   │       │   └── ZonaFormularioModal.css
-│   │   │       ├── ZonaDetails.css
-│   │   │       ├── ZonaHeader.css
-│   │   │       ├── ZonaInfo.css
-│   │   │       ├── ZonaList.css
-│   │   │       └── ZonaMap.css
-│   │   ├── Clientes.css
-│   │   ├── Comerciales.css
-│   │   ├── Edificios.css
-│   │   ├── InfoCliente.css
-│   │   ├── Inicio.css
-│   │   ├── Login.css
-│   │   ├── Map.css
-│   │   ├── NotFound.css
-│   │   ├── sileo.css
-│   │   ├── Visitas.css
-│   │   └── Zona.css
-│   ├── types
-│   │   ├── clientes
-│   │   │   ├── Cliente.ts
-│   │   │   ├── ClienteDetalle.ts
-│   │   │   └── index.ts
-│   │   ├── edificios
-│   │   │   ├── Edificio.ts
-│   │   │   └── index.ts
-│   │   ├── shared
-│   │   │   ├── GeoPoint.ts
-│   │   │   └── index.ts
-│   │   ├── users
-│   │   │   ├── index.ts
-│   │   │   └── User.ts
-│   │   ├── visitas
-│   │   │   ├── EstadoVisita.ts
-│   │   │   ├── index.ts
-│   │   │   └── Visita.ts
-│   │   ├── zonas
-│   │   │   ├── index.ts
-│   │   │   └── Zona.ts
-│   │   └── index.ts
-│   ├── App.css
-│   ├── App.tsx
-│   ├── index.css
-│   └── main.tsx
-├── .env
-├── .gitignore
-├── index.html
-├── package.json
-└── README.md
+│   ├── layout/                # Estructura base (Sidebar)
+│   ├── pages/                 # Vistas principales orquestadoras
+│   ├── services/              # Capa de red (Axios, Endpoints, Interceptores)
+│   ├── styles/                # CSS organizado paralelamente a src/components/
+│   ├── types/                 # Interfaces globales de TypeScript
+│   ├── utils/                 # Helpers puros y configuración estática
+│   ├── App.tsx                # Enrutador principal
+│   └── main.tsx               # Punto de entrada de React
+├── .env                       # Variables de entorno
+├── package.json               # Dependencias y scripts
+└── README.md                  # Documentación
 ```
 
 ---
 
-<h2 align="center" id="autenticacion">Autenticación </h2>
+<h2 align="center" id="autenticacion">Sistema de Autenticación </h2>
 
-El frontend incluye un sistema de sesión que renueva el token JWT automáticamente cuando la API devuelve `401`.
+Leadchain implementa un flujo de seguridad robusto basado en **JSON Web Tokens (JWT)**. El diseño prioriza la protección de los datos sin interrumpir la experiencia del usuario (UX), logrando una persistencia de sesión completamente transparente.
 
-<h3 align="center">Qué hace </h3>
+<h3 align="center">Ciclo de Vida y Renovación Automática</h3>
 
-- Guarda el token y el usuario en `localStorage`.
-- Detecta tokens próximos a expirar.
-- Renueva el token automáticamente con `/api/auth/refresh`.
-- Actualiza el contexto de React.
-- Mantiene la sesión transparente al usuario.
+El frontend cuenta con un mecanismo de autorecuperación de sesión. Cuando el token de acceso expira, el sistema no expulsa al usuario inmediatamente, sino que ejecuta el siguiente flujo en segundo plano:
 
-<h3 align="center">Archivos clave</h3>
+1. **Almacenamiento:** El token JWT y los datos del usuario se persisten localmente (`localStorage`).
+2. **Intercepción HTTP:** Un interceptor de Axios vigila todas las respuestas de la API. Si detecta un error `401 Unauthorized` por caducidad de token, pausa las peticiones en curso.
+3. **Refresh Transparente:** Se lanza una petición automática al *endpoint* `/api/auth/refresh` para obtener un nuevo token válido.
+4. **Reanudación:** El token se actualiza en el almacenamiento y en el Contexto de React, y las peticiones pausadas se reintentan automáticamente con las nuevas credenciales.
 
-- `src/services/https.ts`
-- `src/context/authProvider.tsx`
-- `src/auth/authStorage.ts`
-- `src/services/tokenManager.ts`
+<h3 align="center">Módulos Clave de Seguridad</h3>
+
+La lógica de autenticación está desacoplada en varios módulos especializados para cumplir con el principio de responsabilidad única (SRP):
+
+| Archivo de la Arquitectura                 | Responsabilidad en el Flujo                                                                                                                                  |
+| :----------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`src/services/https.ts`**        | Instancia base de Axios. Contiene la lógica central de los interceptores HTTP que orquestan el*retry* (reintento) de peticiones fallidas tras el refresh. |
+| **`src/services/tokenManager.ts`** | Controlador de tokens. Se encarga de evaluar los tiempos de expiración y ejecutar las llamadas a la API para la renovación de credenciales.                |
+| **`src/context/authProvider.tsx`** | Proveedor global de React (Context API) que envuelve la aplicación y expone el estado reactivo del usuario y los métodos de `login`/`logout`.          |
+| **`src/auth/authStorage.ts`**      | Capa de abstracción limpia para interactuar con la Web Storage API, aislando la lógica de lectura y escritura física en el navegador.                     |
 
 ---
 
-<h2 align="center"> Gestion de leaflet </h2>
+<h2 align="center" id="arquitectura-mapas">Arquitectura del Motor Cartográfico </h2>
+
+El núcleo interactivo de Leadchain es su sistema de gestión espacial. Para garantizar un alto rendimiento y evitar renderizados innecesarios al manipular el DOM virtual de React junto con la API de Leaflet, se ha diseñado una arquitectura altamente desacoplada.
+
+La lógica matemática (cálculo de polígonos y límites) se delega a *Custom Hooks* y "Componentes Invisibles", mientras que el motor visual se centra únicamente en la presentación bidireccional basada en el rol del usuario (Administrador vs Comercial).
+
+El siguiente diagrama de clases ilustra el flujo de datos, el ciclo de vida y la inyección de dependencias del ecosistema de mapas:
 
 ```mermaid
 classDiagram
     %% ==========================================
-    %% SERVICIOS Y CONTEXTOS EXTERNOS (Hacia dónde apuntan)
+    %% SERVICIOS Y CONTEXTOS EXTERNOS
     %% ==========================================
     class AuthContext {
         <<Contexto Externo>>
@@ -466,7 +276,7 @@ classDiagram
         +getMapaInicio()
         +getDetalleEdificio()
     }
-  
+
     class ReactLeaflet {
         <<Librería de UI Externa>>
         +MapContainer
@@ -475,7 +285,7 @@ classDiagram
         +Marker
         +Popup
     }
-  
+
     class LeafletCore {
         <<Contexto / API de Mapa Externo>>
         +useMap()
@@ -492,7 +302,7 @@ classDiagram
         +var user: [Objeto con rol e id_zona desde useAuth]
         +Renderiza() [Renderizado condicional del Layout y Mapas]
     }
-  
+
     class Sidebar {
         <<Componente de Interfaz>>
         +Renderiza() [Menú de navegación lateral]
@@ -510,7 +320,7 @@ classDiagram
         +const minZoomLevel: [Permite a los administradores alejar más la vista]
         +useInitialize() Llama a la carga de datos
     }
-  
+
     class CommercialMapView {
         +state zonas: Zona[]
         +state edificios: Edificio[]
@@ -541,11 +351,11 @@ classDiagram
         +var clientesConEdificio: [Lista combinada de clientes y su edificio]
         +getNombreCompleto() Acorta los nombres que superan los 40 caracteres
     }
-  
+
     class MapaEdificioPanel {
         +state clientesBloque: [Lista de clientes formateada para mostrar]
         +state zona: [Datos de la zona correspondiente]
-        +ref dragStartPos: [Detecta si el usuario hizo un clic normal o arrastró el mapa]
+        +ref dragStartPos: [Detecta si el usuario hizo clic normal o arrastró el mapa]
         +useInitialize() Carga los detalles específicos del edificio
         +handleOverlayMouseDown() Guarda la posición inicial del ratón
         +handleOverlayMouseUp() Cierra el panel si no fue un movimiento de arrastre
@@ -556,81 +366,85 @@ classDiagram
     %% ==========================================
     class MapView {
         <<Componente de Configuración>>
-        +Renderiza() nulo
+        +Renderiza() null
     }
-  
+
     class ZoomCalculator {
         <<Componente de Configuración>>
-        +Renderiza() nulo
+        +Renderiza() null
     }
 
     %% ==========================================
-    %% HOOKS PERSONALIZADOS (La lógica pesada)
+    %% HOOKS PERSONALIZADOS (Lógica pesada)
     %% ==========================================
     class useMapBoundsRestrictions {
         <<Hook Personalizado>>
-        +ref debounceTimerRef: [Evita ejecutar cálculos múltiples al mismo tiempo]
+        +ref debounceTimerRef: [Evita cálculos múltiples en paralelo]
         +calculatePolygonBounds() Calcula de forma óptima los límites matemáticos
         +ensureInBounds() Retorna automáticamente al usuario al área permitida
     }
-  
+
     class useCalculateZoomFromBounds {
         <<Hook Personalizado>>
-        +useMemo polygonBounds: [Convierte los puntos a formato de límites de Leaflet]
-        +useCallback handleZoomCalculated: [Evita renderizados innecesarios en la vista]
+        +useMemo polygonBounds: [Convierte puntos a límites de Leaflet]
+        +useCallback handleZoomCalculated: [Evita renderizados innecesarios]
     }
 
     %% ==========================================
-    %% RELACIONES Y DIRECCIONES (Flujo de datos y llamadas)
+    %% RELACIONES Y DIRECCIONES
     %% ==========================================
-  
-    %% Flujo desde la página principal
-    MapPage ..> AuthContext : Obtiene el usuario desde useAuth()
-    MapPage --> Sidebar : Muestra el menú lateral
-    MapPage --> AdminMapView : Si el rol es distinto a 'comercial'
-    MapPage --> CommercialMapView : Si el rol es igual a 'comercial'
+    MapPage ..> AuthContext : Obtiene usuario (useAuth)
+    MapPage --> Sidebar : Muestra menú
+    MapPage --> AdminMapView : Rol != 'comercial'
+    MapPage --> CommercialMapView : Rol == 'comercial'
 
-    %% Carga de datos hacia el Backend
-    AdminMapView ..> InicioService : Solicita datos a getMapaInicio()
-    CommercialMapView ..> InicioService : Solicita datos a getMapaInicio()
-    MapaEdificioPanel ..> InicioService : Solicita detalles a getDetalleEdificio()
-  
-    %% Flujo de renderizado principal (Padres a Hijos)
-    AdminMapView --> globalMap : Pasa todas las zonas y configuración global
-    CommercialMapView --> globalMap : Pasa solo la zona del comercial y límites calculados
-  
-    %% globalMap hacia la interfaz y librerías externas
-    globalMap --> ReactLeaflet : Construye el mapa base visual
-    globalMap --> MapView : Se activa si enableMapBoundsSetup es verdadero
-    globalMap --> ZoomCalculator : Se activa si enableZoomCalculator es verdadero
-    globalMap --> EdificioMarker : Dibuja cada edificio en el mapa
-  
-    %% Interacción de clics
-    EdificioMarker ..> MapaEdificioPanel : (A través del evento de clic onEdificioClick)
-  
-    %% Inyección de Hooks en los componentes de configuración
-    MapView ..> useMapBoundsRestrictions : Ejecuta la lógica
-    ZoomCalculator ..> useCalculateZoomFromBounds : Ejecuta la lógica
-  
-    %% Interacción de los Hooks con el núcleo del mapa (Leaflet API)
-    useMapBoundsRestrictions ..> LeafletCore : Utiliza map.setMaxBounds() y map.fitBounds()
-    useCalculateZoomFromBounds ..> LeafletCore : Utiliza map.getBoundsZoom()
+    AdminMapView ..> InicioService : getMapaInicio()
+    CommercialMapView ..> InicioService : getMapaInicio()
+    MapaEdificioPanel ..> InicioService : getDetalleEdificio()
+
+    AdminMapView --> globalMap : Pasa datos globales
+    CommercialMapView --> globalMap : Pasa datos restringidos
+
+    globalMap --> ReactLeaflet : Construye UI base
+    globalMap --> MapView : Si bounds activo
+    globalMap --> ZoomCalculator : Si zoom dinámico activo
+    globalMap --> EdificioMarker : Dibuja marcadores
+
+    EdificioMarker ..> MapaEdificioPanel : onEdificioClick
+
+    MapView ..> useMapBoundsRestrictions : Ejecuta
+    ZoomCalculator ..> useCalculateZoomFromBounds : Ejecuta
+
+    useMapBoundsRestrictions ..> LeafletCore : setMaxBounds() / fitBounds()
+    useCalculateZoomFromBounds ..> LeafletCore : getBoundsZoom()
 ```
 
 ---
 
-<h2 align="center" id="autor">Autor</h2>
+<h2 align="center" id="autor"> 👨‍💻 Autor y Contacto </h2>
 
-- **Alberto Romero Pino**
-- **Email**: albertoromeropino2004@gmail.com
-- **LinkedIn**: [linkedin.com/in/alberto-romero-pino-8aa0a32ba](linkedin.com/in/alberto-romero-pino-8aa0a32ba)
+**Alberto Romero Pino**
+
+* **Email:** [albertoromeropino2004@gmail.com](mailto:albertoromeropino2004@gmail.com)
+* **LinkedIn:** [Alberto Romero Pino](https://linkedin.com/in/alberto-romero-pino-8aa0a32ba)
+* **GitHub:** [@AlbertoRomeroPino](https://github.com/AlbertoRomeroPino)
 
 ---
 
-<h2 align="center">Más información</h2>
+<h2 align="center" id="referencias">Recursos y Referencias </h2>
 
-- [React](https://reactjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Vite](https://vitejs.dev/)
-- [Leaflet](https://leafletjs.com/)
-- [React Leaflet](https://react-leaflet.js.org/)
+Para profundizar en el stack tecnológico utilizado en el desarrollo de esta plataforma, puedes consultar la documentación oficial de las herramientas:
+
+* [**React**](https://reactjs.org/) - Biblioteca central para la construcción de interfaces de usuario.
+* [**TypeScript**](https://www.typescriptlang.org/) - Superconjunto de JavaScript que aporta tipado estático al proyecto.
+* [**Vite**](https://vitejs.dev/) - Entorno de desarrollo y empaquetador de módulos ultrarrápido.
+* [**Leaflet**](https://leafletjs.com/) - Biblioteca principal de JavaScript para mapas interactivos.
+* [**React Leaflet**](https://react-leaflet.js.org/) - Abstracción de componentes de React para la integración con Leaflet.
+
+<hr>
+<p align="center">
+  <b>Trabajo de Fin de Grado</b> | <i>Grado en Desarrollo de Aplicaciones Web</i><br>
+  I.E.S.Francisco de los Rios - Curso 2025/2026<br>
+  <i>El código fuente expuesto forma parte de los entregables técnicos para la defensa del proyecto.</i>
+</p>
+<br>
