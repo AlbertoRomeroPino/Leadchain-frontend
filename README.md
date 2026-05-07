@@ -227,6 +227,15 @@ Leadchain-frontend/
 
 ---
 
+<h3 align="center">Patrones de Diseño y Buenas Prácticas </h3>
+
+Para garantizar la escalabilidad y mantenibilidad del código base, el proyecto implementa los siguientes patrones:
+
+* **Archivos Barril (*Barrel Exports*):** Uso estratégico de archivos `index.ts` en los directorios de tipos (`src/types/`) y componentes. Esto simplifica las importaciones, encapsula la estructura interna de las carpetas y evita el acoplamiento profundo (ej: `import { Cliente } from 'types/clientes'` en lugar de rutas relativas complejas).
+* **Wrapper de Servicios (*Service Call Wrapper*):** Las llamadas a la API no se realizan directamente desde los componentes. Se ha implementado un patrón *Wrapper* en la capa de red que envuelve las peticiones de Axios. Esto centraliza el manejo de excepciones, estandariza el tipado genérico de las respuestas y automatiza el disparo de notificaciones (*Toasts* de error) sin ensuciar la lógica de la UI.
+
+---
+
 <h2 align="center" id="autenticacion">Sistema de Autenticación </h2>
 
 Leadchain implementa un flujo de seguridad robusto basado en **JSON Web Tokens (JWT)**. El diseño prioriza la protección de los datos sin interrumpir la experiencia del usuario (UX), logrando una persistencia de sesión completamente transparente.
