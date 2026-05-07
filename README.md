@@ -456,4 +456,3 @@ Para profundizar en el stack tecnológico utilizado en el desarrollo de esta pla
   I.E.S.Francisco de los Rios - Curso 2025/2026<br>
   <i>El código fuente expuesto forma parte de los entregables técnicos para la defensa del proyecto.</i>
 </p>
-<br>
