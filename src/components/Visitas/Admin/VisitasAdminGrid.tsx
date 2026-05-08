@@ -23,6 +23,7 @@ const VisitasAdminGrid = () => {
 
       const data = await VisitasService.getVisitasPaginaDatos();
 
+      showSuccessAlert("Visitas cargadas");
       setVisitas(data.visitas);
     } catch (error) {
       showErrorAlert(error, "Cargar Visitas");
